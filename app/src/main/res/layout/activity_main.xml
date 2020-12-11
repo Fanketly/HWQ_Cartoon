@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <fragment
         android:id="@+id/fragCartoon"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,22 +25,18 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.94" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/ic_launcher_background"
+        android:visibility="visible"
+        app:itemIconTint="@color/botton_nav"
+        app:itemTextColor="#03A9F4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline8">
+        app:layout_constraintTop_toTopOf="@+id/guideline8"
+        app:menu="@menu/cartoon" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_nav"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/ic_launcher_background"
-            app:itemIconTint="@color/botton_nav"
-            app:itemTextColor="#03A9F4"
-            app:menu="@menu/cartoon" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

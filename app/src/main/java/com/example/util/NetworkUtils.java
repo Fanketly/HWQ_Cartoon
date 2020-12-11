@@ -20,16 +20,6 @@ public class NetworkUtils {
     private NetworkUtils() {
 
     }
-//    public static NetworkUtils getInstance() {
-//        if (networkUtils == null) {
-//            synchronized (NetworkUtils.class) {
-//                if (networkUtils == null) {
-//                    networkUtils = new NetworkUtils();
-//                }
-//            }
-//        }
-//        return networkUtils;
-//    }
 
     private static class Singleton {
         private static final NetworkUtils network = new NetworkUtils();
@@ -40,7 +30,6 @@ public class NetworkUtils {
     }
 
     private static final OkHttpClient okHttpClient = new OkHttpClient();
-//    private MediaType mediaType = OkhttpUtils.getMediaType();
 
     public void OkhttpGet(Handler handler, String url, int what) {
         Message message = Message.obtain();

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.adapter.CartoonImgRvAdapter
 import com.example.base.BaseFragment
 import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.R
@@ -15,7 +14,6 @@ import com.example.repository.model.FavouriteInfor
 import com.example.viewModel.CartoonViewModel
 
 class FavoriteFragment : BaseFragment(R.layout.fragment_favorite) {
-    private lateinit var cartoonImgRvAdapter: CartoonImgRvAdapter
     private lateinit var favouriteInfor: FavouriteInfor
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

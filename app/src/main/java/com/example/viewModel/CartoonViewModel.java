@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-
 import com.example.repository.local.CartoonDB;
 import com.example.repository.model.CartoonInfor;
 import com.example.repository.model.FavouriteInfor;
@@ -50,7 +49,7 @@ public class CartoonViewModel extends AndroidViewModel {
     private MutableLiveData<List<CartoonInfor>> liveDataCartoon = new MutableLiveData<>();
     private static final String Url3 = "https://manhua.dmzj.com/";
     //msg3集数
-     List<CartoonInfor> cartoonInforList = new ArrayList<>();
+    private    List<CartoonInfor> cartoonInforList = new ArrayList<>();
     private MutableLiveData<List<CartoonInfor>> liveDataMsg3 = new MutableLiveData<>();
     //msg4显示漫画
     private List<String> stringList = new ArrayList<>();
@@ -420,14 +419,17 @@ public class CartoonViewModel extends AndroidViewModel {
      * {@link }
      * 更新点击的集数
      */
-//    public void update(FavouriteInfor favouriteInfor) {
-//        cartoonModel.updata(favouriteInfor);
-//    }
-
-    public List<CartoonInfor> getCartoonInforList() {
-        return cartoonInfors;
+    public void update(FavouriteInfor favouriteInfor) {
+        cartoonModel.updata(favouriteInfor);
     }
 
+    public List<CartoonInfor> getCartoonInforList() {
+        return cartoonInforList;
+    }
+
+    public List<CartoonInfor> getCartoonInfors() {
+        return cartoonInfors;
+    }
 
     public void getCartoon(int position) {
         String s = cartoonInfors.get(position).getHref();
@@ -470,6 +472,7 @@ public class CartoonViewModel extends AndroidViewModel {
     public void favouriteDel(FavouriteInfor favouriteInfor) {
         cartoonModel.del(favouriteInfor);
     }
+
 
     public List<FavouriteInfor> getFavourite() {//初始化
         return cartoonModel.loadAll();
@@ -600,7 +603,7 @@ public class CartoonViewModel extends AndroidViewModel {
     protected void onCleared() {
         super.onCleared();
         Log.i(TAG, "onCleared: ");
-        cartoonModel.close();
+//        cartoonModel.close();
         stringList.clear();
         cartoonInfors.clear();
         listMsg5.clear();
