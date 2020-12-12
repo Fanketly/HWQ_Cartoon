@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,6 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.Headers
 import com.example.adapter.CartoonImgRvAdapter
 import com.example.base.BaseFragment
-import com.example.base.TAG
 import com.example.base.setUpWithGrid
 import com.example.base.setUpWithLinear
 import com.example.home.CartoonDialogRvAdapter
@@ -28,6 +26,7 @@ import com.example.hwq_cartoon.R
 import com.example.repository.model.FavouriteInfor
 import com.example.viewModel.CartoonViewModel
 import kotlinx.android.synthetic.main.fragment_detailed.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import java.util.*
 
 /***
@@ -74,6 +73,7 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
                 R.layout.cartoon_dialog_rv_item,
                 viewModel.cartoonInforList
             )
+        rvDetail.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         rvDetail.setUpWithGrid(cartoonRvAdapter1, 4)
         cartoonRvAdapter1.setOnClick { position: Int -> viewModel.msg3Send(position) }
         //添加到喜爱,从喜爱中删除
@@ -84,15 +84,13 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
                 when (mark) {
                     R.id.homeFragment -> {
                         favouriteInfor = viewModel.setFavouriteCartoon(position)
-
                     }
+                    R.id.favoriteFragment-> viewModel.setFavourite2(favouriteInfor)
                 }
                 btnDetailAdd.text = "已追漫"
                 shortToast("追漫成功")
             } else {
-                when (mark) {
-                    R.id.homeFragment -> viewModel.favouriteDel(favouriteInfor)
-                }
+                viewModel.favouriteDel(favouriteInfor)
                 btnDetailAdd.text = "追漫"
                 shortToast("已取消追漫")
             }

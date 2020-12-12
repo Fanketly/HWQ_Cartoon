@@ -67,8 +67,6 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                 Navigation.findNavController(requireView())
                     .navigate(R.id.action_homeFragment_to_detailedFragment, bundle)
             }
-
-
         })
     }
 

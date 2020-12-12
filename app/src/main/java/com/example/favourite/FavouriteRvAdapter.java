@@ -48,13 +48,8 @@ public class FavouriteRvAdapter extends MyAdapter<FavouriteInfor> {
     @Override
     public void bindViewHolder(@NotNull MyViewHolder holder, FavouriteInfor data, int position) {
         TextView title = holder.findViewById(R.id.tvCartoonTitle);
-//        ConstraintLayout constraintLayout = holder.findViewById(R.id.layoutCartoon);
         title.setText(data.getTitle());
         holder.getItemView().setOnClickListener(v -> onClick.onClick(position));
-//        holder.getItemView().setOnLongClickListener(v -> {
-//            onClick.longOnClick(position);
-//            return false;
-//        });
         ImageView imageView = holder.findViewById(R.id.imgCartoon);
         if (data.getImgUrl() != null) {
 //            Glide.with(context).asDrawable().load(glideUrl).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
@@ -64,8 +59,6 @@ public class FavouriteRvAdapter extends MyAdapter<FavouriteInfor> {
 
     public interface OnClick {
         void onClick(int position);
-
-//        void longOnClick(int position);
     }
 
 

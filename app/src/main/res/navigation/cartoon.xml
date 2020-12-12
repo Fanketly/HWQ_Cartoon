@@ -22,7 +22,9 @@
         android:label="FavoriteFragment" >
         <action
             android:id="@+id/action_favoriteFragment_to_detailedFragment"
-            app:destination="@id/detailedFragment" />
+            app:destination="@id/detailedFragment"
+            app:enterAnim="@anim/right_in"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
     <fragment
         android:id="@+id/detailedFragment"

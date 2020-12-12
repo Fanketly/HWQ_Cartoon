@@ -447,7 +447,13 @@ public class CartoonViewModel extends AndroidViewModel {
         else
             NetworkUtils.getInstance().OkhttpGet(handler, Url3 + s, 3);
     }
-
+/***
+ * favouriteFragment
+ *
+ * **/
+    public void setFavourite2(FavouriteInfor favourite){
+        cartoonModel.insert(favourite);
+    }
 
     public FavouriteInfor setFavourite(int position) {
         CartoonInfor cartoonInfor = cartoonInfors.get(position);
