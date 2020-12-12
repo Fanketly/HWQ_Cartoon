@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.base.BaseFragment
@@ -15,29 +14,23 @@ import com.example.viewModel.CartoonViewModel
 
 class FavoriteFragment : BaseFragment(R.layout.fragment_favorite) {
     private lateinit var favouriteInfor: FavouriteInfor
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    private var favouriteRvAdapter: FavouriteRvAdapter? = null
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_favorite, container, false)
-        val viewModel =ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
+        val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
         val list = viewModel.favourite
         val rvFavourite: RecyclerView = view.findViewById(R.id.rvFavourite)
-        val favouriteRvAdapter = FavouriteRvAdapter(list, R.layout.cartoon_rv_item, context)
+        if (favouriteRvAdapter == null)
+            favouriteRvAdapter = FavouriteRvAdapter(list, R.layout.cartoon_rv_item, context)
         rvFavourite.setUpWithLinear(favouriteRvAdapter)
         rvFavourite.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-        favouriteRvAdapter.setOnClick(object : FavouriteRvAdapter.OnClick {
-            override fun onClick(position: Int) {
-                viewModel.favouriteGet(list[position].url)
-                favouriteInfor = list[position]
-            }
-
-            override fun longOnClick(position: Int) {
-                viewModel.favouriteDel(list[position])//数据库删除
-                list.removeAt(position)//list删除
-                favouriteRvAdapter.notifyItemRemoved(position)
-                favouriteRvAdapter.notifyItemRangeChanged(position, list.size)
-                Toast.makeText(context, "已移除", Toast.LENGTH_SHORT).show()
-            }
-        })
+        favouriteRvAdapter?.setOnClick { position ->
+            viewModel.favouriteGet(list[position].url)
+            favouriteInfor = list[position]
+        }
         //msg3集数
 //        viewModel.liveDataMsg3.observe(viewLifecycleOwner, { msg3: List<CartoonInfor> ->
 //            if (msg3.isNotEmpty()) {

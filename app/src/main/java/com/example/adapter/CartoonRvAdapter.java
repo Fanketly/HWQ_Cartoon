@@ -56,10 +56,10 @@ public class CartoonRvAdapter extends MyAdapter<CartoonInfor> {
         });
         TextView type=holder.findViewById(R.id.tvCartoonType);
        type.setText(data.getType());
-        constraintLayout.setOnLongClickListener(v -> {
-            onClick.longOnClick(position);
-            return false;
-        });
+//        constraintLayout.setOnLongClickListener(v -> {
+//            onClick.longOnClick(position);
+//            return false;
+//        });
         ImageView imageView = holder.findViewById(R.id.imgCartoon);
             if (data.getImg() != null) {
 //                Glide.with(context).asDrawable().load(glideUrl).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
@@ -71,6 +71,6 @@ public class CartoonRvAdapter extends MyAdapter<CartoonInfor> {
 
     public interface OnClick {
         void onClick(int position);
-        void longOnClick(int position);
+//        void longOnClick(int position);
     }
 }

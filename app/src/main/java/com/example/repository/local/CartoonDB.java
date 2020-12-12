@@ -35,13 +35,14 @@ public class CartoonDB {
         return favouriteInforDao.loadAll();
     }
 
-    public void insert(String url, String imgUrl, String title) {
-        favouriteInforDao.insert(new FavouriteInfor(url, imgUrl, title));
+    public void insert(FavouriteInfor favouriteInfor) {
+        favouriteInforDao.insert(favouriteInfor);
     }
 
 
     public void del(FavouriteInfor favouriteInfor) {
         favouriteInforDao.delete(favouriteInfor);
+
     }
 
     public void updata(FavouriteInfor favouriteInfor) {

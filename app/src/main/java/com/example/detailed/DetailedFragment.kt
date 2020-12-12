@@ -4,6 +4,8 @@ import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,29 +14,90 @@ import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.Headers
 import com.example.adapter.CartoonImgRvAdapter
 import com.example.base.BaseFragment
+import com.example.base.TAG
 import com.example.base.setUpWithGrid
 import com.example.base.setUpWithLinear
 import com.example.home.CartoonDialogRvAdapter
 import com.example.hwq_cartoon.R
+import com.example.repository.model.FavouriteInfor
 import com.example.viewModel.CartoonViewModel
 import kotlinx.android.synthetic.main.fragment_detailed.*
+import java.util.*
 
+/***
+ * 页面 漫画详细
+ * 逻辑 从数据库读取漫画名字并判断是否已经追漫
+ * **/
 class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
     private lateinit var cartoonImgRvAdapter: CartoonImgRvAdapter
     private lateinit var viewModel: CartoonViewModel
+    private var favouriteInfor: FavouriteInfor? = null
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-         viewModel=ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
+        //返回
         btnDetailBack.setOnClickListener {
-//            viewModel.onMsg3Dismiss()
             Navigation.findNavController(requireView()).navigateUp()
         }
+        //判断是否已经追漫
+        val name = arguments?.getString("name")
+        for (favouriteInfor in viewModel.favourite) {
+            if (favouriteInfor.title == name) {
+                btnDetailAdd.text = "已追漫"
+                this.favouriteInfor = favouriteInfor
+                break
+            }
+        }
+        //漫画名与图片
+        tvDetailName.text = name
+        tvDetailContent.text = viewModel.content
+        tvDetailContent.movementMethod = ScrollingMovementMethod()
+        val headers = Headers {
+            val map: MutableMap<String, String> =
+                HashMap()
+            map["Referer"] = "https://manhua.dmzj.com/update_1.shtml"
+            map
+        }
+        Glide.with(requireContext()).asDrawable()
+            .load(GlideUrl(arguments?.getString("img"), headers))
+            .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(imgDetail)
+        //集数
         val cartoonRvAdapter1 =
-            CartoonDialogRvAdapter(context, R.layout.cartoon_dialog_rv_item, viewModel.cartoonInforList)
-        rvDetail.setUpWithGrid(cartoonRvAdapter1,4)
+            CartoonDialogRvAdapter(
+                context,
+                R.layout.cartoon_dialog_rv_item,
+                viewModel.cartoonInforList
+            )
+        rvDetail.setUpWithGrid(cartoonRvAdapter1, 4)
         cartoonRvAdapter1.setOnClick { position: Int -> viewModel.msg3Send(position) }
+        //添加到喜爱,从喜爱中删除
+        val mark = arguments?.getInt("mark")
+        btnDetailAdd.setOnClickListener {
+            val position = arguments?.getInt("position") ?: return@setOnClickListener
+            if (btnDetailAdd.text.toString() == "追漫") {
+                when (mark) {
+                    R.id.homeFragment -> {
+                        favouriteInfor = viewModel.setFavouriteCartoon(position)
+
+                    }
+                }
+                btnDetailAdd.text = "已追漫"
+                shortToast("追漫成功")
+            } else {
+                when (mark) {
+                    R.id.homeFragment -> viewModel.favouriteDel(favouriteInfor)
+                }
+                btnDetailAdd.text = "追漫"
+                shortToast("已取消追漫")
+            }
+        }
+        //漫画
         viewModel.liveDataMsg4.observe(viewLifecycleOwner, { msg4: List<ByteArray?> ->
             if (msg4.size == 1) {
                 val builder = AlertDialog.Builder(requireContext())

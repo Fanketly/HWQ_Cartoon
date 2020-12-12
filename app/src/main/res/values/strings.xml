@@ -5,4 +5,6 @@
     <string name="menu_home">主页</string>
     <string name="menu_favourite">喜爱</string>
     <string name="todo">TODO</string>
+    <string name="detail_add">追漫</string>
+
 </resources>

@@ -39,7 +39,6 @@ public class CartoonViewModel extends AndroidViewModel {
     public CartoonViewModel(@NonNull Application application) {
         super(application);
         cartoonModel = new CartoonDB(application);
-//        NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/update_" + pager + ".shtml", 2);
         Log.i(TAG, "CREATE: ");
     }
 
@@ -49,8 +48,14 @@ public class CartoonViewModel extends AndroidViewModel {
     private MutableLiveData<List<CartoonInfor>> liveDataCartoon = new MutableLiveData<>();
     private static final String Url3 = "https://manhua.dmzj.com/";
     //msg3集数
-    private    List<CartoonInfor> cartoonInforList = new ArrayList<>();
+    private List<CartoonInfor> cartoonInforList = new ArrayList<>();
     private MutableLiveData<List<CartoonInfor>> liveDataMsg3 = new MutableLiveData<>();
+    private String content;
+
+    public String getContent() {
+        return content;
+    }
+
     //msg4显示漫画
     private List<String> stringList = new ArrayList<>();
     private List<byte[]> imgList = new ArrayList<>();
@@ -240,6 +245,7 @@ public class CartoonViewModel extends AndroidViewModel {
         } else if (msg.what == 3) {//集数
             Document document = Jsoup.parse((String) msg.obj);
             Elements elements = document.getElementsByClass("cartoon_online_border");
+            content = document.select(".line_height_content").text();
             Elements elements1 = elements.select("a");
             CartoonInfor cartoonInfor;
             for (Element e : elements1) {
@@ -312,9 +318,7 @@ public class CartoonViewModel extends AndroidViewModel {
     });
 
 
-
     /**
-     *
      * 漫画本月人气排行
      **/
     public void getHomeCartoon() {
@@ -332,19 +336,20 @@ public class CartoonViewModel extends AndroidViewModel {
             NetworkUtils.getInstance().OkhttpGet(handler, Url3 + s, 3);
     }
 
-    public void setFavouriteCartoon(int position) {
+    public FavouriteInfor setFavouriteCartoon(int position) {
         CartoonInfor cartoonInfor = cartoonHome.get(position);
         String s = cartoonInfor.getHref();
+        FavouriteInfor favouriteInfor;
         if (s.contains("dmzj"))
-            cartoonModel.insert(s, cartoonInfor.getImg(), cartoonInfor.getTitile());
+            favouriteInfor = new FavouriteInfor(s, cartoonInfor.getImg(), cartoonInfor.getTitile());
         else
-            cartoonModel.insert(Url3 + s, cartoonInfor.getImg(), cartoonInfor.getTitile());
+            favouriteInfor = new FavouriteInfor(Url3 + s, cartoonInfor.getImg(), cartoonInfor.getTitile());
+
+        cartoonModel.insert(favouriteInfor);
+        return favouriteInfor;
     }
 
 
-    /**
-     * {@link }
-     */
     public MutableLiveData<List<CartoonInfor>> getCartoonInforsSearch() {
         return cartoonInforsSearch;
     }
@@ -359,9 +364,7 @@ public class CartoonViewModel extends AndroidViewModel {
         return listMsg5;
     }
 
-    /**
-     * {@link }
-     */
+
     public MutableLiveData<List<CartoonInfor>> getLiveDataCartoon() {
         return liveDataCartoon;
     }
@@ -431,6 +434,9 @@ public class CartoonViewModel extends AndroidViewModel {
         return cartoonInfors;
     }
 
+    /**
+     *
+     **/
     public void getCartoon(int position) {
         String s = cartoonInfors.get(position).getHref();
         Log.i(TAG, "onClick: " + s);
@@ -442,28 +448,34 @@ public class CartoonViewModel extends AndroidViewModel {
             NetworkUtils.getInstance().OkhttpGet(handler, Url3 + s, 3);
     }
 
+
+    public FavouriteInfor setFavourite(int position) {
+        CartoonInfor cartoonInfor = cartoonInfors.get(position);
+        String s = cartoonInfor.getHref();
+        FavouriteInfor favouriteInfor;
+        if (s.contains("dmzj")) {
+            favouriteInfor = new FavouriteInfor(s, cartoonInfor.getImg(), cartoonInfor.getTitile());
+        } else {
+            favouriteInfor = new FavouriteInfor(Url3 + s, cartoonInfor.getImg(), cartoonInfor.getTitile());
+        }
+        cartoonModel.insert(favouriteInfor);
+        return favouriteInfor;
+    }
+
     public void getSearch(int position) {
         String s = listMsg5.get(position).getHref();
         Log.i(TAG, "onClick: " + s);
         NetworkUtils.getInstance().OkhttpGet(handler, s, 3);
     }
-
-    public void setFavourite(int position) {
-        CartoonInfor cartoonInfor = cartoonInfors.get(position);
-        String s = cartoonInfor.getHref();
-        if (s.contains("dmzj")) {
-            cartoonModel.insert(s, cartoonInfor.getImg(), cartoonInfor.getTitile());
-        } else {
-            cartoonModel.insert(Url3 + s, cartoonInfor.getImg(), cartoonInfor.getTitile());
-        }
-    }
-
 //    public void setSearchFavourite(int position) {
 //        CartoonInfor cartoonInfor = listMsg5.get(position);
 //        String s = cartoonInfor.getHref();
 //        cartoonModel.insert(s, cartoonInfor.getImg(), cartoonInfor.getTitile());
 //    }
 
+    /**
+     *
+     */
     public void favouriteGet(String url) {
         Log.i(TAG, "favouriteGet: " + url);
         NetworkUtils.getInstance().OkhttpGet(handler, url, 3);
@@ -603,7 +615,7 @@ public class CartoonViewModel extends AndroidViewModel {
     protected void onCleared() {
         super.onCleared();
         Log.i(TAG, "onCleared: ");
-//        cartoonModel.close();
+        cartoonModel.close();
         stringList.clear();
         cartoonInfors.clear();
         listMsg5.clear();
