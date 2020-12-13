@@ -1,7 +1,7 @@
 plugins {
+    id 'org.greenrobot.greendao'// GreenDao
     id 'com.android.application'
     id 'kotlin-android'
-    id 'org.greenrobot.greendao'// GreenDao
     id 'kotlin-kapt'
     id 'kotlin-android-extensions'
 }

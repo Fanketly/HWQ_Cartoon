@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
  * Date: 2020/12/10
  * Time: 15:00
  */
-class SpacesItemDecoration(val space:Int) : RecyclerView.ItemDecoration(){
+class SpacesItemDecoration(private val space:Int) : RecyclerView.ItemDecoration(){
     override fun getItemOffsets(
         outRect: Rect,
         view: View,

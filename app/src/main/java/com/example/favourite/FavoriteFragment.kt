@@ -29,7 +29,7 @@ class FavoriteFragment : BaseFragment(R.layout.fragment_favorite) {
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (viewModel.cartoonInforList.size > 0)
+        if (viewModel.mgs3List.size > 0)
             viewModel.onMsg3Dismiss()
         if (favouriteRvAdapter == null)
             favouriteRvAdapter = FavouriteRvAdapter(list, R.layout.rv_item_favourite, context)

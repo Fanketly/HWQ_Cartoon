@@ -3,7 +3,6 @@ package com.example.repository.local;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-
 import com.example.repository.model.DaoMaster;
 import com.example.repository.model.DaoSession;
 import com.example.repository.model.FavouriteInfor;

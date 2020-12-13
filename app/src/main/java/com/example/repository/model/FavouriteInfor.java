@@ -24,11 +24,12 @@ public class FavouriteInfor {
     }
 
 
-    public FavouriteInfor(int mark, String url, String imgUrl, String title) {
+    public FavouriteInfor(int mark,  String url, String imgUrl, String title) {
         this.mark = mark;
         this.url = url;
         this.imgUrl = imgUrl;
         this.title = title;
+
     }
 
     @Generated(hash = 1148601190)
@@ -37,8 +38,7 @@ public class FavouriteInfor {
 
 
     @Generated(hash = 1297766615)
-    public FavouriteInfor(Long id, int mark, String url, String imgUrl,
-                          String title) {
+    public FavouriteInfor(Long id, int mark, String url, String imgUrl, String title) {
         this.id = id;
         this.mark = mark;
         this.url = url;
@@ -46,8 +46,6 @@ public class FavouriteInfor {
         this.title = title;
     }
 
-
- 
 
     public Long getId() {
         return this.id;
@@ -90,7 +88,6 @@ public class FavouriteInfor {
     public void setMark(int mark) {
         this.mark = mark;
     }
-
 
 
 }

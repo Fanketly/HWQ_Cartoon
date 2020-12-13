@@ -4,15 +4,17 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.CartoonRvAdapter
 import com.example.adapter.SpacesItemDecoration
 import com.example.base.BaseFragment
 import com.example.base.TAG
-import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.R
 import com.example.repository.model.CartoonInfor
 import com.example.viewModel.CartoonViewModel
+import com.scwang.smart.refresh.layout.api.RefreshLayout
+import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
@@ -20,10 +22,17 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        onTransformationStartContainer()
         Log.i(TAG, "onCreate: ")
         viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
         viewModel.getHomeCartoon()
+        cartoonRvAdapter =
+            CartoonRvAdapter(viewModel.cartoonInfors, R.layout.cartoon_rv_item, context)
+        cartoonRvAdapter?.setOnClick { position ->
+            viewModel.getHomeCartoon(position)
+            name = viewModel.cartoonInfors[position].titile
+            img = viewModel.cartoonInfors[position].img
+            this.position = position
+        }
     }
 
     private var cartoonRvAdapter: CartoonRvAdapter? = null
@@ -36,23 +45,19 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     private var mark = R.id.homeFragment
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (viewModel.cartoonInforList.size > 0)
+        //返回时清除msg3
+        if (viewModel.mgs3List.size > 0)
             viewModel.onMsg3Dismiss()
+        //rv
+        rvHome.adapter = cartoonRvAdapter
+        rvHome.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        rvHome.addItemDecoration(SpacesItemDecoration(15))
+        rvHome.layoutManager = LinearLayoutManager(context)
+        //加载主页
         viewModel.liveDataCartoon.observe(viewLifecycleOwner, {
             Log.i("TAG", "o: ")
-            if (cartoonRvAdapter == null) {
-                cartoonRvAdapter = CartoonRvAdapter(it, R.layout.cartoon_rv_item, context)
-                Log.i("TAG", "adapter: ")
-            }
-            rvHome.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-            rvHome.setUpWithLinear(cartoonRvAdapter)
-            rvHome.addItemDecoration(SpacesItemDecoration(15))
-            cartoonRvAdapter?.setOnClick { position ->
-                viewModel.getHomeCartoon(position)
-                name = it[position].titile
-                img = it[position].img
-                this.position = position
-            }
+            cartoonRvAdapter?.notifyDataSetChanged()
+            refreshCartoon.closeHeaderOrFooter()
         })
 
         //msg3集数
@@ -68,6 +73,18 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                     .navigate(R.id.action_homeFragment_to_detailedFragment, bundle)
             }
         })
+
+        refreshCartoon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
+            override fun onRefresh(refreshLayout: RefreshLayout) {
+                viewModel.refreshPager()
+            }
+
+            override fun onLoadMore(refreshLayout: RefreshLayout) {
+                viewModel.nextPager()
+            }
+
+        })
+
     }
 
     override fun onDestroyView() {
