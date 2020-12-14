@@ -38,7 +38,7 @@ public class CartoonViewModel extends AndroidViewModel {
 
     public CartoonViewModel(@NonNull Application application) {
         super(application);
-        cartoonModel = new CartoonDB(application);
+        cartoonModel = new CartoonDB();
         Log.i(TAG, "CREATE: ");
     }
 

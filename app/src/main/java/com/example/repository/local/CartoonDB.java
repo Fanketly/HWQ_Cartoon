@@ -1,10 +1,6 @@
 package com.example.repository.local;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.example.repository.model.DaoMaster;
-import com.example.repository.model.DaoSession;
+import com.example.hwq_cartoon.App;
 import com.example.repository.model.FavouriteInfor;
 import com.example.repository.model.FavouriteInforDao;
 
@@ -18,15 +14,9 @@ import java.util.List;
  */
 public class CartoonDB {
     private FavouriteInforDao favouriteInforDao;
-    private DaoSession daoSession;
-
-    public CartoonDB(Context context) {
+    public CartoonDB() {
         if (favouriteInforDao == null) {
-            DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(context, "favourite.db");
-            SQLiteDatabase database = devOpenHelper.getWritableDatabase();
-            DaoMaster daoMaster = new DaoMaster(database);
-            daoSession = daoMaster.newSession();
-            favouriteInforDao = daoSession.getFavouriteInforDao();
+            favouriteInforDao = App.favouriteSession.getFavouriteInforDao();
         }
     }
 
@@ -49,7 +39,7 @@ public class CartoonDB {
     }
 
     public void close() {
-        daoSession.getDatabase().close();
-        daoSession.clear();
+        App.favouriteSession.getDatabase().close();
+        App.favouriteSession.clear();
     }
 }
