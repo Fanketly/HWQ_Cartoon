@@ -9,33 +9,29 @@ import com.example.base.setUpWithGrid
 import com.example.detailed.DetailedFragment
 import com.example.hwq_cartoon.R
 import com.example.repository.model.CartoonInfor
-import com.example.repository.model.FavouriteInfor
 import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.FavouriteViewModel
 import kotlinx.android.synthetic.main.fragment_favorite.*
 
 class FavoriteFragment : BaseFragment(R.layout.fragment_favorite) {
     private var favouriteRvAdapter: FavouriteRvAdapter? = null
-    private lateinit var viewModel: CartoonViewModel
+
     //需要传递的数据
     private var name = ""
     private var img = ""
-    private var position = 0
+//    private var position = 0
     private var mark = R.id.homeFragment
-    private lateinit var list: MutableList<FavouriteInfor>
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
-        list = viewModel.favourite
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
+        val list = viewModel.favourite
         if (viewModel.mgs3List.size > 0)
             viewModel.onMsg3Dismiss()
         if (favouriteRvAdapter == null)
             favouriteRvAdapter = FavouriteRvAdapter(list, R.layout.rv_item_favourite, context)
-        val favouriteViewModel=ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
+        val favouriteViewModel =
+            ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
         rvFavourite.setUpWithGrid(favouriteRvAdapter, 3)
         rvFavourite.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         favouriteRvAdapter?.setOnClick { position ->
@@ -43,7 +39,7 @@ class FavoriteFragment : BaseFragment(R.layout.fragment_favorite) {
             viewModel.favouriteGet(favouriteInfor.url)
             name = favouriteInfor.title
             img = favouriteInfor.imgUrl
-            this.position = position
+//            this.position = position
         }
         //msg3集数
         viewModel.liveDataMsg3.observe(viewLifecycleOwner, { msg3: List<CartoonInfor?> ->
@@ -52,12 +48,12 @@ class FavoriteFragment : BaseFragment(R.layout.fragment_favorite) {
                 val bundle = Bundle()
                 bundle.putString("name", name)
                 bundle.putString("img", img)
-                bundle.putInt("position", position)
+//                bundle.putInt("position", position)
                 bundle.putInt("mark", mark)
 //                Navigation.findNavController(requireView())
 //                    .navigate(R.id.action_favoriteFragment_to_detailedFragment, bundle)
                 viewModel.bottomLiveData.value = true
-                favouriteViewModel.tabLayLiveData.value=true
+                favouriteViewModel.tabLayLiveData.value = true
                 requireActivity().supportFragmentManager.beginTransaction()
                     .add(R.id.layFavourite, DetailedFragment::class.java, bundle).commit()
             }

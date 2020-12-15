@@ -22,5 +22,5 @@ class HistoryDB {
         App.historySession.database.close()
         App.historySession.clear()
     }
-
+fun update(historyInfor: HistoryInfor)=historyInforDao.update(historyInfor)
 }

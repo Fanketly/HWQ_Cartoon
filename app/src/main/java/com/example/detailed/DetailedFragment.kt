@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,20 +17,18 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.example.adapter.CartoonImgRvAdapter
-import com.example.base.BaseFragment
-import com.example.base.headers
-import com.example.base.setUpWithGrid
-import com.example.base.setUpWithLinear
+import com.example.base.*
 import com.example.hwq_cartoon.R
 import com.example.repository.model.FavouriteInfor
+import com.example.repository.model.HistoryInfor
 import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.FavouriteViewModel
 import kotlinx.android.synthetic.main.fragment_detailed.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 import java.util.*
 
 /***
@@ -41,8 +40,9 @@ import java.util.*
 class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
 
     private lateinit var cartoonImgRvAdapter: CartoonImgRvAdapter
-
+    private val dateformat = SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.CHINA)
     private var favouriteInfor: FavouriteInfor? = null
+    private  var historyInfor: HistoryInfor?=null
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
@@ -55,10 +55,34 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
             favouriteViewModel.tabLayLiveData.value = false
             requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
         }
-
-        val name = arguments?.getString("name")
         CoroutineScope(Dispatchers.Main).launch {
+            val name = arguments?.getString("name")
+            val img = arguments?.getString("img")
+            val mark = arguments?.getInt("mark")//判断fragment
+            val position = arguments?.getInt("position") ?: 0//list
+
             withContext(Dispatchers.Default) {
+                val time = Date(System.currentTimeMillis())
+                for (info in favouriteViewModel.getAll()) {
+                    if (info.title == name) {
+                        info.time = dateformat.format(time)
+                        historyInfor = info
+                        favouriteViewModel.update(info)
+                        break
+                    }
+                    }
+
+            if (historyInfor==null) {
+                historyInfor = HistoryInfor(
+                    name,
+                    img,
+                    viewModel.cartoonInfors[position].href, 0,
+                    dateformat.format(time)
+                )
+                favouriteViewModel.insert(
+                    historyInfor!!
+                )
+            }
                 //判断是否已经追漫
                 for (info in viewModel.favourite) {
                     if (info.title == name) {
@@ -75,7 +99,7 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
             tvDetailContent.movementMethod = ScrollingMovementMethod()
 
             Glide.with(requireContext()).asDrawable()
-                .load(GlideUrl(arguments?.getString("img"), headers))
+                .load(GlideUrl(img, headers))
                 .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(imgDetail)
             //集数Rv
             val favouriteDialogRvAdapter =
@@ -86,18 +110,19 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
                 )
             rvDetail.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             rvDetail.setUpWithGrid(favouriteDialogRvAdapter, 4)
-            favouriteDialogRvAdapter.setOnClick { position: Int ->
-                viewModel.msg3Send(position)
-                favouriteDialogRvAdapter.itemChange(position)
+            favouriteDialogRvAdapter.setOnClick { p: Int ->
+                viewModel.msg3Send(p)
+                favouriteDialogRvAdapter.itemChange(p)
+                historyInfor?.mark = p
+                Log.i(TAG, "onActivityCreated: ${historyInfor?.mark}")
+                favouriteViewModel.update(historyInfor!!)
                 if (btnDetailAdd.text.toString() == "已追漫") {
-                    favouriteInfor?.mark = position
+                    favouriteInfor?.mark = p
                     viewModel.updateFavourite(favouriteInfor)
                 }
             }
             //添加到喜爱,从喜爱中删除
-            val mark = arguments?.getInt("mark")
             btnDetailAdd.setOnClickListener {
-                val position = arguments?.getInt("position") ?: return@setOnClickListener
                 if (btnDetailAdd.text.toString() == "追漫") {
                     when (mark) {
                         R.id.homeFragment -> favouriteInfor = viewModel.setFavouriteHome(position)

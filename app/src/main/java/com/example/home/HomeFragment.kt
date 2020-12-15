@@ -19,23 +19,6 @@ import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
-        viewModel.getHomeCartoon()
-        cartoonRvAdapter =
-            CartoonRvAdapter(viewModel.cartoonInfors, R.layout.cartoon_rv_item, context)
-        cartoonRvAdapter?.setOnClick { position ->
-            viewModel.getHomeCartoon(position)
-            name = viewModel.cartoonInfors[position].titile
-            img = viewModel.cartoonInfors[position].img
-            this.position = position
-        }
-    }
-
-    private var cartoonRvAdapter: CartoonRvAdapter? = null
-    private lateinit var viewModel: CartoonViewModel
-
     //需要传递的数据
     private var name = ""
     private var img = ""
@@ -43,6 +26,16 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     private var mark = R.id.homeFragment
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
+        viewModel.getHomeCartoon()
+       val cartoonRvAdapter =
+            CartoonRvAdapter(viewModel.cartoonInfors, R.layout.cartoon_rv_item, context)
+        cartoonRvAdapter.setOnClick { position ->
+            viewModel.getHomeCartoon(position)
+            name = viewModel.cartoonInfors[position].titile
+            img = viewModel.cartoonInfors[position].img
+            this.position = position
+        }
         //返回时清除msg3
         if (viewModel.mgs3List.size > 0)
             viewModel.onMsg3Dismiss()
@@ -54,7 +47,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         //加载主页
         viewModel.liveDataCartoon.observe(viewLifecycleOwner, {
             Log.i("TAG", "o: ")
-            cartoonRvAdapter?.notifyDataSetChanged()
+            cartoonRvAdapter.notifyDataSetChanged()
             refreshCartoon.closeHeaderOrFooter()
         })
 

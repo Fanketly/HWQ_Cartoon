@@ -14,15 +14,18 @@ import com.example.repository.model.HistoryInfor
  * Date: 2020/12/14
  * Time: 13:13
  */
-class HistoryRvAdapter(val context: Context,val list:List<HistoryInfor>) : MyAdapter<HistoryInfor>(context,
-    R.layout.rv_item_history,list) {
+class HistoryRvAdapter(val context: Context, val list: List<HistoryInfor>) :
+    MyAdapter<HistoryInfor>(
+        context,
+        R.layout.rv_item_history, list
+    ) {
 
-    override fun bindViewHolder(holder: MyViewHolder, data: HistoryInfor?, position: Int) {
-        val btn=holder.findViewById<Button>(R.id.btnHistoryCarryOn)
-        val tvTime=holder.findViewById<TextView>(R.id.tvHistoryTime)
-        val tvTitle=holder.findViewById<TextView>(R.id.tvHistoryTitle)
-        val tvMark=holder.findViewById<TextView>(R.id.tvHistoryMark)
-
+    override fun bindViewHolder(holder: MyViewHolder, data: HistoryInfor, position: Int) {
+        val btn = holder.findViewById<Button>(R.id.btnHistoryCarryOn)
+        val tvTime = holder.findViewById<TextView>(R.id.tvHistoryTime)
+        val tvTitle = holder.findViewById<TextView>(R.id.tvHistoryTitle)
+        val tvMark = holder.findViewById<TextView>(R.id.tvHistoryMark)
+        tvTitle.text = data.title
     }
 
 }
