@@ -9,26 +9,19 @@
         android:id="@+id/homeFragment"
         android:name="com.example.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_detailedFragment"
-            app:destination="@id/detailedFragment"
-            app:enterAnim="@anim/right_in"
-            app:popExitAnim="@anim/fragment_close_exit" />
-    </fragment>
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="com.example.favourite.FavoriteFragment"
-        android:label="FavoriteFragment" >
-        <action
-            android:id="@+id/action_favoriteFragment_to_detailedFragment"
-            app:destination="@id/detailedFragment"
-            app:enterAnim="@anim/right_in"
-            app:popExitAnim="@anim/fragment_close_exit" />
-    </fragment>
+        android:label="FavoriteFragment" />
     <fragment
         android:id="@+id/detailedFragment"
         android:name="com.example.detailed.DetailedFragment"
         android:label="fragment_detailed"
         tools:layout="@layout/fragment_detailed" />
+    <fragment
+        android:id="@+id/favoriteVpFragment"
+        android:name="com.example.favourite.FavouriteVpFragment"
+        android:label="fragment_vp"
+        tools:layout="@layout/fragment_vp" />
 </navigation>

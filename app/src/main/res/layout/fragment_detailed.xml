@@ -4,6 +4,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context="com.example.detailed.DetailedFragment">
 
     <ImageButton
@@ -50,11 +51,11 @@
         android:id="@+id/imgDetail"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="@string/todo"
         app:layout_constraintBottom_toTopOf="@+id/guideline6"
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
-        app:layout_constraintTop_toTopOf="@+id/guideline5"
-        android:contentDescription="@string/todo" />
+        app:layout_constraintTop_toTopOf="@+id/guideline5" />
 
     <Button
         android:id="@+id/btnDetailAdd"
@@ -120,7 +121,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgDetail"
         app:layout_constraintTop_toTopOf="@+id/guideline11" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

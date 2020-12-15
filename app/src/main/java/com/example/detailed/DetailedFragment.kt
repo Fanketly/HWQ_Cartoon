@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -24,6 +23,7 @@ import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.R
 import com.example.repository.model.FavouriteInfor
 import com.example.viewModel.CartoonViewModel
+import com.example.viewModel.FavouriteViewModel
 import kotlinx.android.synthetic.main.fragment_detailed.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.coroutines.CoroutineScope
@@ -39,15 +39,21 @@ import java.util.*
  *
  * **/
 class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
+
     private lateinit var cartoonImgRvAdapter: CartoonImgRvAdapter
-    private lateinit var viewModel: CartoonViewModel
+
     private var favouriteInfor: FavouriteInfor? = null
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
+        val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
+        val favouriteViewModel =
+            ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
         //返回
         btnDetailBack.setOnClickListener {
-            Navigation.findNavController(requireView()).navigateUp()
+//            Navigation.findNavController(requireView()).navigateUp()
+            viewModel.bottomLiveData.value = false
+            favouriteViewModel.tabLayLiveData.value = false
+            requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
         }
 
         val name = arguments?.getString("name")
@@ -76,14 +82,14 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
                 FavouriteDialogRvAdapter(
                     context,
                     viewModel.mgs3List,
-                    favouriteInfor?.mark ?:0
+                    favouriteInfor?.mark ?: 0
                 )
             rvDetail.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             rvDetail.setUpWithGrid(favouriteDialogRvAdapter, 4)
             favouriteDialogRvAdapter.setOnClick { position: Int ->
                 viewModel.msg3Send(position)
                 favouriteDialogRvAdapter.itemChange(position)
-                if(btnDetailAdd.text.toString()=="已追漫"){
+                if (btnDetailAdd.text.toString() == "已追漫") {
                     favouriteInfor?.mark = position
                     viewModel.updateFavourite(favouriteInfor)
                 }

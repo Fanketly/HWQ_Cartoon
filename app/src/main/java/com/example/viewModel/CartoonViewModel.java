@@ -41,7 +41,11 @@ public class CartoonViewModel extends AndroidViewModel {
         cartoonModel = new CartoonDB();
         Log.i(TAG, "CREATE: ");
     }
-
+//监听是否隐藏bottom
+    private final MutableLiveData<Boolean>bottomLiveData=new MutableLiveData<>();
+    public MutableLiveData<Boolean> getBottomLiveData() {
+        return bottomLiveData;
+    }
     //msg2主页漫画
     private List<CartoonInfor> cartoonInfors = new ArrayList<>();
     private MutableLiveData<List<CartoonInfor>> liveDataCartoon = new MutableLiveData<>();

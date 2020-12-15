@@ -3,13 +3,12 @@ package com.example.home
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.CartoonRvAdapter
 import com.example.adapter.SpacesItemDecoration
 import com.example.base.BaseFragment
-import com.example.base.TAG
+import com.example.detailed.DetailedFragment
 import com.example.hwq_cartoon.R
 import com.example.repository.model.CartoonInfor
 import com.example.viewModel.CartoonViewModel
@@ -22,7 +21,6 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i(TAG, "onCreate: ")
         viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
         viewModel.getHomeCartoon()
         cartoonRvAdapter =
@@ -69,8 +67,11 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                 bundle.putString("img", img)
                 bundle.putInt("position", position)
                 bundle.putInt("mark", mark)
-                Navigation.findNavController(requireView())
-                    .navigate(R.id.action_homeFragment_to_detailedFragment, bundle)
+                viewModel.bottomLiveData.value = true
+                requireActivity().supportFragmentManager.beginTransaction().add(
+                    R.id.layHome,
+                    DetailedFragment::class.java, bundle
+                ).commit()
             }
         })
 
