@@ -88,13 +88,13 @@ public class CartoonViewModel extends AndroidViewModel {
     private List<CartoonInfor> listMsg5 = new ArrayList<>();
     private MutableLiveData<List<CartoonInfor>> cartoonInforsSearch = new MutableLiveData<>();
 
-    public List<CartoonInfor> getListMsg5() {
-        return listMsg5;
-    }
-
-    public MutableLiveData<List<CartoonInfor>> getCartoonInforsSearch() {
-        return cartoonInforsSearch;
-    }
+//    public List<CartoonInfor> getListMsg5() {
+//        return listMsg5;
+//    }
+//
+//    public MutableLiveData<List<CartoonInfor>> getCartoonInforsSearch() {
+//        return cartoonInforsSearch;
+//    }
 
     //favourite
     private final CartoonDB cartoonModel;

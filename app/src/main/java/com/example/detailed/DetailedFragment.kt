@@ -42,7 +42,8 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
     private lateinit var cartoonImgRvAdapter: CartoonImgRvAdapter
     private val dateformat = SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.CHINA)
     private var favouriteInfor: FavouriteInfor? = null
-    private  var historyInfor: HistoryInfor?=null
+    private var historyInfor: HistoryInfor? = null
+    private var favouriteMark=0
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
@@ -54,36 +55,39 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
             viewModel.bottomLiveData.value = false
             favouriteViewModel.tabLayLiveData.value = false
             requireActivity().supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.right_in,R.anim.right_out).remove(this).commit()
+                .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
         }
         CoroutineScope(Dispatchers.Main).launch {
+            //跳转所传递的数据
             val name = arguments?.getString("name")
             val img = arguments?.getString("img")
             val mark = arguments?.getInt("mark")//判断fragment
             val position = arguments?.getInt("position") ?: 0//list
 
             withContext(Dispatchers.Default) {
+                //历史部分,修改上次观看时间
                 val time = Date(System.currentTimeMillis())
-                for (info in favouriteViewModel.getAll()) {
+                for ((index,info) in favouriteViewModel.historyList.withIndex()) {
                     if (info.title == name) {
                         info.time = dateformat.format(time)
                         historyInfor = info
                         favouriteViewModel.update(info)
+                        favouriteMark=index
                         break
                     }
-                    }
-
-            if (historyInfor==null) {
-                historyInfor = HistoryInfor(
-                    name,
-                    img,
-                    viewModel.cartoonInfors[position].href, 0,
-                    dateformat.format(time)
-                )
-                favouriteViewModel.insert(
-                    historyInfor!!
-                )
-            }
+                }
+                //如果历史数据库里没有就添加
+                if (historyInfor == null) {
+                    historyInfor = HistoryInfor(
+                        name,
+                        img,
+                        viewModel.cartoonInfors[position].href, 0,
+                        dateformat.format(time)
+                    )
+                    favouriteViewModel.historyList.add(historyInfor!!)
+                    favouriteMark=favouriteViewModel.historyList.size-1
+                    favouriteViewModel.insert(historyInfor!!)
+                }
                 //判断是否已经追漫
                 for (info in viewModel.favourite) {
                     if (info.title == name) {
@@ -103,23 +107,29 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
                 .load(GlideUrl(img, headers))
                 .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(imgDetail)
             //集数Rv
-            val favouriteDialogRvAdapter =
+            val favouriteDialogRvAdapter = if (favouriteInfor != null)
                 FavouriteDialogRvAdapter(
                     context,
                     viewModel.mgs3List,
                     favouriteInfor?.mark ?: 0
                 )
+            else
+                FavouriteDialogRvAdapter(context, viewModel.mgs3List, historyInfor?.mark ?: 0)
+
             rvDetail.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             rvDetail.setUpWithGrid(favouriteDialogRvAdapter, 4)
             favouriteDialogRvAdapter.setOnClick { p: Int ->
+                Log.i(TAG, "his:$favouriteMark ")
                 viewModel.msg3Send(p)
                 favouriteDialogRvAdapter.itemChange(p)
-                historyInfor?.mark = p
-                Log.i(TAG, "onActivityCreated: ${historyInfor?.mark}")
-                favouriteViewModel.update(historyInfor!!)
+                historyInfor?.mark = p//当前页面
+                favouriteViewModel.historyList[favouriteMark].mark=p//历史list
+//                Log.i(TAG, "onActivityCreated: ${historyInfor?.mark}")
+                favouriteViewModel.update(historyInfor!!)//历史数据库
+                favouriteViewModel.historyLivaData.value=favouriteMark
                 if (btnDetailAdd.text.toString() == "已追漫") {
-                    favouriteInfor?.mark = p
-                    viewModel.updateFavourite(favouriteInfor)
+                    favouriteInfor?.mark = p//当前页面
+                    viewModel.updateFavourite(favouriteInfor)//喜爱数据库
                 }
             }
             //添加到喜爱,从喜爱中删除

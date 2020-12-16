@@ -11,17 +11,20 @@ import com.example.repository.model.HistoryInfor
  * Date: 2020/12/15
  * Time: 20:32
  */
-class FavouriteViewModel :ViewModel(){
-    val tabLayLiveData=MutableLiveData<Boolean>()
+class FavouriteViewModel : ViewModel() {
+    val tabLayLiveData = MutableLiveData<Boolean>()
     private val db = HistoryDB()
+    val historyList:MutableList<HistoryInfor> = mutableListOf()
+    val historyLivaData=MutableLiveData<Int>()
+    init {
+        historyList.addAll(db.loadAll())
+    }
     fun insert(historyInfor: HistoryInfor) {
         db.insert(historyInfor)
     }
 
-    fun getAll(): List<HistoryInfor> {
-        return db.loadAll()
-    }
-    fun update(historyInfor: HistoryInfor){
+
+    fun update(historyInfor: HistoryInfor) {
         db.update(historyInfor)
     }
 }
