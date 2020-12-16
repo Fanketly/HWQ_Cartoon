@@ -4,8 +4,6 @@ import android.content.Context;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
@@ -49,17 +47,10 @@ public class CartoonRvAdapter extends MyAdapter<CartoonInfor> {
     @Override
     public void bindViewHolder(@NotNull MyViewHolder holder, CartoonInfor data, int position) {
         TextView title = holder.findViewById(R.id.tvCartoonTitle);
-        ConstraintLayout constraintLayout = holder.findViewById(R.id.layoutCartoon);
         title.setText(data.getTitile());
-        constraintLayout.setOnClickListener(v -> {
-            onClick.onClick(position);
-        });
+        holder.getItemView().setOnClickListener(v -> onClick.onClick(position));
         TextView type=holder.findViewById(R.id.tvCartoonType);
        type.setText(data.getType());
-//        constraintLayout.setOnLongClickListener(v -> {
-//            onClick.longOnClick(position);
-//            return false;
-//        });
         ImageView imageView = holder.findViewById(R.id.imgCartoon);
             if (data.getImg() != null) {
 //                Glide.with(context).asDrawable().load(glideUrl).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
@@ -71,6 +62,5 @@ public class CartoonRvAdapter extends MyAdapter<CartoonInfor> {
 
     public interface OnClick {
         void onClick(int position);
-//        void longOnClick(int position);
     }
 }

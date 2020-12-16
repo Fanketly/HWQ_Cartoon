@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.CartoonRvAdapter
 import com.example.adapter.SpacesItemDecoration
 import com.example.base.BaseFragment
-import com.example.detailed.DetailedFragment
+import com.example.base.TAG
 import com.example.hwq_cartoon.R
 import com.example.repository.model.CartoonInfor
 import com.example.viewModel.CartoonViewModel
@@ -28,27 +28,31 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         super.onActivityCreated(savedInstanceState)
         val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
         viewModel.getHomeCartoon()
-       val cartoonRvAdapter =
-            CartoonRvAdapter(viewModel.cartoonInfors, R.layout.cartoon_rv_item, context)
-        cartoonRvAdapter.setOnClick { position ->
-            viewModel.getHomeCartoon(position)
-            name = viewModel.cartoonInfors[position].titile
-            img = viewModel.cartoonInfors[position].img
-            this.position = position
-        }
+        var cartoonRvAdapter: CartoonRvAdapter? = null
         //返回时清除msg3
         if (viewModel.mgs3List.size > 0)
             viewModel.onMsg3Dismiss()
         //rv
-        rvHome.adapter = cartoonRvAdapter
         rvHome.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-        rvHome.addItemDecoration(SpacesItemDecoration(15))
+        rvHome.addItemDecoration(SpacesItemDecoration(30))
         rvHome.layoutManager = LinearLayoutManager(context)
         //加载主页
         viewModel.liveDataCartoon.observe(viewLifecycleOwner, {
             Log.i("TAG", "o: ")
-            cartoonRvAdapter.notifyDataSetChanged()
-            refreshCartoon.closeHeaderOrFooter()
+            if (cartoonRvAdapter == null) {
+                cartoonRvAdapter =
+                    CartoonRvAdapter(viewModel.cartoonInfors, R.layout.cartoon_rv_item, context)
+                rvHome.adapter = cartoonRvAdapter
+                cartoonRvAdapter!!.setOnClick { position ->
+                    viewModel.getHomeCartoon(position)
+                    name = viewModel.cartoonInfors[position].titile
+                    img = viewModel.cartoonInfors[position].img
+                    this.position = position
+                }
+            } else {
+                cartoonRvAdapter!!.notifyDataSetChanged()
+                refreshCartoon.closeHeaderOrFooter()
+            }
         })
 
         //msg3集数
@@ -61,10 +65,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
                 bundle.putInt("position", position)
                 bundle.putInt("mark", mark)
                 viewModel.bottomLiveData.value = true
-                requireActivity().supportFragmentManager.beginTransaction().add(
-                    R.id.layHome,
-                    DetailedFragment::class.java, bundle
-                ).commit()
+                beginTransaction(bundle, R.id.layHome)
             }
         })
 
@@ -81,9 +82,8 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.i("TAG", "onDestroyView: ")
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i(TAG, "HOmeonDestroy: ")
     }
-
 }

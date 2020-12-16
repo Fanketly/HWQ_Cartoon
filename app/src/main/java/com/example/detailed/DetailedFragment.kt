@@ -53,7 +53,8 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
 //            Navigation.findNavController(requireView()).navigateUp()
             viewModel.bottomLiveData.value = false
             favouriteViewModel.tabLayLiveData.value = false
-            requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.right_in,R.anim.right_out).remove(this).commit()
         }
         CoroutineScope(Dispatchers.Main).launch {
             val name = arguments?.getString("name")

@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.base.BaseFragment
 import com.example.base.setUpWithGrid
-import com.example.detailed.DetailedFragment
 import com.example.hwq_cartoon.R
 import com.example.repository.model.CartoonInfor
 import com.example.viewModel.CartoonViewModel
@@ -54,8 +53,7 @@ class FavoriteFragment : BaseFragment(R.layout.fragment_favorite) {
 //                    .navigate(R.id.action_favoriteFragment_to_detailedFragment, bundle)
                 viewModel.bottomLiveData.value = true
                 favouriteViewModel.tabLayLiveData.value = true
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .add(R.id.layFavourite, DetailedFragment::class.java, bundle).commit()
+                beginTransaction(bundle,R.id.layFavourite)
             }
         })
     }

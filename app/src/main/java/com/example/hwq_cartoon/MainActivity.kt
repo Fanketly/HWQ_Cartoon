@@ -24,8 +24,18 @@ class MainActivity : AppCompatActivity() {
             if (itemid != item.itemId) {
                 itemid = item.itemId
                 Log.i("TAG", "setNavigation:$itemid ")
-                controller.popBackStack()
-                controller.navigate(item.itemId)
+//                controller.navigate(item.itemId)
+                when (itemid) {
+                    R.id.homeFragment -> {
+//                        controller.navigate(R.id.action_favoriteVpFragment_to_homeFragment)
+                        controller.popBackStack(R.id.favoriteVpFragment,true)
+//                        controller.popBackStack()
+                    }
+                    R.id.favoriteVpFragment -> {
+                        controller.navigate(R.id.action_homeFragment_to_favoriteVpFragment)
+                    }
+                }
+
             }
             return@setOnNavigationItemSelectedListener true
         }
