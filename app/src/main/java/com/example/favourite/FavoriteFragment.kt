@@ -31,8 +31,6 @@ class FavoriteFragment : BaseFragment(R.layout.fragment_favorite) {
         val list = favouriteViewModel.favouriteList
         if (list.size > 0)
             tvFavouriteTip.visibility = View.GONE
-        if (viewModel.mgs3List.size > 0)
-            viewModel.onMsg3Dismiss()
         if (favouriteRvAdapter == null)
             favouriteRvAdapter = FavouriteRvAdapter(list, R.layout.rv_item_favourite, context)
 

@@ -199,6 +199,7 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
 
     override fun onDestroy() {
         super.onDestroy()
+        viewModel.onMsg3Dismiss()
         viewModel.bottomLiveData.value = false
         favouriteViewModel.tabLayLiveData.value = false
     }

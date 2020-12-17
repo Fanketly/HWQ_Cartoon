@@ -30,9 +30,6 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         if (viewModel.cartoonInfors.size==0)
         viewModel.getHomeCartoon()
         var cartoonRvAdapter: CartoonRvAdapter? = null
-        //返回时清除msg3
-        if (viewModel.mgs3List.size > 0)
-            viewModel.onMsg3Dismiss()
         //rv
         rvHome.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         rvHome.addItemDecoration(SpacesItemDecoration(30))
@@ -82,6 +79,10 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.i(TAG, "onHomeDestroyView: ")
+    }
     override fun onDestroy() {
         super.onDestroy()
         Log.i(TAG, "HOmeonDestroy: ")

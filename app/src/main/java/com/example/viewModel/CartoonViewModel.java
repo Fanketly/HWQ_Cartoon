@@ -385,7 +385,7 @@ public class CartoonViewModel extends AndroidViewModel {
 //                        NetworkUtils.getInstance().OkhttpGet(handler, "", 1);//测试网页用
     }
 
-    public void onMsg3Dismiss() {//阻止继续加载图片
+    public void onMsg3Dismiss() {//清除集数
         mgs3List.clear();
         Log.i("TAG", "onDismiss3: ");
     }
