@@ -8,9 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.repository.local.CartoonDB;
 import com.example.repository.model.CartoonInfor;
-import com.example.repository.model.FavouriteInfor;
 import com.example.util.NetworkUtils;
 import com.example.util.YhshThreadPoolFactory;
 
@@ -27,6 +25,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.base.TopKt.Url3;
+
 /**
  * Created by Android Studio.
  * User: HuangWeiQiang
@@ -38,7 +38,6 @@ public class CartoonViewModel extends AndroidViewModel {
 
     public CartoonViewModel(@NonNull Application application) {
         super(application);
-        cartoonModel = new CartoonDB();
         Log.i(TAG, "CREATE: ");
     }
 //监听是否隐藏bottom
@@ -49,7 +48,7 @@ public class CartoonViewModel extends AndroidViewModel {
     //msg2主页漫画
     private List<CartoonInfor> cartoonInfors = new ArrayList<>();
     private MutableLiveData<List<CartoonInfor>> liveDataCartoon = new MutableLiveData<>();
-    private static final String Url3 = "https://manhua.dmzj.com/";
+
     private int pager = 1;
     public MutableLiveData<List<CartoonInfor>> getLiveDataCartoon() {
         return liveDataCartoon;
@@ -96,8 +95,6 @@ public class CartoonViewModel extends AndroidViewModel {
 //        return cartoonInforsSearch;
 //    }
 
-    //favourite
-    private final CartoonDB cartoonModel;
     //top
     private List<CartoonInfor> cartoonHome = new ArrayList<>();
     private final Handler handler = new Handler(msg -> {
@@ -434,18 +431,8 @@ public class CartoonViewModel extends AndroidViewModel {
             NetworkUtils.getInstance().OkhttpGet(handler, Url3 + s, 3);
     }
 
-    public FavouriteInfor setFavouriteHome(int position) {
-        CartoonInfor cartoonInfor = cartoonInfors.get(position);
-        String s = cartoonInfor.getHref();
-        FavouriteInfor favouriteInfor;
-        if (s.contains("dmzj")) {
-            favouriteInfor = new FavouriteInfor(s, cartoonInfor.getImg(), cartoonInfor.getTitile());
-        } else {
-            favouriteInfor = new FavouriteInfor(Url3 + s, cartoonInfor.getImg(), cartoonInfor.getTitile());
-        }
-        cartoonModel.insert(favouriteInfor);
-        return favouriteInfor;
-    }
+
+
 
     public void nextPager() {//下一页
         pager++;
@@ -466,13 +453,6 @@ public class CartoonViewModel extends AndroidViewModel {
      * favouriteFragment
      *
      * **/
-    public List<FavouriteInfor> getFavourite() {//初始化
-        return cartoonModel.loadAll();
-    }
-
-    public void setFavourite(FavouriteInfor favourite) {
-        cartoonModel.insert(favourite);
-    }
 
 
     public void favouriteGet(String url) {
@@ -480,16 +460,6 @@ public class CartoonViewModel extends AndroidViewModel {
         NetworkUtils.getInstance().OkhttpGet(handler, url, 3);
     }
 
-    public void favouriteDel(FavouriteInfor favouriteInfor) {
-        cartoonModel.del(favouriteInfor);
-    }
-  /**
-   *
-   *
-   * */
-  public void updateFavourite(FavouriteInfor favouriteInfor) {
-      cartoonModel.updata(favouriteInfor);
-  }
 
 //    /**
 //     *search
@@ -630,7 +600,6 @@ public class CartoonViewModel extends AndroidViewModel {
     protected void onCleared() {
         super.onCleared();
         Log.i(TAG, "onCleared: ");
-        cartoonModel.close();
         msg4List.clear();
         cartoonInfors.clear();
         listMsg5.clear();

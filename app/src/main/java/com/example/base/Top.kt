@@ -23,7 +23,7 @@ fun <T> RecyclerView.setUpWithGrid(t: T, num: Int) {
     adapter = t as RecyclerView.Adapter<*>
 }
 const val TAG="TAG"
-
+const val Url3 = "https://manhua.dmzj.com/"
 val headers = Headers {
     val map: MutableMap<String, String> =
         HashMap()

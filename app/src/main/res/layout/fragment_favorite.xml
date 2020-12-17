@@ -4,8 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tvFavouriteTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/favourite_tip"
+        android:textSize="24sp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFavourite"
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

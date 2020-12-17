@@ -3,12 +3,12 @@ package com.example.home
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.CartoonRvAdapter
 import com.example.adapter.SpacesItemDecoration
 import com.example.base.BaseFragment
 import com.example.base.TAG
+import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.R
 import com.example.repository.model.CartoonInfor
 import com.example.viewModel.CartoonViewModel
@@ -27,6 +27,7 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
+        if (viewModel.cartoonInfors.size==0)
         viewModel.getHomeCartoon()
         var cartoonRvAdapter: CartoonRvAdapter? = null
         //返回时清除msg3
@@ -35,14 +36,13 @@ class HomeFragment : BaseFragment(R.layout.fragment_home) {
         //rv
         rvHome.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         rvHome.addItemDecoration(SpacesItemDecoration(30))
-        rvHome.layoutManager = LinearLayoutManager(context)
         //加载主页
         viewModel.liveDataCartoon.observe(viewLifecycleOwner, {
             Log.i("TAG", "o: ")
             if (cartoonRvAdapter == null) {
                 cartoonRvAdapter =
                     CartoonRvAdapter(viewModel.cartoonInfors, R.layout.cartoon_rv_item, context)
-                rvHome.adapter = cartoonRvAdapter
+                rvHome.setUpWithLinear(cartoonRvAdapter)
                 cartoonRvAdapter!!.setOnClick { position ->
                     viewModel.getHomeCartoon(position)
                     name = viewModel.cartoonInfors[position].titile

@@ -1,7 +1,5 @@
 package com.example.favourite
 
-import android.util.SparseArray
-import android.widget.Space
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.base.BaseFragment

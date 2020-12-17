@@ -2,6 +2,7 @@ package com.example.favourite
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.base.BaseFragment
@@ -18,19 +19,23 @@ class FavoriteFragment : BaseFragment(R.layout.fragment_favorite) {
     //需要传递的数据
     private var name = ""
     private var img = ""
-//    private var position = 0
+
+    //    private var position = 0
     private var mark = R.id.homeFragment
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
-        val list = viewModel.favourite
+        val favouriteViewModel =
+            ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
+        val list = favouriteViewModel.favouriteList
+        if (list.size > 0)
+            tvFavouriteTip.visibility = View.GONE
         if (viewModel.mgs3List.size > 0)
             viewModel.onMsg3Dismiss()
         if (favouriteRvAdapter == null)
             favouriteRvAdapter = FavouriteRvAdapter(list, R.layout.rv_item_favourite, context)
-        val favouriteViewModel =
-            ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
+
         rvFavourite.setUpWithGrid(favouriteRvAdapter, 3)
         rvFavourite.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         favouriteRvAdapter?.setOnClick { position ->
@@ -38,7 +43,6 @@ class FavoriteFragment : BaseFragment(R.layout.fragment_favorite) {
             viewModel.favouriteGet(favouriteInfor.url)
             name = favouriteInfor.title
             img = favouriteInfor.imgUrl
-//            this.position = position
         }
         //msg3集数
         viewModel.liveDataMsg3.observe(viewLifecycleOwner, { msg3: List<CartoonInfor?> ->
@@ -47,15 +51,20 @@ class FavoriteFragment : BaseFragment(R.layout.fragment_favorite) {
                 val bundle = Bundle()
                 bundle.putString("name", name)
                 bundle.putString("img", img)
-//                bundle.putInt("position", position)
                 bundle.putInt("mark", mark)
-//                Navigation.findNavController(requireView())
-//                    .navigate(R.id.action_favoriteFragment_to_detailedFragment, bundle)
                 viewModel.bottomLiveData.value = true
                 favouriteViewModel.tabLayLiveData.value = true
-                beginTransaction(bundle,R.id.layFavourite)
+                beginTransaction(bundle, R.id.layFavourite)
             }
         })
+        favouriteViewModel.favouriteLivaData.observe(viewLifecycleOwner){
+            if (favouriteViewModel.delOrIns) {
+                favouriteRvAdapter?.notifyItemRemoved(it)
+                favouriteRvAdapter?.notifyItemRangeChanged(it,list.size)
+            }else{
+                favouriteRvAdapter?.notifyItemChanged(it)
+            }
+        }
     }
 
 }

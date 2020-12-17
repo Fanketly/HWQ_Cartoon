@@ -23,7 +23,7 @@ class FavouriteVpFragment : BaseFragment(R.layout.fragment_vp) {
         tabFavourite.addTab(tabFavourite.newTab().setText("追漫"))
         tabFavourite.addTab(tabFavourite.newTab().setText("历史"))
         viewMode.tabLayLiveData.observe(viewLifecycleOwner){
-            if (it)tabFavourite.visibility=View.GONE
+            if (it)tabFavourite.visibility=View.INVISIBLE
             else tabFavourite.visibility=View.VISIBLE
         }
         tabFavourite.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
