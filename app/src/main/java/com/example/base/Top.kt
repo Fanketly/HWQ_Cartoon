@@ -1,11 +1,10 @@
 package com.example.base
 
-import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.model.Headers
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by Android Studio.

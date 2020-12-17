@@ -30,7 +30,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.log
 
 /***
  * 页面 漫画详细
@@ -45,16 +44,16 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
     private var historyInfor: HistoryInfor? = null
     private var historyMark = 0//记录在list位置
     private var favouriteMark = 0
+    private lateinit var viewModel: CartoonViewModel
+    private lateinit var favouriteViewModel: FavouriteViewModel
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
-        val favouriteViewModel =
+        viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
+        favouriteViewModel =
             ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
         //返回
         btnDetailBack.setOnClickListener {
 //            Navigation.findNavController(requireView()).navigateUp()
-            viewModel.bottomLiveData.value = false
-            favouriteViewModel.tabLayLiveData.value = false
             requireActivity().supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
         }
@@ -155,7 +154,7 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
                     shortToast("追漫成功")
                 } else {
                     Log.i(TAG, "onActivityCreated: $favouriteMark")
-                    favouriteViewModel.favouriteDel(favouriteInfor,favouriteMark)
+                    favouriteViewModel.favouriteDel(favouriteInfor, favouriteMark)
                     btnDetailAdd.text = "追漫"
                     shortToast("已取消追漫")
                 }
@@ -198,4 +197,9 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.bottomLiveData.value = false
+        favouriteViewModel.tabLayLiveData.value = false
+    }
 }

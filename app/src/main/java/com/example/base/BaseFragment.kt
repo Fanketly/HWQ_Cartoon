@@ -28,7 +28,7 @@ abstract class BaseFragment(@LayoutRes val layId: Int) : Fragment() {
     fun beginTransaction(bundle: Bundle, layId: Int) =
         requireActivity().supportFragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.right_in,R.anim.right_out)
-            .add(layId, DetailedFragment::class.java, bundle).commit()
+            .add(layId, DetailedFragment::class.java, bundle,"detail").commit()
 
 
     fun shortToast(string: String) = Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
