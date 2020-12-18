@@ -19,11 +19,11 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.example.adapter.CartoonImgRvAdapter
 import com.example.base.*
 import com.example.hwq_cartoon.R
+import com.example.hwq_cartoon.databinding.FragmentDetailedBinding
 import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.HistoryInfor
 import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.FavouriteViewModel
-import kotlinx.android.synthetic.main.fragment_detailed.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,7 +36,7 @@ import java.util.*
  * 逻辑 从数据库读取漫画名字并判断是否已经追漫
  *     对点击的漫画保存到历史数据库，追漫的保存到追漫数据库
  * **/
-class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
+class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment_detailed) {
 
     private lateinit var cartoonImgRvAdapter: CartoonImgRvAdapter
     private val dateformat = SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.CHINA)
@@ -52,7 +52,7 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
         favouriteViewModel =
             ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
         //返回
-        btnDetailBack.setOnClickListener {
+        b.btnDetailBack.setOnClickListener {
 //            Navigation.findNavController(requireView()).navigateUp()
             requireActivity().supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
@@ -92,7 +92,7 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
                 //判断是否已经追漫
                 for ((index, info) in favouriteViewModel.favouriteList.withIndex()) {
                     if (info.title == name) {
-                        withContext(Dispatchers.Main) { btnDetailAdd.text = "已追漫" }
+                        withContext(Dispatchers.Main) { b.btnDetailAdd.text = "已追漫" }
                         favouriteInfor = info
                         favouriteMark = index
                         break
@@ -101,25 +101,25 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
             }
 
             //漫画名与图片
-            tvDetailName.text = name
-            tvDetailContent.text = viewModel.content
-            tvDetailContent.movementMethod = ScrollingMovementMethod()
+            b.tvDetailName.text = name
+            b.tvDetailContent.text = viewModel.content
+            b.tvDetailContent.movementMethod = ScrollingMovementMethod()
 
             Glide.with(requireContext()).asDrawable()
                 .load(GlideUrl(img, headers))
-                .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(imgDetail)
+                .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(b.imgDetail)
             //集数Rv
             val favouriteDialogRvAdapter = if (favouriteInfor != null)
-                FavouriteDialogRvAdapter(
+                DetailRvAdapter(
                     context,
                     viewModel.mgs3List,
                     favouriteInfor?.mark ?: 0
                 )
             else
-                FavouriteDialogRvAdapter(context, viewModel.mgs3List, historyInfor?.mark ?: 0)
+                DetailRvAdapter(context, viewModel.mgs3List, historyInfor?.mark ?: 0)
 
-            rvDetail.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-            rvDetail.setUpWithGrid(favouriteDialogRvAdapter, 4)
+            b.rvDetail.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            b.rvDetail.setUpWithGrid(favouriteDialogRvAdapter, 4)
             //点击集数
             favouriteDialogRvAdapter.setOnClick { p: Int ->
                 Log.i(TAG, "his:$historyMark ")
@@ -129,14 +129,14 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
                 favouriteViewModel.historyList[historyMark].mark = p//历史list
                 favouriteViewModel.historyUpdate(historyInfor!!)//历史数据库
                 favouriteViewModel.historyLivaData.value = historyMark
-                if (btnDetailAdd.text.toString() == "已追漫") {
+                if (b.btnDetailAdd.text.toString() == "已追漫") {
                     favouriteInfor?.mark = p//当前页面
                     favouriteViewModel.updateFavourite(favouriteInfor)//喜爱数据库
                 }
             }
             //添加到喜爱,从喜爱中删除 添加到数据库,添加到list，添加到livedata
-            btnDetailAdd.setOnClickListener {
-                if (btnDetailAdd.text.toString() == "追漫") {
+            b.btnDetailAdd.setOnClickListener {
+                if (b.btnDetailAdd.text.toString() == "追漫") {
                     when (mark) {
                         R.id.homeFragment -> {
                             favouriteInfor =
@@ -150,17 +150,17 @@ class DetailedFragment : BaseFragment(R.layout.fragment_detailed) {
                     }
                     favouriteMark = favouriteViewModel.favouriteListAdd(favouriteInfor!!)
                     Log.i(TAG, "onActivityCreated: $favouriteMark")
-                    btnDetailAdd.text = "已追漫"
+                    b.btnDetailAdd.text = "已追漫"
                     shortToast("追漫成功")
                 } else {
                     Log.i(TAG, "onActivityCreated: $favouriteMark")
                     favouriteViewModel.favouriteDel(favouriteInfor, favouriteMark)
-                    btnDetailAdd.text = "追漫"
+                    b.btnDetailAdd.text = "追漫"
                     shortToast("已取消追漫")
                 }
             }
             //显示漫画
-            viewModel.liveDataMsg4.observe(viewLifecycleOwner, { msg4: List<ByteArray?> ->
+            viewModel.msg4LiveData.observe(viewLifecycleOwner, { msg4: List<ByteArray?> ->
                 if (msg4.size == 1) {
                     val builder = AlertDialog.Builder(requireContext())
                     val alertDialog = builder.create()

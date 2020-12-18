@@ -1,12 +1,10 @@
 package com.example.detailed
 
 import android.content.Context
-import android.graphics.Color
 import android.widget.TextView
 import com.example.base.MyAdapter
 import com.example.base.MyViewHolder
 import com.example.hwq_cartoon.R
-
 import com.example.repository.model.CartoonInfor
 
 /**
@@ -15,7 +13,7 @@ import com.example.repository.model.CartoonInfor
  * Date: 2020/9/15
  * Time: 16:35
  */
-class FavouriteDialogRvAdapter(context: Context?, list: List<CartoonInfor>, var mark: Int)
+class DetailRvAdapter(context: Context?, list: List<CartoonInfor>, var mark: Int)
     : MyAdapter<CartoonInfor>(context, R.layout.cartoon_dialog_rv_item, list) {
     lateinit var onclick: (Int) -> Unit
     override fun bindViewHolder(holder: MyViewHolder, data: CartoonInfor, position: Int) {

@@ -10,10 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <SearchView
+            android:id="@+id/searchHome"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:id="@+id/refreshCartoon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -29,8 +29,8 @@ public class CartoonRvAdapter extends MyAdapter<CartoonInfor> {
     private final Context context;
     private final Headers headers;
 
-    public CartoonRvAdapter(@NotNull List<CartoonInfor> list,int lay, Context context) {
-        super(context, lay,list);
+    public CartoonRvAdapter(@NotNull List<CartoonInfor> list, Context context) {
+        super(context, R.layout.cartoon_rv_item,list);
         this.context = context;
         headers = () -> {
             Map<String, String> map = new HashMap<>();

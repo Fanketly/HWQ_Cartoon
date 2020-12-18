@@ -1,18 +1,25 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.favourite.FavouriteVpFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vpFavourite"
+    </data>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.example.favourite.FavouriteVpFragment">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabFavourite"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
-</FrameLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vpFavourite"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabFavourite"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+    </FrameLayout>
+</layout>

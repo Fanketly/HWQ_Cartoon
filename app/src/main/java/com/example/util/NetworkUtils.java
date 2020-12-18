@@ -7,6 +7,7 @@ import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -60,7 +61,7 @@ public class NetworkUtils {
                 .build();
         Call call = okHttpClient.newCall(request);
         Message message = Message.obtain();
-        message.obj = call.execute().body().bytes();
+        message.obj = Objects.requireNonNull(call.execute().body()).bytes();
         message.what = what;
         handler.sendMessage(message);
     }
@@ -74,19 +75,19 @@ public class NetworkUtils {
                 .addHeader("Referer", "https://manhua.dmzj.com/tongzhenmiejueliedao/99325.shtml")
                 .build();
         Call call = okHttpClient.newCall(request);
-        return call.execute().body().bytes();
+        return Objects.requireNonNull(call.execute().body()).bytes();
     }
 
     public byte[] getReturn(String url) throws IOException {
         Request request = new Request.Builder().url(url).build();
         Call call = okHttpClient.newCall(request);
-        return call.execute().body().bytes();
+        return Objects.requireNonNull(call.execute().body()).bytes();
     }
 
     public String getRetStr(String url) throws IOException {
         Request request = new Request.Builder().url(url).build();
         Call call = okHttpClient.newCall(request);
-        return call.execute().body().string();
+        return Objects.requireNonNull(call.execute().body()).string();
     }
 
     public void OKHttpPost(FormBody formBody, Handler handler) {

@@ -32,6 +32,9 @@ class HistoryRvAdapter(val context: Context, val list: List<HistoryInfor>) :
         val tvTitle = holder.findViewById<TextView>(R.id.tvHistoryTitle)
         val tvMark = holder.findViewById<TextView>(R.id.tvHistoryMark)
         val img=holder.findViewById<ImageView>(R.id.imgHistory)
+        btn.setOnClickListener {
+
+        }
         if (data.imgUrl != null) {
             Glide.with(context).asDrawable().load(GlideUrl(data.imgUrl, headers))
                 .skipMemoryCache(true).into(img)

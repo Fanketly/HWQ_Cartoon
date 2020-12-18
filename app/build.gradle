@@ -3,7 +3,6 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'kotlin-android-extensions'
 }
 
 android {
@@ -17,8 +16,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-//viewBinding
-    buildFeatures{
+//dataBinding
+    buildFeatures {
         dataBinding = true
     }
     buildTypes {
@@ -65,9 +64,9 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     //refresh
-    implementation  'com.scwang.smart:refresh-layout-kernel:2.0.1'      //核心必须依赖
-    implementation  'com.scwang.smart:refresh-footer-ball:2.0.1'
-    implementation  'com.scwang.smart:refresh-header-radar:2.0.1'       //雷达刷新头
+    implementation 'com.scwang.smart:refresh-layout-kernel:2.0.1'      //核心必须依赖
+    implementation 'com.scwang.smart:refresh-footer-ball:2.0.1'
+    implementation 'com.scwang.smart:refresh-header-radar:2.0.1'       //雷达刷新头
     //KTX
     implementation "androidx.fragment:fragment-ktx:1.2.5"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
@@ -79,3 +78,4 @@ dependencies {
     //photoview
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 }
+
