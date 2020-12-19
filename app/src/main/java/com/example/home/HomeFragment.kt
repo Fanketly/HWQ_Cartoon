@@ -1,11 +1,8 @@
 package com.example.home
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.CartoonRvAdapter
 import com.example.adapter.SpacesItemDecoration
@@ -40,10 +37,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         b.searchHome.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 if (!p0?.trim().isNullOrEmpty()) {
-//                    val imm: InputMethodManager =
-//                        requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     viewModel.search(p0)
-                    b.searchHome.clearFocus(); // 不获取焦点
+                    b.searchHome.isIconified=true
+                    b.searchHome.clearFocus() // 不获取焦点
                     viewModel.searchLiveData.observe(viewLifecycleOwner) {
                         Log.i(TAG, "onQueryTextSubmit: $it")
                         if (it) {

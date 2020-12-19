@@ -51,6 +51,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
         viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
         favouriteViewModel =
             ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
+
         //返回
         b.btnDetailBack.setOnClickListener {
 //            Navigation.findNavController(requireView()).navigateUp()

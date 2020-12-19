@@ -16,8 +16,19 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
         super.onActivityCreated(savedInstanceState)
         var adapter: CartoonRvAdapter? = null
         viewModel = viewModel(CartoonViewModel::class.java)
+        b.btnSearchBack.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
+        }
         b.searchSearch.isSubmitButtonEnabled = true
+        b.searchSearch.isIconifiedByDefault = false
         b.rvSearch.addItemDecoration(SpacesItemDecoration(30))
+        adapter?.setOnClick {
+            viewModel.getSearch(it)
+        }
+        viewModel.msg3LiveData.observe(viewLifecycleOwner){
+
+        }
         viewModel.searchLiveData.observe(viewLifecycleOwner) {
             if (it) {
                 if (adapter == null) {
