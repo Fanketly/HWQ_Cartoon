@@ -11,7 +11,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.hwq_cartoon.R
 
 /**
  * Created by Android Studio.
@@ -34,10 +33,10 @@ abstract class BaseFragment<T : ViewDataBinding>(@LayoutRes val layId: Int) : Fr
         return ViewModelProvider(requireActivity())[clazz] as V
     }
 
-    fun beginTransaction(bundle: Bundle?, clazz: Class<out Fragment>, layId: Int) =
-        requireActivity().supportFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.right_in, R.anim.right_out)
-            .add(layId, clazz, bundle, "detail").commit()
+//    fun beginTransaction(bundle: Bundle?, clazz: Class<out Fragment>, layId: Int) =
+//        requireActivity().supportFragmentManager.beginTransaction()
+//            .setCustomAnimations(R.anim.right_in, R.anim.right_out)
+//            .add(layId, clazz, bundle, "detail").commit()
 
 
     fun shortToast(string: String) = Toast.makeText(context, string, Toast.LENGTH_SHORT).show()

@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
-import com.example.adapter.CartoonImgRvAdapter
 import com.example.base.*
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentDetailedBinding
@@ -63,7 +62,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
             val name = arguments?.getString("name")
             val img = arguments?.getString("img")
             val mark = arguments?.getInt("mark")//判断fragment
-            val position = arguments?.getInt("position") ?: 0//list
+            val href = arguments?.getString("href")
 
             withContext(Dispatchers.Default) {
                 //历史部分,修改上次观看时间
@@ -82,7 +81,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     historyInfor = HistoryInfor(
                         name,
                         img,
-                        viewModel.cartoonInfors[position].href, 0,
+                        href,
+                        0,
                         dateformat.format(time)
                     )
                     Log.i(TAG, "onActivityCreated: ${historyInfor?.title}")
@@ -171,7 +171,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     val btnBack = view4.findViewById<ImageButton>(R.id.btnCartoondialogBack)
                     val layTop = view4.findViewById<LinearLayout>(R.id.layCartoonDialog)
                     viewModel.msg4List.clear()
-                    cartoonImgRvAdapter = CartoonImgRvAdapter(context, msg4)
+                    cartoonImgRvAdapter =
+                        CartoonImgRvAdapter(context, msg4)
                     alertDialog.setOnDismissListener {
                         viewModel.onMsg4Dismiss()
                         Runtime.getRuntime().gc()

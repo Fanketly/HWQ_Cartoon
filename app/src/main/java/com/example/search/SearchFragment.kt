@@ -12,6 +12,7 @@ import com.example.viewModel.CartoonViewModel
 
 class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_search) {
     private lateinit var viewModel: CartoonViewModel
+    private var name = ""
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         var adapter: CartoonRvAdapter? = null
@@ -20,20 +21,16 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
             requireActivity().supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
         }
-        b.searchSearch.isSubmitButtonEnabled = true
-        b.searchSearch.isIconifiedByDefault = false
+        //rv
         b.rvSearch.addItemDecoration(SpacesItemDecoration(30))
-        adapter?.setOnClick {
-            viewModel.getSearch(it)
-        }
-        viewModel.msg3LiveData.observe(viewLifecycleOwner){
-
-        }
         viewModel.searchLiveData.observe(viewLifecycleOwner) {
             if (it) {
                 if (adapter == null) {
                     adapter = CartoonRvAdapter(viewModel.searchList, context)
                     b.rvSearch.setUpWithLinear(adapter)
+                    adapter?.setOnClick { p ->
+                        viewModel.getSearch(p)
+                    }
                 } else {
                     adapter?.notifyDataSetChanged()
                 }
@@ -41,10 +38,16 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                 shortToast("没找到此漫画")
             }
         }
+        //search
+        b.searchSearch.isSubmitButtonEnabled = true
+        b.searchSearch.isIconifiedByDefault = false
         b.searchSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
-                viewModel.clearSearchList()
-                viewModel.search(p0)
+                if (name != p0) {
+                    name = p0!!
+                    viewModel.clearSearchList()
+                    viewModel.search(p0)
+                }
                 return true
             }
 
@@ -58,5 +61,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
         super.onDestroy()
         viewModel.clearSearchList()
         viewModel.bottomLiveData.value = false
+        viewModel.isSearchFragment = false
     }
 }

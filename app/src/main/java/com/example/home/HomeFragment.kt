@@ -9,47 +9,42 @@ import com.example.adapter.SpacesItemDecoration
 import com.example.base.BaseFragment
 import com.example.base.TAG
 import com.example.base.setUpWithLinear
-import com.example.detailed.DetailedFragment
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentHomeBinding
-import com.example.repository.model.CartoonInfor
-import com.example.search.SearchFragment
 import com.example.viewModel.CartoonViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
+import com.youth.banner.indicator.CircleIndicator
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     //需要传递的数据
-    private var name = ""
-    private var img = ""
-    private var position = 0
-    private var mark = R.id.homeFragment
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val viewModel = viewModel<CartoonViewModel>(CartoonViewModel::class.java)
         if (viewModel.cartoonInfors.size == 0)
             viewModel.getHomeCartoon()
         var cartoonRvAdapter: CartoonRvAdapter? = null
+        //轮播图
+        viewModel.getBanner()
+//        b.bannerHome.setBannerGalleryMZ(500)
+        viewModel.bannerLiveData.observe(viewLifecycleOwner) { list->
+            b.bannerHome.addBannerLifecycleObserver(this).let {
+                it.adapter = BannerHomeAdapter(list, requireContext())
+                it.indicator = CircleIndicator(context)
+            }
+        }
+
+
         //搜索栏
         b.searchHome.isSubmitButtonEnabled = true
         b.searchHome.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 if (!p0?.trim().isNullOrEmpty()) {
                     viewModel.search(p0)
-                    b.searchHome.isIconified=true
+                    b.searchHome.isIconified = true
                     b.searchHome.clearFocus() // 不获取焦点
-                    viewModel.searchLiveData.observe(viewLifecycleOwner) {
-                        Log.i(TAG, "onQueryTextSubmit: $it")
-                        if (it) {
-                            viewModel.bottomLiveData.value = true
-                            beginTransaction(null, SearchFragment::class.java, R.id.layHome)
-                            viewModel.searchLiveData.removeObservers(viewLifecycleOwner)
-                        } else {
-                            shortToast("没找到此漫画")
-                        }
-                    }
                 }
                 return true
             }
@@ -71,9 +66,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 b.rvHome.setUpWithLinear(cartoonRvAdapter)
                 cartoonRvAdapter!!.setOnClick { position ->
                     viewModel.getHomeCartoon(position)
-                    name = viewModel.cartoonInfors[position].titile
-                    img = viewModel.cartoonInfors[position].img
-                    this.position = position
                 }
             } else {
                 cartoonRvAdapter!!.notifyDataSetChanged()
@@ -81,19 +73,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             }
         })
 
-        //msg3集数
-        viewModel.msg3LiveData.observe(viewLifecycleOwner, { msg3: List<CartoonInfor?> ->
-            if (msg3.isNotEmpty()) {
-                Log.i("TAG", "msg3: ")
-                val bundle = Bundle()
-                bundle.putString("name", name)
-                bundle.putString("img", img)
-                bundle.putInt("position", position)
-                bundle.putInt("mark", mark)
-                viewModel.bottomLiveData.value = true
-                beginTransaction(bundle, DetailedFragment::class.java, R.id.layHome)
-            }
-        })
+
 
         b.refreshCartoon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {

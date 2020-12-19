@@ -1,16 +1,13 @@
-package com.example.adapter;
+package com.example.detailed;
 
 import android.content.Context;
-import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.base.MyAdapter;
 import com.example.base.MyViewHolder;
-import com.example.home.CartoonDialogRvAdapter;
 import com.example.hwq_cartoon.R;
 import com.github.chrisbanes.photoview.PhotoView;
-
 
 import java.util.List;
 

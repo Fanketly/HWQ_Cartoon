@@ -31,7 +31,6 @@ public abstract class MyAdapter<T> extends RecyclerView.Adapter<MyViewHolder>  {
 
 
 
-//    public abstract void delete(T t, int position);
 
     @NonNull
     @Override

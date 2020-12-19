@@ -1,6 +1,7 @@
 package com.example.viewModel;
 
 import android.app.Application;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
@@ -8,7 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.hwq_cartoon.R;
 import com.example.repository.model.CartoonInfor;
+import com.example.repository.model.FavouriteInfor;
 import com.example.util.NetworkUtils;
 import com.example.util.YhshThreadPoolFactory;
 
@@ -41,6 +44,25 @@ public class CartoonViewModel extends AndroidViewModel {
         Log.i(TAG, "CREATE: ");
     }
 
+    //判断是否在searchFragment
+    private Boolean isSearchFragment = false;
+
+    public Boolean getIsSearchFragment() {
+        return isSearchFragment;
+    }
+
+    public void setIsSearchFragment(Boolean searchFragment) {
+        isSearchFragment = searchFragment;
+    }
+
+    //bundle跳转需要传递的数据
+    private final Bundle bundle = new Bundle();
+
+    public Bundle getBundle() {
+        return bundle;
+    }
+
+
     //监听是否隐藏bottom
     private final MutableLiveData<Boolean> bottomLiveData = new MutableLiveData<>();
 
@@ -49,8 +71,8 @@ public class CartoonViewModel extends AndroidViewModel {
     }
 
     //msg2主页漫画
-    private List<CartoonInfor> cartoonInfors = new ArrayList<>();
-    private MutableLiveData<List<CartoonInfor>> homeLiveData = new MutableLiveData<>();
+    private final List<CartoonInfor> cartoonInfors = new ArrayList<>();
+    private final MutableLiveData<List<CartoonInfor>> homeLiveData = new MutableLiveData<>();
 
     private int pager = 1;
 
@@ -59,8 +81,8 @@ public class CartoonViewModel extends AndroidViewModel {
     }
 
     //msg3集数
-    private List<CartoonInfor> mgs3List = new ArrayList<>();
-    private MutableLiveData<List<CartoonInfor>> msg3LiveData = new MutableLiveData<>();
+    private final List<CartoonInfor> mgs3List = new ArrayList<>();
+    private final MutableLiveData<List<CartoonInfor>> msg3LiveData = new MutableLiveData<>();
     private String content;
 
     public List<CartoonInfor> getMgs3List() {
@@ -76,9 +98,9 @@ public class CartoonViewModel extends AndroidViewModel {
     }
 
     //msg4显示漫画
-    private List<String> msg4List = new ArrayList<>();
-    private List<byte[]> imgList = new ArrayList<>();
-    private MutableLiveData<List<byte[]>> msg4LiveData = new MutableLiveData<>();
+    private final List<String> msg4List = new ArrayList<>();
+    private final List<byte[]> imgList = new ArrayList<>();
+    private final MutableLiveData<List<byte[]>> msg4LiveData = new MutableLiveData<>();
 
     public MutableLiveData<List<byte[]>> getMsg4LiveData() {
         return msg4LiveData;
@@ -89,8 +111,8 @@ public class CartoonViewModel extends AndroidViewModel {
     }
 
     //search
-    private List<CartoonInfor> searchList = new ArrayList<>();
-    private MutableLiveData<Boolean> searchLiveData = new MutableLiveData<>();
+    private final List<CartoonInfor> searchList = new ArrayList<>();
+    private final MutableLiveData<Boolean> searchLiveData = new MutableLiveData<>();
 
     public MutableLiveData<Boolean> getSearchLiveData() {
         return searchLiveData;
@@ -101,8 +123,14 @@ public class CartoonViewModel extends AndroidViewModel {
     }
 
 
-    //top
-    private List<CartoonInfor> cartoonHome = new ArrayList<>();
+    //banner
+    private final List<CartoonInfor> bannerList = new ArrayList<>();
+    private final MutableLiveData<List<CartoonInfor>> bannerLiveData = new MutableLiveData<>();
+
+    public MutableLiveData<List<CartoonInfor>> getBannerLiveData() {
+        return bannerLiveData;
+    }
+
     private final Handler handler = new Handler(msg -> {
         if (msg.what == 1) {//图片
             Document document = Jsoup.parse((String) msg.obj);
@@ -330,7 +358,7 @@ public class CartoonViewModel extends AndroidViewModel {
                     }
                 }
                 searchLiveData.setValue(true);
-            }else {
+            } else {
                 searchLiveData.setValue(false);
             }
         } else if (msg.what == 6) {//home
@@ -341,27 +369,27 @@ public class CartoonViewModel extends AndroidViewModel {
             Element element2;
             Element element3;
             CartoonInfor cartoonInfor;
-            for (Element e : elements
-            ) {
+            for (int i = 0; i < 5; i++) {
+                Element e = elements.get(i);
                 element1 = e.select(".righter-img a").first();//图片
                 element2 = e.select(".righter-img img").first();
                 element3 = e.select(".righter-mr span").get(5);
                 cartoonInfor = new CartoonInfor(element1.attr("title"), element1.attr("href"), element2.attr("src"), "分类：" + element3.text());
-                cartoonHome.add(cartoonInfor);
+                bannerList.add(cartoonInfor);
             }
-            homeLiveData.setValue(cartoonHome);
+            bannerLiveData.setValue(bannerList);
         }
         return false;
     });
 
 
-//    /**
-//     * 漫画本月人气排行
-//     **/
-//    public void getTopCartoon() {
+    /**
+     * 漫画本月人气排行
+     **/
+    public void getBanner() {
 //        if (cartoonHome.size() > 0) cartoonHome.clear();
-//        NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/rank/month-block-1.shtml", 6);
-//    }
+        NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/rank/month-block-1.shtml", 6);
+    }
 //
 //
 //    public void getTopCartoon(int position) {
@@ -384,6 +412,15 @@ public class CartoonViewModel extends AndroidViewModel {
 //        cartoonModel.insert(favouriteInfor);
 //        return favouriteInfor;
 //    }
+
+    private void putBundle(String name, String img, String href, int mark) {
+        bundle.clear();
+        bundle.putString("name", name);
+        bundle.putString("img", img);
+        bundle.putString("href", href);
+        bundle.putInt("mark", mark);
+    }
+
 
     /**
      * 加载图片部分
@@ -430,7 +467,9 @@ public class CartoonViewModel extends AndroidViewModel {
     }
 
     public void getHomeCartoon(int position) {
-        String s = cartoonInfors.get(position).getHref();
+        CartoonInfor info = cartoonInfors.get(position);
+        String s = info.getHref();
+        putBundle(info.getTitile(), info.getImg(), s, R.id.homeFragment);
         Log.i(TAG, "onClick: " + s);
         if (s.equals(""))
             return;
@@ -462,8 +501,10 @@ public class CartoonViewModel extends AndroidViewModel {
      * **/
 
 
-    public void favouriteGet(String url) {
+    public void favouriteGet(FavouriteInfor favouriteInfor) {
+        String url = favouriteInfor.getUrl();
         Log.i(TAG, "favouriteGet: " + url);
+        putBundle(favouriteInfor.getTitle(), favouriteInfor.getImgUrl(), favouriteInfor.getUrl(), R.id.favoriteFragment);
         NetworkUtils.getInstance().OkhttpGet(handler, url, 3);
     }
 
@@ -472,10 +513,13 @@ public class CartoonViewModel extends AndroidViewModel {
      * search
      **/
     public void getSearch(int position) {
-        String s = searchList.get(position).getHref();
+        CartoonInfor cartoonInfor = searchList.get(position);
+        String s = cartoonInfor.getHref();
+        putBundle(cartoonInfor.getTitile(), cartoonInfor.getImg(), s, R.id.homeFragment);
         Log.i(TAG, "onClick: " + s);
         NetworkUtils.getInstance().OkhttpGet(handler, s, 3);
     }
+
 
     //    public void setSearchFavourite(int position) {
 //        CartoonInfor cartoonInfor = listMsg5.get(position);
@@ -483,15 +527,15 @@ public class CartoonViewModel extends AndroidViewModel {
 //    }
 //
     public void search(String name) {
-        Log.i(TAG, "search: "+name);
+        Log.i(TAG, "search: " + name);
         NetworkUtils.getInstance().OkhttpGet(handler, "https://sacg.dmzj.com/comicsum/search.php?s=" + name, 5);
     }
-//
+
+    //
     public void clearSearchList() {
         Log.i(TAG, "clearSearchList: ");
-        if (searchList != null)
-            if (searchList.size() > 0)
-                searchList.clear();
+        if (searchList.size() > 0)
+            searchList.clear();
     }
 
     /**
@@ -608,21 +652,21 @@ public class CartoonViewModel extends AndroidViewModel {
     protected void onCleared() {
         super.onCleared();
         Log.i(TAG, "onCleared: ");
-        msg4List.clear();
-        cartoonInfors.clear();
-        searchList.clear();
-        mgs3List.clear();
-        cartoonHome.clear();
-        cartoonHome = null;
-        msg4List = null;
-        cartoonInfors = null;
-        searchList = null;
-        imgList.clear();
-        imgList = null;
-        mgs3List = null;
-        searchLiveData = null;
-        msg4LiveData = null;
-        msg3LiveData = null;
-        homeLiveData = null;
+//        msg4List.clear();
+//        cartoonInfors.clear();
+//        searchList.clear();
+//        mgs3List.clear();
+//        bannerList.clear();
+//        imgList.clear();
+//        bannerList = null;
+//        msg4List = null;
+//        cartoonInfors = null;
+//        searchList = null;
+//        imgList = null;
+//        mgs3List = null;
+//        searchLiveData = null;
+//        msg4LiveData = null;
+//        msg3LiveData = null;
+//        homeLiveData = null;
     }
 }

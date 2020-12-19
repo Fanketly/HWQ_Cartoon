@@ -13,9 +13,9 @@ import com.example.repository.model.CartoonInfor
  * Date: 2020/9/15
  * Time: 16:35
  */
-class DetailRvAdapter(context: Context?, list: List<CartoonInfor>, var mark: Int)
-    : MyAdapter<CartoonInfor>(context, R.layout.cartoon_dialog_rv_item, list) {
-    lateinit var onclick: (Int) -> Unit
+class DetailRvAdapter(context: Context?, list: List<CartoonInfor>, private var mark: Int) :
+    MyAdapter<CartoonInfor>(context, R.layout.cartoon_dialog_rv_item, list) {
+    private lateinit var onclick: (Int) -> Unit
     override fun bindViewHolder(holder: MyViewHolder, data: CartoonInfor, position: Int) {
         val title = holder.findViewById<TextView>(R.id.tvCartoonDialogTitle)
         if (position == mark) {
@@ -30,9 +30,10 @@ class DetailRvAdapter(context: Context?, list: List<CartoonInfor>, var mark: Int
     fun setOnClick(position: (Int) -> Unit) {
         this.onclick = position
     }
-    fun itemChange(mark:Int){
-        val mark2=this.mark
-        this.mark=mark
+
+    fun itemChange(mark: Int) {
+        val mark2 = this.mark
+        this.mark = mark
         notifyItemChanged(mark2)
         notifyItemChanged(mark)
     }

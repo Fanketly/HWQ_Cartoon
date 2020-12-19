@@ -8,6 +8,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
@@ -24,7 +25,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:navGraph="@navigation/cartoon" />
+            app:navGraph="@navigation/cartoon"
+            tools:ignore="FragmentTagUsage" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline8"

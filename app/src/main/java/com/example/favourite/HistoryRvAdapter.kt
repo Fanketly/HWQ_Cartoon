@@ -35,7 +35,7 @@ class HistoryRvAdapter(val context: Context, val list: List<HistoryInfor>) :
         btn.setOnClickListener {
 
         }
-        if (data.imgUrl != null) {
+        if (data.imgUrl != null&&data.imgUrl.isNotEmpty()) {
             Glide.with(context).asDrawable().load(GlideUrl(data.imgUrl, headers))
                 .skipMemoryCache(true).into(img)
         }
