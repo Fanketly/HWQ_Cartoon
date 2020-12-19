@@ -126,7 +126,9 @@ public class CartoonViewModel extends AndroidViewModel {
     //banner
     private final List<CartoonInfor> bannerList = new ArrayList<>();
     private final MutableLiveData<List<CartoonInfor>> bannerLiveData = new MutableLiveData<>();
-
+    public List<CartoonInfor> getBannerList() {
+        return bannerList;
+    }
     public MutableLiveData<List<CartoonInfor>> getBannerLiveData() {
         return bannerLiveData;
     }

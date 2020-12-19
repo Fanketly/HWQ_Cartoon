@@ -27,9 +27,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             viewModel.getHomeCartoon()
         var cartoonRvAdapter: CartoonRvAdapter? = null
         //轮播图
-        viewModel.getBanner()
+        if (viewModel.bannerList.size == 0)
+            viewModel.getBanner()
 //        b.bannerHome.setBannerGalleryMZ(500)
-        viewModel.bannerLiveData.observe(viewLifecycleOwner) { list->
+        viewModel.bannerLiveData.observe(viewLifecycleOwner) { list ->
             b.bannerHome.addBannerLifecycleObserver(this).let {
                 it.adapter = BannerHomeAdapter(list, requireContext())
                 it.indicator = CircleIndicator(context)
