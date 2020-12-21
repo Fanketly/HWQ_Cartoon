@@ -11,7 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import com.example.classification.SpeciesFragment
 import com.example.detailed.DetailedFragment
+import com.example.favourite.FavouriteVpFragment
+import com.example.home.HomeFragment
 import com.example.hwq_cartoon.databinding.ActivityMainBinding
 import com.example.search.SearchFragment
 import com.example.viewModel.CartoonViewModel
@@ -26,19 +29,32 @@ class MainActivity : AppCompatActivity() {
         val controller = Navigation.findNavController(this, R.id.fragCartoon)
         NavigationUI.setupWithNavController(b.bottomNav, controller)
         b.bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
-            if (itemid != item.itemId) {
-                itemid = item.itemId
-                Log.i("TAG", "setNavigation:$itemid ")
-                when (itemid) {
-                    R.id.homeFragment -> {
-                        controller.popBackStack(R.id.favoriteVpFragment, true)
-                    }
-                    R.id.favoriteVpFragment -> {
-                        controller.navigate(R.id.action_homeFragment_to_favoriteVpFragment)
-                    }
-                }
-
-            }
+//            val id = item.itemId
+//            if (itemid != id) {
+//
+//                when (id) {
+//                    R.id.homeFragment -> {
+//                        if (itemid == R.id.favoriteVpFragment)
+//                            controller.navigate(R.id.action_favoriteVpFragment_to_homeFragment)
+//                        if (itemid == R.id.speciesFragment)
+//                            controller.navigate(R.id.action_speciesFragment_to_homeFragment)
+//                    }
+//                    R.id.favoriteVpFragment -> {
+//                        if (itemid == R.id.homeFragment)
+//                            controller.navigate(R.id.action_homeFragment_to_favoriteVpFragment)
+//                        if (itemid == R.id.speciesFragment)
+//                            controller.navigate(R.id.action_speciesFragment_to_favoriteVpFragment)
+//                    }
+//                    R.id.speciesFragment -> {
+//                        if (itemid == R.id.homeFragment)
+//                            controller.navigate(R.id.action_homeFragment_to_speciesFragment)
+//                        if (itemid == R.id.favoriteVpFragment)
+//                            controller.navigate(R.id.action_favoriteVpFragment_to_speciesFragment)
+//                    }
+//                }
+//                controller.popBackStack(itemid, true)
+//                itemid = id
+//            }
             return@setOnNavigationItemSelectedListener true
         }
         //底部监听
@@ -54,15 +70,20 @@ class MainActivity : AppCompatActivity() {
         //Search监听
         viewModel.searchLiveData.observe(this) {
             if (!viewModel.isSearchFragment)
-            if (it) {
-                viewModel.bottomLiveData.value = true
-                beginTransaction(null, SearchFragment::class.java)
-                viewModel.isSearchFragment=true
-            } else {
-                Toast.makeText(this, "没找到此漫画", Toast.LENGTH_SHORT).show()
-            }
+                if (it) {
+                    viewModel.bottomLiveData.value = true
+                    beginTransaction(null, SearchFragment::class.java)
+                    viewModel.isSearchFragment = true
+                } else {
+                    Toast.makeText(this, "没找到此漫画", Toast.LENGTH_SHORT).show()
+                }
         }
     }
+
+    private fun replace(fragment: Fragment) = supportFragmentManager.beginTransaction()
+        .setCustomAnimations(R.anim.right_in, R.anim.right_out).replace(R.id.fragCartoon, fragment)
+        .commit()
+
 
     private fun beginTransaction(bundle: Bundle?, clazz: Class<out Fragment>) =
         supportFragmentManager.beginTransaction()

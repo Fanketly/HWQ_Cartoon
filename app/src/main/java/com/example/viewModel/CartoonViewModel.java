@@ -44,9 +44,9 @@ public class CartoonViewModel extends AndroidViewModel {
         Log.i(TAG, "CREATE: ");
     }
 //species 
-private var species=0
-private final List<CartoonInfor> speciesList=new ArrayList<>();
-public List<CartoonInfor> getSpeciesList(){
+private final int species=0;
+private final List<FavouriteInfor> speciesList=new ArrayList<>();
+public List<FavouriteInfor> getSpeciesList(){
     return speciesList;
 }
 private final MutableLiveData<Boolean>speciesLiveData=new MutableLiveData<>();
@@ -393,8 +393,9 @@ public MutableLiveData<Boolean> getSpeciesLiveData(){
             Document document=Jsoup.parse((String)msg.obj);
             Elements elements=document.getElementsByClass("tcaricature_block tcaricature_block2");
             for(int i=0;i<elements.size();i++){
-            Element element=elements.get(i).select("a");
-            speciesList.add(new CartoonInfor( element.attr("title"),element.attr("href"), element.select("img").attr("src")));
+            Element element=elements.get(i).tagName("a");
+                Log.i(TAG, "msg7: "+element);
+            speciesList.add(new FavouriteInfor( element.attr("href"), element.select("img").attr("src"),element.attr("title")));
            }
             speciesLiveData.setValue(true);
         }

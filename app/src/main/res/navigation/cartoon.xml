@@ -17,6 +17,13 @@
             app:exitAnim="@anim/left_out"
             app:popEnterAnim="@anim/left_in"
             app:popExitAnim="@anim/right_out" />
+        <action
+            android:id="@+id/action_homeFragment_to_speciesFragment"
+            app:destination="@id/speciesFragment"
+            app:enterAnim="@anim/right_in"
+            app:exitAnim="@anim/left_out"
+            app:popEnterAnim="@anim/left_in"
+            app:popExitAnim="@anim/right_out" />
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
@@ -36,6 +43,39 @@
         tools:layout="@layout/fragment_vp" >
         <action
             android:id="@+id/action_favoriteVpFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/homeFragment"
+            app:enterAnim="@anim/right_in"
+            app:exitAnim="@anim/left_out"
+            app:popEnterAnim="@anim/left_in"
+            app:popExitAnim="@anim/right_out" />
+        <action
+            android:id="@+id/action_favoriteVpFragment_to_speciesFragment"
+            app:destination="@id/speciesFragment"
+            app:enterAnim="@anim/right_in"
+            app:exitAnim="@anim/left_out"
+            app:popEnterAnim="@anim/left_in"
+            app:popExitAnim="@anim/right_out"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/speciesFragment"
+        android:name="com.example.classification.SpeciesFragment"
+        android:label="SpeciesFragment" >
+        <action
+            android:id="@+id/action_speciesFragment_to_favoriteVpFragment"
+            app:destination="@id/favoriteVpFragment"
+            app:enterAnim="@anim/right_in"
+            app:exitAnim="@anim/left_out"
+            app:popEnterAnim="@anim/left_in"
+            app:popExitAnim="@anim/right_out"
+            />
+        <action
+            android:id="@+id/action_speciesFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:enterAnim="@anim/right_in"
+            app:exitAnim="@anim/left_out"
+            app:popEnterAnim="@anim/left_in"
+            app:popExitAnim="@anim/right_out"
+            />
     </fragment>
 </navigation>

@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:icon="@drawable/ic_baseline_home_24"  android:id="@+id/homeFragment"  android:title="@string/menu_home"/>
-<item android:icon="@drawable/ic_baseline_favorite_24"  android:id="@+id/favoriteVpFragment"  android:title="@string/menu_favourite"/>
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/menu_home" />
+
+    <item
+        android:id="@+id/speciesFragment"
+        android:icon="@drawable/species"
+        android:title="@string/menu_species" />
+    <item
+        android:id="@+id/favoriteVpFragment"
+        android:icon="@drawable/ic_baseline_favorite_24"
+        android:title="@string/menu_favourite" />
 </menu>

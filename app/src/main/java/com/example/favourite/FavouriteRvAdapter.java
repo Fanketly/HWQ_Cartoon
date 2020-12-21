@@ -30,8 +30,8 @@ public class FavouriteRvAdapter extends MyAdapter<FavouriteInfor> {
     private final Context context;
     private final Headers headers;
 
-    public FavouriteRvAdapter(@NotNull List<FavouriteInfor> list, int layoutId, Context context) {
-        super(context, layoutId,list);
+    public FavouriteRvAdapter(@NotNull List<FavouriteInfor> list, Context context) {
+        super(context, R.layout.rv_item_favourite,list);
         this.context = context;
         headers = () -> {
             Map<String, String> map = new HashMap<>();

@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">HWQ_Cartoon</string>
+    <string name="app_name">Fun漫</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_home">主页</string>
     <string name="menu_favourite">喜爱</string>
     <string name="todo">TODO</string>
     <string name="detail_add">追漫</string>
     <string name="favourite_tip">您还没有任何追漫哦~</string>
+    <string name="menu_species">发现</string>
 
 </resources>

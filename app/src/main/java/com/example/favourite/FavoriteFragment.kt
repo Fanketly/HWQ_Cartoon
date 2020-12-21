@@ -24,7 +24,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
         if (list.size > 0)
             b.tvFavouriteTip.visibility = View.GONE
         if (favouriteRvAdapter == null)
-            favouriteRvAdapter = FavouriteRvAdapter(list, R.layout.rv_item_favourite, context)
+            favouriteRvAdapter = FavouriteRvAdapter(list, context)
 
         b.rvFavourite.setUpWithGrid(favouriteRvAdapter, 3)
         b.rvFavourite.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
