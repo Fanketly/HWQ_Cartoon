@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
  * User: HuangWeiQiang
  * Date: 2020/12/19
  * Time: 22:42
+ *分类
  */
 class SpeciesViewModel :ViewModel(){
-
 
 }

@@ -43,7 +43,16 @@ public class CartoonViewModel extends AndroidViewModel {
         super(application);
         Log.i(TAG, "CREATE: ");
     }
-
+//species 
+private var species=0
+private final List<CartoonInfor> speciesList=new ArrayList<>();
+public List<CartoonInfor> getSpeciesList(){
+    return speciesList;
+}
+private final MutableLiveData<Boolean>speciesLiveData=new MutableLiveData<>();
+public MutableLiveData<Boolean> getSpeciesLiveData(){
+    return speciesLiveData;
+}
     //判断是否在searchFragment
     private Boolean isSearchFragment = false;
 
@@ -380,10 +389,17 @@ public class CartoonViewModel extends AndroidViewModel {
                 bannerList.add(cartoonInfor);
             }
             bannerLiveData.setValue(bannerList);
+        }else if(msg.what==7){
+            Document document=Jsoup.parse((String)msg.obj);
+            Elements elements=document.getElementsByClass("tcaricature_block tcaricature_block2");
+            for(int i=0;i<elements.size();i++){
+            Element element=elements.get(i).select("a");
+            speciesList.add(new CartoonInfor( element.attr("title"),element.attr("href"), element.select("img").attr("src")));
+           }
+            speciesLiveData.setValue(true);
         }
         return false;
     });
-
 
     /**
      * 漫画本月人气排行
@@ -458,6 +474,15 @@ public class CartoonViewModel extends AndroidViewModel {
         });
     }
 
+/**
+*分类
+*SpeciesFragment
+*
+**/
+public void getSpecies(){
+    if(speciesList.size()>0)speciesList.clear();
+    NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/tags/category_search/0-0-0-all-"+species+"-0-0-1.shtml#category_nav_anchor", 7);
+}
 
     /**
      * 主页
