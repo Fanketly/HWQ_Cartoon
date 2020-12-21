@@ -13,6 +13,11 @@ import com.example.viewModel.FavouriteViewModel
 import com.google.android.material.tabs.TabLayout
 
 class FavouriteVpFragment : BaseFragment<FragmentVpBinding>(R.layout.fragment_vp) {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        val inflater = TransitionInflater.from(requireContext())
+//        enterTransition=inflater.inflateTransition(R.transition.slide_right)
+//    }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val viewMode = ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]

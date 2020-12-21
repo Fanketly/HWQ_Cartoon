@@ -18,7 +18,6 @@ import com.youth.banner.indicator.CircleIndicator
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
-
     //需要传递的数据
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

@@ -43,16 +43,21 @@ public class CartoonViewModel extends AndroidViewModel {
         super(application);
         Log.i(TAG, "CREATE: ");
     }
-//species 
-private final int species=0;
-private final List<FavouriteInfor> speciesList=new ArrayList<>();
-public List<FavouriteInfor> getSpeciesList(){
-    return speciesList;
-}
-private final MutableLiveData<Boolean>speciesLiveData=new MutableLiveData<>();
-public MutableLiveData<Boolean> getSpeciesLiveData(){
-    return speciesLiveData;
-}
+
+    //species
+    private final int species = 0;
+    private final List<FavouriteInfor> speciesList = new ArrayList<>();
+
+    public List<FavouriteInfor> getSpeciesList() {
+        return speciesList;
+    }
+
+    private final MutableLiveData<Boolean> speciesLiveData = new MutableLiveData<>();
+
+    public MutableLiveData<Boolean> getSpeciesLiveData() {
+        return speciesLiveData;
+    }
+
     //判断是否在searchFragment
     private Boolean isSearchFragment = false;
 
@@ -135,9 +140,11 @@ public MutableLiveData<Boolean> getSpeciesLiveData(){
     //banner
     private final List<CartoonInfor> bannerList = new ArrayList<>();
     private final MutableLiveData<List<CartoonInfor>> bannerLiveData = new MutableLiveData<>();
+
     public List<CartoonInfor> getBannerList() {
         return bannerList;
     }
+
     public MutableLiveData<List<CartoonInfor>> getBannerLiveData() {
         return bannerLiveData;
     }
@@ -389,14 +396,18 @@ public MutableLiveData<Boolean> getSpeciesLiveData(){
                 bannerList.add(cartoonInfor);
             }
             bannerLiveData.setValue(bannerList);
-        }else if(msg.what==7){
-            Document document=Jsoup.parse((String)msg.obj);
-            Elements elements=document.getElementsByClass("tcaricature_block tcaricature_block2");
-            for(int i=0;i<elements.size();i++){
-            Element element=elements.get(i).tagName("a");
-                Log.i(TAG, "msg7: "+element);
-            speciesList.add(new FavouriteInfor( element.attr("href"), element.select("img").attr("src"),element.attr("title")));
-           }
+        } else if (msg.what == 7) {
+            Document document = Jsoup.parse((String) msg.obj);
+            Elements elements = document.getElementsByClass("tcaricature_block tcaricature_block2").select("ul");
+            for (int i = 0; i < elements.size(); i++) {
+                Elements elements1 = elements.get(i).select("li");
+//                Element element = elements.get(i).tagName("a");
+                Element e = elements1.get(0).child(0);
+//                String img=e.tagName("a");
+                Log.i(TAG, "msg7"+e.attr("href"));
+                //"msg7: " + e.attr("href")+ img+ e.attr("title")
+                speciesList.add(new FavouriteInfor(e.attr("href"), e.child(0).attr("src"), e.attr("title")));
+            }
             speciesLiveData.setValue(true);
         }
         return false;
@@ -475,15 +486,14 @@ public MutableLiveData<Boolean> getSpeciesLiveData(){
         });
     }
 
-/**
-*分类
-*SpeciesFragment
-*
-**/
-public void getSpecies(){
-    if(speciesList.size()>0)speciesList.clear();
-    NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/tags/category_search/0-0-0-all-"+species+"-0-0-1.shtml#category_nav_anchor", 7);
-}
+    /**
+     * 分类
+     * SpeciesFragment
+     **/
+    public void getSpecies() {
+        if (speciesList.size() > 0) speciesList.clear();
+        NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/tags/category_search/0-0-0-all-" + species + "-0-0-1.shtml#category_nav_anchor", 7);
+    }
 
     /**
      * 主页
