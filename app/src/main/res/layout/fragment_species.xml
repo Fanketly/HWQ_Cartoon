@@ -10,10 +10,17 @@
         android:layout_height="match_parent"
         tools:context="com.example.classification.SpeciesFragment">
 
-       <androidx.recyclerview.widget.RecyclerView
-           android:id="@+id/rvSpecies"
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSpeciesTop"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_margin="5dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSpecies"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="110dp" />
 
     </FrameLayout>
 </layout>

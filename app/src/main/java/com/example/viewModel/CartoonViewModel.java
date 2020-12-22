@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.hwq_cartoon.R;
 import com.example.repository.model.CartoonInfor;
 import com.example.repository.model.FavouriteInfor;
+import com.example.repository.model.SpeciesInfor;
 import com.example.util.NetworkUtils;
 import com.example.util.YhshThreadPoolFactory;
 
@@ -45,8 +46,18 @@ public class CartoonViewModel extends AndroidViewModel {
     }
 
     //species
-    private final int species = 0;
+    private String species = "0";
+
+    public void setSpecies(String species) {
+        this.species = species;
+    }
+
     private final List<FavouriteInfor> speciesList = new ArrayList<>();
+    private final List<SpeciesInfor> typeList = new ArrayList<>();
+
+    public List<SpeciesInfor> getTypeList() {
+        return typeList;
+    }
 
     public List<FavouriteInfor> getSpeciesList() {
         return speciesList;
@@ -399,13 +410,18 @@ public class CartoonViewModel extends AndroidViewModel {
         } else if (msg.what == 7) {
             Document document = Jsoup.parse((String) msg.obj);
             Elements elements = document.getElementsByClass("tcaricature_block tcaricature_block2").select("ul");
+            if (typeList.size() == 0) {
+                Element typeElms = document.getElementsByClass("search_list_m_right").get(4);
+                for (Element a : typeElms.select("a")) {
+                    typeList.add(new SpeciesInfor(
+                            a.attr("id").substring(5),
+                            a.attr("title")));
+                }
+            }
             for (int i = 0; i < elements.size(); i++) {
                 Elements elements1 = elements.get(i).select("li");
-//                Element element = elements.get(i).tagName("a");
                 Element e = elements1.get(0).child(0);
-//                String img=e.tagName("a");
-                Log.i(TAG, "msg7"+e.attr("href"));
-                //"msg7: " + e.attr("href")+ img+ e.attr("title")
+                Log.i(TAG, ": "+e);
                 speciesList.add(new FavouriteInfor(e.attr("href"), e.child(0).attr("src"), e.attr("title")));
             }
             speciesLiveData.setValue(true);
@@ -490,8 +506,9 @@ public class CartoonViewModel extends AndroidViewModel {
      * 分类
      * SpeciesFragment
      **/
-    public void getSpecies() {
+    public void getSpeciesData() {
         if (speciesList.size() > 0) speciesList.clear();
+        Log.i(TAG, "getSpecies:" + species);
         NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/tags/category_search/0-0-0-all-" + species + "-0-0-1.shtml#category_nav_anchor", 7);
     }
 
