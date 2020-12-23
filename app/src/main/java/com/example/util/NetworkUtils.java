@@ -34,7 +34,7 @@ public class NetworkUtils {
 
     public void OkhttpGet(Handler handler, String url, int what) {
         Message message = Message.obtain();
-        Request request = new Request.Builder().url(url).method("GET", null).build();
+        Request request = new Request.Builder().get().url(url).build();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override

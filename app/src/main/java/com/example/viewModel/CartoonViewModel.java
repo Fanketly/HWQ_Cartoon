@@ -13,8 +13,11 @@ import com.example.hwq_cartoon.R;
 import com.example.repository.model.CartoonInfor;
 import com.example.repository.model.FavouriteInfor;
 import com.example.repository.model.SpeciesInfor;
+import com.example.repository.model.SpeciesInfor2;
+import com.example.repository.model.SpeciesInfor2Item;
 import com.example.util.NetworkUtils;
 import com.example.util.YhshThreadPoolFactory;
+import com.google.gson.Gson;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -46,7 +49,11 @@ public class CartoonViewModel extends AndroidViewModel {
     }
 
     //species
-    private String species = "0";
+    private String species = "3255";
+
+    public String getSpecies() {
+        return species;
+    }
 
     public void setSpecies(String species) {
         this.species = species;
@@ -408,8 +415,20 @@ public class CartoonViewModel extends AndroidViewModel {
             }
             bannerLiveData.setValue(bannerList);
         } else if (msg.what == 7) {
+            String str = String.valueOf(msg.obj);
+            str = str.substring(str.indexOf("["), str.lastIndexOf("]") + 1);
+            Gson gson = new Gson();
+            List<SpeciesInfor2Item> speciesInfor2s = gson.fromJson(str, SpeciesInfor2.class);
+            Log.i(TAG, ": " + speciesInfor2s.get(0).getComic_cover());
+            for (SpeciesInfor2Item e : speciesInfor2s) {
+                speciesList.add(new FavouriteInfor(e.getComic_url(), "https:" + e.getComic_cover(), e.getName()));
+
+            }
+
+            speciesLiveData.setValue(true);
+
+        }else if (msg.what == 8) {
             Document document = Jsoup.parse((String) msg.obj);
-            Elements elements = document.getElementsByClass("tcaricature_block tcaricature_block2").select("ul");
             if (typeList.size() == 0) {
                 Element typeElms = document.getElementsByClass("search_list_m_right").get(4);
                 for (Element a : typeElms.select("a")) {
@@ -418,13 +437,7 @@ public class CartoonViewModel extends AndroidViewModel {
                             a.attr("title")));
                 }
             }
-            for (int i = 0; i < elements.size(); i++) {
-                Elements elements1 = elements.get(i).select("li");
-                Element e = elements1.get(0).child(0);
-                Log.i(TAG, ": "+e);
-                speciesList.add(new FavouriteInfor(e.attr("href"), e.child(0).attr("src"), e.attr("title")));
-            }
-            speciesLiveData.setValue(true);
+
         }
         return false;
     });
@@ -506,10 +519,14 @@ public class CartoonViewModel extends AndroidViewModel {
      * 分类
      * SpeciesFragment
      **/
+    public void getSpeciesType(){
+        if (typeList.size()>0)return;
+        NetworkUtils.getInstance().OkhttpGet(handler,"https://manhua.dmzj.com/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor",8);
+    }
     public void getSpeciesData() {
         if (speciesList.size() > 0) speciesList.clear();
         Log.i(TAG, "getSpecies:" + species);
-        NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/tags/category_search/0-0-0-all-" + species + "-0-0-1.shtml#category_nav_anchor", 7);
+        NetworkUtils.getInstance().OkhttpGet(handler, "http://sacg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=" + species + "&p=1&callback=search.renderResult", 7);
     }
 
     /**

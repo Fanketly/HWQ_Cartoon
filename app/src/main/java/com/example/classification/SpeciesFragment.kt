@@ -20,6 +20,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
         super.onActivityCreated(savedInstanceState)
         Log.i(TAG, "onSpeciesActivityCreated: ")
         val viewModel = viewModel<CartoonViewModel>(CartoonViewModel::class.java)
+        viewModel.getSpeciesType()
         viewModel.getSpeciesData()
         var adapter: FavouriteRvAdapter? = null
         b.rvSpeciesTop.overScrollMode=RecyclerView.OVER_SCROLL_NEVER
@@ -31,7 +32,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
                     R.layout.rv_item_species_top
                 )
                 adapterTop.setOnClick(R.id.tvSpeciesTopRvItem) { _, t ->
-                    viewModel.setSpecies(t.id)
+                    viewModel.species=t.id
                     viewModel.getSpeciesData()
                 }
                 adapter = FavouriteRvAdapter(viewModel.speciesList, requireContext())
