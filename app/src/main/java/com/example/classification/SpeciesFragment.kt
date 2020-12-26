@@ -1,11 +1,12 @@
 package com.example.classification
 
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.DataBindingAdapter
 import com.example.base.BaseFragment
-import com.example.base.TAG
+import com.example.base.Logi
 import com.example.base.setUpWithGrid
 import com.example.favourite.FavouriteRvAdapter
 import com.example.hwq_cartoon.BR
@@ -18,12 +19,12 @@ import com.example.viewModel.CartoonViewModel
 class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_species) {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        Log.i(TAG, "onSpeciesActivityCreated: ")
+        Logi("onSpeciesActivityCreated: ")
+        var mark = 0
         val viewModel = viewModel<CartoonViewModel>(CartoonViewModel::class.java)
         viewModel.getSpeciesType()
-        viewModel.getSpeciesData()
         var adapter: FavouriteRvAdapter? = null
-        b.rvSpeciesTop.overScrollMode=RecyclerView.OVER_SCROLL_NEVER
+        b.rvSpeciesTop.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         viewModel.speciesLiveData.observe(viewLifecycleOwner) {
             if (adapter == null) {
                 val adapterTop = DataBindingAdapter<SpeciesInfor>(
@@ -31,9 +32,19 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
                     BR.type,
                     R.layout.rv_item_species_top
                 )
-                adapterTop.setOnClick(R.id.tvSpeciesTopRvItem) { _, t ->
-                    viewModel.species=t.id
+                adapterTop.setOnClick(R.id.tvSpeciesTopRvItem) { p, t ->
+                    adapterTop.notifyItemChanged(mark)
+                    mark = p
+                    adapterTop.notifyItemChanged(mark)
+                    viewModel.species = t.id
                     viewModel.getSpeciesData()
+                }
+                adapterTop.getView { p, _, v ->
+                    val tv = v.findViewById<TextView>(R.id.tvSpeciesTopRvItem)
+                    if (p == mark)
+                        tv.setTextColor(Color.BLUE)
+                    else
+                        tv.setTextColor(Color.BLACK)
                 }
                 adapter = FavouriteRvAdapter(viewModel.speciesList, requireContext())
                 b.rvSpeciesTop.setUpWithGrid(adapterTop, 7)
@@ -46,6 +57,6 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.i("TAG", "SpeciesonDestroy: ")
+        Logi("SpeciesonDestroy: ")
     }
 }

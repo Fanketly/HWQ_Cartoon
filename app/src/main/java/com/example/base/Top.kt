@@ -1,5 +1,6 @@
 package com.example.base
 
+import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,11 +22,14 @@ fun <T> RecyclerView.setUpWithGrid(t: T, num: Int) {
     layoutManager = GridLayoutManager(context, num)
     adapter = t as RecyclerView.Adapter<*>
 }
-const val TAG="TAG"
+
+fun Logi(msg: String) = Log.i(TAG, msg)
+const val TAG = "TAG"
 const val Url3 = "https://manhua.dmzj.com/"
 val headers = Headers {
     val map: MutableMap<String, String> =
         HashMap()
+
     map["Referer"] = "https://manhua.dmzj.com/update_1.shtml"
     map
 }

@@ -76,9 +76,5 @@ class FavouriteViewModel : ViewModel() {
         return p
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        historyDB.close()
-        favouriteDB.close()
-    }
+
 }
