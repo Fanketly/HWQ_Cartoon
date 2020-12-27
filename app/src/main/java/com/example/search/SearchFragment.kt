@@ -39,22 +39,25 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
             }
         }
         //search
-        b.searchSearch.isSubmitButtonEnabled = true
-        b.searchSearch.isIconifiedByDefault = false
-        b.searchSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(p0: String?): Boolean {
-                if (name != p0) {
-                    name = p0!!
-                    viewModel.clearSearchList()
-                    viewModel.search(p0)
+        b.searchSearch.apply {
+            isSubmitButtonEnabled = true
+            isIconifiedByDefault = false
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(p0: String?): Boolean {
+                    if (name != p0) {
+                        name = p0!!
+                        viewModel.clearSearchList()
+                        viewModel.search(p0)
+                    }
+                    return true
                 }
-                return true
-            }
 
-            override fun onQueryTextChange(p0: String?): Boolean {
-                return false
-            }
-        })
+                override fun onQueryTextChange(p0: String?): Boolean {
+                    return false
+                }
+            })
+        }
+
     }
 
     override fun onDestroy() {

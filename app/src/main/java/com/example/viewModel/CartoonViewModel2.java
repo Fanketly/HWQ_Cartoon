@@ -17,7 +17,7 @@ import com.example.repository.model.FavouriteInfor;
 import com.example.repository.model.SpeciesInfor;
 import com.example.repository.model.SpeciesInfor2;
 import com.example.repository.model.SpeciesInfor2Item;
-import com.example.util.NetworkUtils;
+import com.example.util.NetworkUtils2;
 import com.example.util.YhshThreadPoolFactory;
 import com.google.gson.Gson;
 
@@ -42,16 +42,16 @@ import static com.example.base.TopKt.Url3;
  * Date: 2020/8/18
  * Time: 18:13
  */
-public class CartoonViewModel extends AndroidViewModel {
+public class CartoonViewModel2 extends AndroidViewModel {
     private final String TAG = "TAG";
 
-    public CartoonViewModel(@NonNull Application application) {
+    public CartoonViewModel2(@NonNull Application application) {
         super(application);
         Log.i(TAG, "CREATE: ");
     }
 
     //species
-    private String species = "3255";
+    private String species = "0";
 
     public String getSpecies() {
         return species;
@@ -445,13 +445,13 @@ public class CartoonViewModel extends AndroidViewModel {
             return false;
         }
     });
-
+//CartoonRemote cartoonRemote=new CartoonRemote();
     /**
      * 漫画本月人气排行
      **/
     public void getBanner() {
 //        if (cartoonHome.size() > 0) cartoonHome.clear();
-        NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/rank/month-block-1.shtml", 6);
+        NetworkUtils2.getInstance().okhttpGet(handler, "https://manhua.dmzj.com/rank/month-block-1.shtml", 6);
     }
 //
 //
@@ -490,7 +490,7 @@ public class CartoonViewModel extends AndroidViewModel {
      **/
     public void msg3Send(int position) {
         String url2 = "https://manhua.dmzj.com";
-        NetworkUtils.getInstance().OkhttpGet(handler, url2 + mgs3List.get(position).getHref(), 1);
+        NetworkUtils2.getInstance().okhttpGet(handler, url2 + mgs3List.get(position).getHref(), 1);
 //                        NetworkUtils.getInstance().OkhttpGet(handler, "", 1);//测试网页用
     }
 
@@ -512,7 +512,7 @@ public class CartoonViewModel extends AndroidViewModel {
     private void send(String url) {
         YhshThreadPoolFactory.getInstance().executeRequest(() -> {
             try {
-                NetworkUtils.getInstance().send(url, handler, 4);
+                NetworkUtils2.getInstance().send(url, handler, 4);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -526,13 +526,13 @@ public class CartoonViewModel extends AndroidViewModel {
     public void getSpeciesType() {
         species = "0";
         if (typeList.size() > 0) return;
-        NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor", 8);
+        NetworkUtils2.getInstance().okhttpGet(handler, "https://manhua.dmzj.com/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor", 8);
     }
 
     public void getSpeciesData() {
         if (speciesList.size() > 0) speciesList.clear();
         Log.i(TAG, "getSpecies:" + species);
-        NetworkUtils.getInstance().OkhttpGet(handler, "http://sacg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=" + species + "&p=1&callback=search.renderResult", 7);
+        NetworkUtils2.getInstance().okhttpGet(handler, "http://sacg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=" + species + "&p=1&callback=search.renderResult", 7);
     }
 
     /**
@@ -552,25 +552,25 @@ public class CartoonViewModel extends AndroidViewModel {
         if (s.equals(""))
             return;
         if (s.contains("dmzj"))
-            NetworkUtils.getInstance().OkhttpGet(handler, s, 3);
+            NetworkUtils2.getInstance().okhttpGet(handler, s, 3);
         else
-            NetworkUtils.getInstance().OkhttpGet(handler, Url3 + s, 3);
+            NetworkUtils2.getInstance().okhttpGet(handler, Url3 + s, 3);
     }
 
 
     public void nextPager() {//下一页
         pager++;
-        NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/update_" + pager + ".shtml", 2);
+        NetworkUtils2.getInstance().okhttpGet(handler, "https://manhua.dmzj.com/update_" + pager + ".shtml", 2);
     }
 
     public void refreshPager() {//刷新
         pager = 1;
         cartoonInfors.clear();
-        NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/update_" + pager + ".shtml", 2);
+        NetworkUtils2.getInstance().okhttpGet(handler, "https://manhua.dmzj.com/update_" + pager + ".shtml", 2);
     }
 
     public void getHomeCartoon() {
-        NetworkUtils.getInstance().OkhttpGet(handler, "https://manhua.dmzj.com/update_" + pager + ".shtml", 2);
+        NetworkUtils2.getInstance().okhttpGet(handler, "https://manhua.dmzj.com/update_" + pager + ".shtml", 2);
     }
 
     /***
@@ -583,7 +583,7 @@ public class CartoonViewModel extends AndroidViewModel {
         String url = favouriteInfor.getUrl();
         Log.i(TAG, "favouriteGet: " + url);
         putBundle(favouriteInfor.getTitle(), favouriteInfor.getImgUrl(), favouriteInfor.getUrl(), R.id.favoriteFragment);
-        NetworkUtils.getInstance().OkhttpGet(handler, url, 3);
+        NetworkUtils2.getInstance().okhttpGet(handler, url, 3);
     }
 
 
@@ -595,7 +595,7 @@ public class CartoonViewModel extends AndroidViewModel {
         String s = cartoonInfor.getHref();
         putBundle(cartoonInfor.getTitile(), cartoonInfor.getImg(), s, R.id.homeFragment);
         Log.i(TAG, "onClick: " + s);
-        NetworkUtils.getInstance().OkhttpGet(handler, s, 3);
+        NetworkUtils2.getInstance().okhttpGet(handler, s, 3);
     }
 
 
@@ -606,7 +606,7 @@ public class CartoonViewModel extends AndroidViewModel {
 //
     public void search(String name) {
         Log.i(TAG, "search: " + name);
-        NetworkUtils.getInstance().OkhttpGet(handler, "https://sacg.dmzj.com/comicsum/search.php?s=" + name, 5);
+        NetworkUtils2.getInstance().okhttpGet(handler, "https://sacg.dmzj.com/comicsum/search.php?s=" + name, 5);
     }
 
     //

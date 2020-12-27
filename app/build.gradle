@@ -19,6 +19,7 @@ android {
 //dataBinding
     buildFeatures {
         dataBinding = true
+        viewBinding = true
     }
     buildTypes {
         release {
@@ -79,5 +80,7 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     //banner
     implementation 'com.youth.banner:banner:2.1.0'
+    //binding
+    implementation 'com.hi-dhl:binding:1.0.1'
 }
 

@@ -23,7 +23,7 @@ fun <T> RecyclerView.setUpWithGrid(t: T, num: Int) {
     adapter = t as RecyclerView.Adapter<*>
 }
 
-fun Logi(msg: String) = Log.i(TAG, msg)
+fun logi(msg: String) = Log.i(TAG, msg)
 const val TAG = "TAG"
 const val Url3 = "https://manhua.dmzj.com/"
 val headers = Headers {

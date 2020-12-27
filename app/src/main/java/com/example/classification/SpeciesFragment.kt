@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.DataBindingAdapter
 import com.example.base.BaseFragment
-import com.example.base.Logi
+import com.example.base.logi
 import com.example.base.setUpWithGrid
 import com.example.favourite.FavouriteRvAdapter
 import com.example.hwq_cartoon.BR
@@ -19,7 +19,7 @@ import com.example.viewModel.CartoonViewModel
 class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_species) {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        Logi("onSpeciesActivityCreated: ")
+        logi("onSpeciesActivityCreated: ")
         var mark = 0
         val viewModel = viewModel<CartoonViewModel>(CartoonViewModel::class.java)
         viewModel.getSpeciesType()
@@ -57,6 +57,6 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
 
     override fun onDestroy() {
         super.onDestroy()
-        Logi("SpeciesonDestroy: ")
+        logi("SpeciesonDestroy: ")
     }
 }

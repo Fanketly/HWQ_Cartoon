@@ -29,6 +29,7 @@ abstract class BaseFragment<T : ViewDataBinding>(@LayoutRes val layId: Int) : Fr
         return b.root
     }
 
+
     inline fun <reified V : ViewModel> viewModel(clazz: Class<out ViewModel>): V {
         return ViewModelProvider(requireActivity())[clazz] as V
     }

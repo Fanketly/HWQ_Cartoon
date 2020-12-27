@@ -85,6 +85,10 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "没找到此漫画", Toast.LENGTH_SHORT).show()
                 }
         }
+        //错误监听
+        viewModel.errorLiveData.observe(this){
+            Toast.makeText(this,it,Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun beginTransaction(bundle: Bundle?, clazz: Class<out Fragment>) =

@@ -14,10 +14,9 @@
         android:theme="@style/Theme.HWQ_Cartoon"
         android:fullBackupContent="@xml/backup_descriptor">
         <activity android:name=".MainActivity" android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity">
+            tools:ignore="LockedOrientationActivity" android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

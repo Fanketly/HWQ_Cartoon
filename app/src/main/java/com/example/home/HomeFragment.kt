@@ -38,21 +38,24 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
 
         //搜索栏
-        b.searchHome.isSubmitButtonEnabled = true
-        b.searchHome.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(p0: String?): Boolean {
-                if (!p0?.trim().isNullOrEmpty()) {
-                    viewModel.search(p0)
-                    b.searchHome.isIconified = true
-                    b.searchHome.clearFocus() // 不获取焦点
+        b.searchHome.apply {
+            isSubmitButtonEnabled = true
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(p0: String?): Boolean {
+                    if (!p0?.trim().isNullOrEmpty()) {
+                        viewModel.search(p0)
+                      isIconified = true
+                      clearFocus() // 不获取焦点
+                      onActionViewCollapsed()  //可以收起SearchView视图
+                    }
+                    return true
                 }
-                return true
-            }
 
-            override fun onQueryTextChange(p0: String?): Boolean {
-                return false
-            }
-        })
+                override fun onQueryTextChange(p0: String?): Boolean {
+                    return false
+                }
+            })
+        }
 
         //rv
         b.rvHome.overScrollMode = RecyclerView.OVER_SCROLL_NEVER

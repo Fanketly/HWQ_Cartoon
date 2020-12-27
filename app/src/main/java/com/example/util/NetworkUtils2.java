@@ -16,17 +16,17 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class NetworkUtils {
+public class NetworkUtils2 {
 
-    private NetworkUtils() {
+    private NetworkUtils2() {
 
     }
 
     private static class Singleton {
-        private static final NetworkUtils network = new NetworkUtils();
+        private static final NetworkUtils2 network = new NetworkUtils2();
     }
 
-    public static NetworkUtils getInstance() {
+    public static NetworkUtils2 getInstance() {
         return Singleton.network;
     }
 
@@ -87,7 +87,9 @@ public class NetworkUtils {
     public String getRetStr(String url) throws IOException {
         Request request = new Request.Builder().url(url).build();
         Call call = okHttpClient.newCall(request);
-        return Objects.requireNonNull(call.execute().body()).string();
+        String s=call.execute().body().string();
+        if (s.equals("")) return "";
+        return s;
     }
 
     public void OKHttpPost(FormBody formBody, Handler handler) {

@@ -13,13 +13,14 @@
         android:background="#FFFFFF"
         tools:context="com.example.detailed.DetailedFragment">
 
-        <ImageButton
-            android:id="@+id/btnDetailBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/abc_vector_test"
+        <View
+            android:id="@+id/view2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/theme_blue"
             app:layout_constraintBottom_toTopOf="@+id/guideline5"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,10 +49,13 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline11"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline9"
-            app:layout_constraintTop_toTopOf="@+id/guideline10" />
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/btnDetailBack"
+            app:layout_constraintEnd_toEndOf="@+id/view2"
+            app:layout_constraintStart_toEndOf="@+id/btnDetailBack"
+            app:layout_constraintTop_toTopOf="@+id/btnDetailBack" />
 
         <ImageView
             android:id="@+id/imgDetail"
@@ -127,6 +131,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgDetail"
             app:layout_constraintTop_toTopOf="@+id/guideline11" />
+
+        <ImageButton
+            android:id="@+id/btnDetailBack"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/ic_baseline_arrow_back_ios_24"
+            android:contentDescription="@string/todo"
+            app:layout_constraintBottom_toTopOf="@+id/guideline5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="4dp"
+            android:text="简介"
+            android:textColor="@color/hui"
+            app:layout_constraintBottom_toTopOf="@+id/tvDetailContent"
+            app:layout_constraintStart_toStartOf="@+id/guideline9" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

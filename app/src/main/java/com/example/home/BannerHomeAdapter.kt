@@ -15,7 +15,7 @@ import com.youth.banner.adapter.BannerAdapter
  * Date: 2020/12/19
  * Time: 16:43
  */
-class BannerHomeAdapter(val list: MutableList<CartoonInfor>, val context: Context) :
+class BannerHomeAdapter(val list: List<CartoonInfor>, val context: Context) :
     BannerAdapter<CartoonInfor, BannerHomeAdapter.BannerViewHolder>(list) {
     class BannerViewHolder(val img: ImageView) : RecyclerView.ViewHolder(img)
 
