@@ -20,11 +20,10 @@ object NetworkUtils {
     }
 
 
-    fun send(url: String): String {
+    fun send(url: String): ByteArray? {
         Log.i("TAG", "send: $url")
         val request: Request = Request.Builder()
             .url(url)
-            .method("GET", null)
             .addHeader(
                 "User-Agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36"
@@ -32,6 +31,6 @@ object NetworkUtils {
             .addHeader("Referer", "https://manhua.dmzj.com/tongzhenmiejueliedao/99325.shtml")
             .build()
         val call = okHttpClient.newCall(request)
-        return call.execute().body?.string() ?: return ""
+        return call.execute().body?.bytes()
     }
 }

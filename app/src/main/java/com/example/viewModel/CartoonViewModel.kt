@@ -1,8 +1,6 @@
 package com.example.viewModel
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,14 +9,15 @@ import com.example.base.Url3
 import com.example.hwq_cartoon.R
 import com.example.repository.model.*
 import com.example.repository.remote.CartoonRemote
-import com.example.util.NetworkUtils
 import com.example.util.YhshThreadPoolFactory
 import com.google.gson.Gson
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
-import java.io.IOException
 import java.util.*
 import java.util.regex.Pattern
 
@@ -28,6 +27,7 @@ import java.util.regex.Pattern
  * Date: 2020/12/27
  * Time: 20:35
  */
+@ExperimentalCoroutinesApi
 class CartoonViewModel : ViewModel() {
 
     init {
@@ -71,396 +71,400 @@ class CartoonViewModel : ViewModel() {
     //banner
     val bannerList: MutableList<CartoonInfor> = ArrayList()
     val bannerLiveData = MutableLiveData<List<CartoonInfor>>()
+    private fun what3(string: String) {
+        val document = Jsoup.parse(string)
+        val elements = document.getElementsByClass("cartoon_online_border")
+        content = document.select(".line_height_content").text()
+        val elements1 = elements.select("a")
+        var cartoonInfor: CartoonInfor
+        for (e in elements1) {
+            cartoonInfor = CartoonInfor(e.text(), e.attr("href"))
+            mgs3List.add(cartoonInfor)
+        }
+        if (mgs3List.size > 0) msg3LiveData.postValue(mgs3List)
+    }
 
-
-    private val handler = Handler(
-        Looper.myLooper()!!
-    ) { msg ->
-        when (msg.what) {
-            1 -> { //图片
-                val document = Jsoup.parse(msg.obj as String)
-                val elements = document.getElementsByTag("script")
-                if (elements.size != 0) {
-                    val elScriptList = elements[0].data().split(";").toTypedArray()
-                    val s6 = elScriptList[6] //7
-                    val s7 = elScriptList[7] //第8个u
-                    val strings = s6.split(",").toTypedArray() //地址分割
-                    var urlheard: String? = null
-                    val ss = s7.substring(0, s7.indexOf(".") - 1)
-                    Collections.addAll(
-                        msg4List,
-                        *ss.split("\\|").toTypedArray()
-                    )
-                    val s0 = msg4List[0]
-                    msg4List[0] =
-                        s0.substring(s0.lastIndexOf("'") + 1) //分割后得到的 3:AD 4:E7 5:E4 6:90 7:A9 8:E6
-                    var mark = 0
-                    for ((n, a) in msg4List.withIndex()) {
-                        Log.i(TAG, "$n: $a")
-                    }
-                    var i = 2
-                    val length = strings.size
-                    while (i < length) {
-                        //地址分割
-                        var s = strings[i]
-                        if (i == 2) { //储存第一个地址的前面固定形式
-                            Log.i(TAG, "s2: $s") //获取到的第一个地址
-                            s = s.substring(s.lastIndexOf("[") + 2, s.lastIndexOf("\""))
-                            val sss = s.split("\\\\\\\\").toTypedArray()
-                            Log.i(
-                                TAG,
-                                "onCreate: " + sss.contentToString()
-                            ) //处理之后的第一个
-                            val stringBuffer = StringBuilder()
-                            val c = sss[0][0]
-                            var sss0: String
-                            sss0 =
-                                if (conversion(c) >= msg4List.size) c.toString() else getStringList2(
-                                    conversion(
-                                        sss[0][0]
-                                    )
-                                )
-                            val url = "https://images.dmzj.com/"
-                            if (sss0 == "") //判断*/y/*的y
-                                stringBuffer.append(url).append(sss[0])
-                                    .append("/") else stringBuffer.append(url).append(sss0)
-                                .append("/")
-                            var ssss: Array<String>
-                            var j = 1
-                            val sssLength = sss.size
-                            while (j < sssLength) {
-                                val s3 = sss[j]
-                                if (j == sssLength - 1) { //末尾页数
-                                    urlheard = stringBuffer.toString()
-                                    Log.i(TAG, "s3$s3")
-                                    when {
-                                        s3.contains("%") -> {
-                                            ssss = s3.split("%").toTypedArray()
-                                            val ss0 = ssss[0].replace("/", "")
-                                            if (ss0 != "") {
-                                                if (ss0.length == 1) stringBuffer.append(
-                                                    getStringList(
-                                                        conversion(
-                                                            ss0[0]
-                                                        )
-                                                    )
-                                                ) else stringBuffer.append(
-                                                    getStringList(
-                                                        conversionString(
-                                                            ss0
-                                                        )
-                                                    )
-                                                )
-                                            }
-                                            var sk: String
-                                            var k = 1
-                                            val ssssLength = ssss.size
-                                            while (k < ssssLength) {
-                                                sk = ssss[k]
-                                                stringBuffer.append("%")
-                                                if (k == ssssLength - 1) {
-                                                    sk = sk.substring(0, sk.indexOf("."))
-                                                    stringBuffer.append(getStringList(conversion(sk[0])))
-                                                        .append(".").append(
-                                                            getStringList(
-                                                                conversion(
-                                                                    s3[s3.length - 1]
-                                                                )
-                                                            )
-                                                        )
-                                                } else {
-                                                    stringBuffer.append(getStringList(conversion(sk[0])))
-                                                }
-                                                k++
-                                            }
-                                        }
-                                        s3.contains("-") -> {
-                                            stringBuffer.append(getStringList(conversion(s3[1])))
-                                                .append("-")
-                                                .append(getStringList(conversion(s3[3])))
-                                                .append(".")
-                                                .append(getStringList(conversion(s3[5])))
-                                        }
-                                        s3.contains("/") -> {
-                                            stringBuffer.append(getStringList(conversion(s3[1])))
-                                                .append(".")
-                                                .append(getStringList(conversion(s3[3])))
-                                        }
-                                    }
-                                } else {
-                                    Log.i(TAG, "ss3: $s3")
+    private fun what1(string: String) {
+        val document = Jsoup.parse(string)
+        val elements = document.getElementsByTag("script")
+        if (elements.size != 0) {
+            val elScriptList = elements[0].data().split(";").toTypedArray()
+            val s6 = elScriptList[6] //7
+            val s7 = elScriptList[7] //第8个u
+            val strings = s6.split(",").toTypedArray() //地址分割
+            var urlheard: String? = null
+            val ss = s7.substring(0, s7.indexOf(".") - 1)
+            Collections.addAll(
+                msg4List,
+                *ss.split("\\|").toTypedArray()
+            )
+            val s0 = msg4List[0]
+            msg4List[0] =
+                s0.substring(s0.lastIndexOf("'") + 1) //分割后得到的 3:AD 4:E7 5:E4 6:90 7:A9 8:E6
+            var mark = 0
+            for ((n, a) in msg4List.withIndex()) {
+                Log.i(TAG, "$n: $a")
+            }
+            var i = 2
+            val length = strings.size
+            while (i < length) {
+                //地址分割
+                var s = strings[i]
+                if (i == 2) { //储存第一个地址的前面固定形式
+                    Log.i(TAG, "s2: $s") //获取到的第一个地址
+                    s = s.substring(s.lastIndexOf("[") + 2, s.lastIndexOf("\""))
+                    val sss = s.split("\\\\\\\\").toTypedArray()
+                    Log.i(
+                        TAG,
+                        "onCreate: " + sss.contentToString()
+                    ) //处理之后的第一个
+                    val stringBuffer = StringBuilder()
+                    val c = sss[0][0]
+                    var sss0: String
+                    sss0 =
+                        if (conversion(c) >= msg4List.size) c.toString() else getStringList2(
+                            conversion(
+                                sss[0][0]
+                            )
+                        )
+                    val url = "https://images.dmzj.com/"
+                    if (sss0 == "") //判断*/y/*的y
+                        stringBuffer.append(url).append(sss[0])
+                            .append("/") else stringBuffer.append(url).append(sss0)
+                        .append("/")
+                    var ssss: Array<String>
+                    var j = 1
+                    val sssLength = sss.size
+                    while (j < sssLength) {
+                        val s3 = sss[j]
+                        if (j == sssLength - 1) { //末尾页数
+                            urlheard = stringBuffer.toString()
+                            Log.i(TAG, "s3$s3")
+                            when {
+                                s3.contains("%") -> {
                                     ssss = s3.split("%").toTypedArray()
-                                    var ssss0 = ssss[0]
-                                    if (ssss0 != "" && ssss0 != "/") { //判断%前面是否有
-                                        ssss0 = ssss0.replace("/", "")
-                                        if (ssss0.contains(".")) {
-                                            stringBuffer.append(ssss0)
-                                        } else {
-                                            stringBuffer.append(getStringList(conversion(ssss0[0])))
-                                        }
-                                        Log.i(TAG, "p: $ssss0")
+                                    val ss0 = ssss[0].replace("/", "")
+                                    if (ss0 != "") {
+                                        if (ss0.length == 1) stringBuffer.append(
+                                            getStringList(
+                                                conversion(
+                                                    ss0[0]
+                                                )
+                                            )
+                                        ) else stringBuffer.append(
+                                            getStringList(
+                                                conversionString(
+                                                    ss0
+                                                )
+                                            )
+                                        )
                                     }
-                                    var ssssk: String
+                                    var sk: String
                                     var k = 1
                                     val ssssLength = ssss.size
                                     while (k < ssssLength) {
-                                        ssssk = ssss[k]
-                                        when {
-                                            ssssk.length == 1 -> {
-                                                stringBuffer.append("%").append(
+                                        sk = ssss[k]
+                                        stringBuffer.append("%")
+                                        if (k == ssssLength - 1) {
+                                            sk = sk.substring(0, sk.indexOf("."))
+                                            stringBuffer.append(getStringList(conversion(sk[0])))
+                                                .append(".").append(
                                                     getStringList(
                                                         conversion(
-                                                            ssss[k][0]
+                                                            s3[s3.length - 1]
                                                         )
                                                     )
                                                 )
-                                            }
-                                            ssssk.contains(".") -> {
-                                                stringBuffer.append("%").append(
-                                                    getStringList(
-                                                        conversion(
-                                                            ssss[k][0]
-                                                        )
-                                                    )
-                                                )
-                                                    .append(".")
-                                                    .append(getStringList(conversion(ssss[k][2])))
-                                            }
-                                            ssssk.contains("-") -> {
-                                                stringBuffer.append("%").append(
-                                                    getStringList(
-                                                        conversion(
-                                                            ssss[k][0]
-                                                        )
-                                                    )
-                                                )
-                                                    .append("-")
-                                                    .append(getStringList(conversion(ssss[k][2])))
-                                            }
+                                        } else {
+                                            stringBuffer.append(getStringList(conversion(sk[0])))
                                         }
                                         k++
                                     }
-                                    stringBuffer.append("/")
                                 }
-                                j++
+                                s3.contains("-") -> {
+                                    stringBuffer.append(getStringList(conversion(s3[1])))
+                                        .append("-")
+                                        .append(getStringList(conversion(s3[3])))
+                                        .append(".")
+                                        .append(getStringList(conversion(s3[5])))
+                                }
+                                s3.contains("/") -> {
+                                    stringBuffer.append(getStringList(conversion(s3[1])))
+                                        .append(".")
+                                        .append(getStringList(conversion(s3[3])))
+                                }
                             }
-                            send(stringBuffer.toString())
                         } else {
-                            var a = s.substring(s.lastIndexOf("/") + 1, s.length - 1)
-                            if (i == strings.size - 1) {
-                                a = a.substring(0, a.length - 3)
+                            Log.i(TAG, "ss3: $s3")
+                            ssss = s3.split("%").toTypedArray()
+                            var ssss0 = ssss[0]
+                            if (ssss0 != "" && ssss0 != "/") { //判断%前面是否有
+                                ssss0 = ssss0.replace("/", "")
+                                if (ssss0.contains(".")) {
+                                    stringBuffer.append(ssss0)
+                                } else {
+                                    stringBuffer.append(getStringList(conversion(ssss0[0])))
+                                }
+                                Log.i(TAG, "p: $ssss0")
                             }
-                            mark++
-                            Log.i(TAG, "$mark: $a") //末尾页数
-                            if (a.length == 3 && urlheard != null) { //末尾是否长度为3
-                                send(
-                                    urlheard +
-                                            getStringList(conversion(a[0])) +
-                                            "." +
-                                            getStringList(conversion(a[2]))
-                                )
-                            } else {
-                                val stringBuffer = StringBuilder()
-                                val b = a.split("%").toTypedArray()
-                                var bj: String
-                                var j = 0
-                                val bLength = b.size
-                                while (j < bLength) {
-                                    bj = b[j]
-                                    if (bj != "") {
-                                        if (j == bLength - 1) { //判断是否包含%
-                                            bj = bj.substring(0, bj.lastIndexOf("."))
+                            var ssssk: String
+                            var k = 1
+                            val ssssLength = ssss.size
+                            while (k < ssssLength) {
+                                ssssk = ssss[k]
+                                when {
+                                    ssssk.length == 1 -> {
+                                        stringBuffer.append("%").append(
+                                            getStringList(
+                                                conversion(
+                                                    ssss[k][0]
+                                                )
+                                            )
+                                        )
+                                    }
+                                    ssssk.contains(".") -> {
+                                        stringBuffer.append("%").append(
+                                            getStringList(
+                                                conversion(
+                                                    ssss[k][0]
+                                                )
+                                            )
+                                        )
+                                            .append(".")
+                                            .append(getStringList(conversion(ssss[k][2])))
+                                    }
+                                    ssssk.contains("-") -> {
+                                        stringBuffer.append("%").append(
+                                            getStringList(
+                                                conversion(
+                                                    ssss[k][0]
+                                                )
+                                            )
+                                        )
+                                            .append("-")
+                                            .append(getStringList(conversion(ssss[k][2])))
+                                    }
+                                }
+                                k++
+                            }
+                            stringBuffer.append("/")
+                        }
+                        j++
+                    }
+                    send(stringBuffer.toString())
+                } else {
+                    var a = s.substring(s.lastIndexOf("/") + 1, s.length - 1)
+                    if (i == strings.size - 1) {
+                        a = a.substring(0, a.length - 3)
+                    }
+                    mark++
+                    Log.i(TAG, "$mark: $a") //末尾页数
+                    if (a.length == 3 && urlheard != null) { //末尾是否长度为3
+                        send(
+                            urlheard +
+                                    getStringList(conversion(a[0])) +
+                                    "." +
+                                    getStringList(conversion(a[2]))
+                        )
+                    } else {
+                        val stringBuffer = StringBuilder()
+                        val b = a.split("%").toTypedArray()
+                        var bj: String
+                        var j = 0
+                        val bLength = b.size
+                        while (j < bLength) {
+                            bj = b[j]
+                            if (bj != "") {
+                                if (j == bLength - 1) { //判断是否包含%
+                                    bj = bj.substring(0, bj.lastIndexOf("."))
+                                }
+                                if (bj.length >= 2) {
+                                    when {
+                                        bj.contains("-") -> {
+                                            split(bj, stringBuffer, "-")
                                         }
-                                        if (bj.length >= 2) {
-                                            when {
-                                                bj.contains("-") -> {
-                                                    split(bj, stringBuffer, "-")
-                                                }
-                                                bj.contains(".") -> {
-                                                    split(bj, stringBuffer, "\\.")
-                                                }
-                                                bj.contains("~") -> {
-                                                    split(bj, stringBuffer, "~")
-                                                }
-                                                else -> {
-                                                    twoWords(bj, stringBuffer)
-                                                }
-                                            }
-                                        } else {
-                                            stringBuffer.append(getStringList(conversion(bj[0])))
+                                        bj.contains(".") -> {
+                                            split(bj, stringBuffer, "\\.")
+                                        }
+                                        bj.contains("~") -> {
+                                            split(bj, stringBuffer, "~")
+                                        }
+                                        else -> {
+                                            twoWords(bj, stringBuffer)
                                         }
                                     }
-                                    if (j != b.size - 1) stringBuffer.append("%")
-                                    j++
+                                } else {
+                                    stringBuffer.append(getStringList(conversion(bj[0])))
                                 }
-                                send(
-                                    urlheard +
-                                            stringBuffer +
-                                            "." +
-                                            getStringList(conversion(a[a.length - 1]))
-                                )
                             }
+                            if (j != b.size - 1) stringBuffer.append("%")
+                            j++
                         }
-                        i++
-                    }
-                } else {
-                    Log.i(TAG, "所选漫画消失")
-                }
-            }
-            2 -> { //漫画
-                val document = Jsoup.parse(msg.obj as String)
-                val element = document.getElementsByClass("newpic_content")
-                val elements = element[0].getElementsByClass("boxdiv1")
-                var element1: Element
-                var element2: Element
-                var element3: Element
-                var cartoonInfor: CartoonInfor
-                for (e in elements) {
-                    element1 = e.select(".picborder a").first() //图片
-                    element2 = e.select(".picborder img").first()
-                    element3 = e.select(".pictext li")[2]
-                    cartoonInfor = CartoonInfor(
-                        element1.attr("title"),
-                        element1.attr("href"),
-                        element2.attr("src"),
-                        element3.text()
-                    )
-                    cartoonInfors.add(cartoonInfor)
-                }
-                homeLiveData.setValue(cartoonInfors)
-            }
-            3 -> { //集数
-                val document = Jsoup.parse(msg.obj as String)
-                val elements = document.getElementsByClass("cartoon_online_border")
-                content = document.select(".line_height_content").text()
-                val elements1 = elements.select("a")
-                var cartoonInfor: CartoonInfor
-                for (e in elements1) {
-                    cartoonInfor = CartoonInfor(e.text(), e.attr("href"))
-                    mgs3List.add(cartoonInfor)
-                }
-                if (mgs3List.size > 0) msg3LiveData.value = mgs3List
-            }
-            4 -> { //显示漫画
-                imgList.add(msg.obj as ByteArray)
-                msg4LiveData.setValue(imgList)
-            }
-            5 -> { //查询
-                val s = msg.obj as String
-                if (s.isNotEmpty()) {
-                    val ss = s.split("\\{").toTypedArray()
-                    var cartoonInfor: CartoonInfor
-                    if (ss.size > 10) {
-                        var ss2: Array<String>
-                        var s51: String
-                        var s56: String
-                        var s54: String
-                        for (i in 1..10) {
-                            ss2 = ss[i].split(",").toTypedArray()
-                            //4 图 6 地址 1 名称
-                            s51 = ss2[1]
-                            s56 = ss2[6]
-                            s54 = ss2[4]
-                            cartoonInfor = CartoonInfor(
-                                decode(s51.substring(14, s51.length - 1)),
-                                "https://" + s56.substring(21, s56.length - 1)
-                                    .replace("\\\\".toRegex(), ""),
-                                s54.substring(9, s54.length - 1).replace("\\\\".toRegex(), "")
-                            )
-                            searchList.add(cartoonInfor)
-                        }
-                    } else {
-                        var ss2: Array<String>
-                        var s51: String
-                        var s56: String
-                        var s54: String
-                        for (i in 1 until ss.size) {
-                            ss2 = ss[i].split(",").toTypedArray()
-                            //4 图 6 地址 1 名称
-                            s51 = ss2[1]
-                            s56 = ss2[6]
-                            s54 = ss2[4]
-                            cartoonInfor = CartoonInfor(
-                                decode(s51.substring(14, s51.length - 1)),
-                                "https://" + s56.substring(21, s56.length - 1)
-                                    .replace("\\\\".toRegex(), ""),
-                                s54.substring(9, s54.length - 1).replace("\\\\".toRegex(), "")
-                            )
-                            searchList.add(cartoonInfor)
-                        }
-                    }
-                    searchLiveData.setValue(true)
-                } else {
-                    searchLiveData.setValue(false)
-                }
-            }
-            6 -> { //home
-                val document = Jsoup.parse(msg.obj as String)
-                val element = document.getElementsByClass("middleright-right")
-                val elements = element[0].getElementsByClass("middlerighter1")
-                var element1: Element
-                var element2: Element
-                var element3: Element
-                var cartoonInfor: CartoonInfor
-                for (i in 0..4) {
-                    val e = elements[i]
-                    element1 = e.select(".righter-img a").first() //图片
-                    element2 = e.select(".righter-img img").first()
-                    element3 = e.select(".righter-mr span")[5]
-                    cartoonInfor = CartoonInfor(
-                        element1.attr("title"),
-                        element1.attr("href"),
-                        element2.attr("src"),
-                        "分类：" + element3.text()
-                    )
-                    bannerList.add(cartoonInfor)
-                }
-                bannerLiveData.setValue(bannerList)
-            }
-            7 -> {
-                var str = msg.obj.toString()
-                str = str.substring(str.indexOf("["), str.lastIndexOf("]") + 1)
-                val gson = Gson()
-                val speciesInfor2s: List<SpeciesInfor2Item> =
-                    gson.fromJson(
-                        str,
-                        SpeciesInfor2::class.java
-                    )
-                Log.i(TAG, ": " + speciesInfor2s[0].comic_cover)
-                for ((_, comic_cover, comic_url, _, _, _, _, name) in speciesInfor2s) {
-                    speciesList.add(FavouriteInfor(comic_url, "https:$comic_cover", name))
-                }
-                speciesLiveData.setValue(true)
-            }
-            8 -> {
-                typeList.add(SpeciesInfor("0", "全部"))
-                val document = Jsoup.parse(msg.obj as String)
-                val typeElms = document.getElementsByClass("search_list_m_right")[4]
-                for (a in typeElms.select("a")) {
-                    typeList.add(
-                        SpeciesInfor(
-                            a.attr("id").substring(5),
-                            a.attr("title")
+                        send(
+                            urlheard +
+                                    stringBuffer +
+                                    "." +
+                                    getStringList(conversion(a[a.length - 1]))
                         )
-                    )
+                    }
                 }
-                getSpeciesData()
+                i++
             }
+        } else {
+            Log.i(TAG, "所选漫画消失")
         }
-        false
+    }
+
+    private fun what5(s: String) {
+        if (s.isNotEmpty()) {
+            val ss = s.split("\\{").toTypedArray()
+            var cartoonInfor: CartoonInfor
+            if (ss.size > 10) {
+                var ss2: Array<String>
+                var s51: String
+                var s56: String
+                var s54: String
+                for (i in 1..10) {
+                    ss2 = ss[i].split(",").toTypedArray()
+                    //4 图 6 地址 1 名称
+                    s51 = ss2[1]
+                    s56 = ss2[6]
+                    s54 = ss2[4]
+                    cartoonInfor = CartoonInfor(
+                        decode(s51.substring(14, s51.length - 1)),
+                        "https://" + s56.substring(21, s56.length - 1)
+                            .replace("\\\\".toRegex(), ""),
+                        s54.substring(9, s54.length - 1).replace("\\\\".toRegex(), "")
+                    )
+                    searchList.add(cartoonInfor)
+                }
+            } else {
+                var ss2: Array<String>
+                var s51: String
+                var s56: String
+                var s54: String
+                for (i in 1 until ss.size) {
+                    ss2 = ss[i].split(",").toTypedArray()
+                    //4 图 6 地址 1 名称
+                    s51 = ss2[1]
+                    s56 = ss2[6]
+                    s54 = ss2[4]
+                    cartoonInfor = CartoonInfor(
+                        decode(s51.substring(14, s51.length - 1)),
+                        "https://" + s56.substring(21, s56.length - 1)
+                            .replace("\\\\".toRegex(), ""),
+                        s54.substring(9, s54.length - 1).replace("\\\\".toRegex(), "")
+                    )
+                    searchList.add(cartoonInfor)
+                }
+            }
+            searchLiveData.postValue(true)
+        } else {
+            searchLiveData.postValue(false)
+        }
+    }
+
+//    private val handler = Handler(
+//        Looper.myLooper()!!
+//    ) { msg ->
+//        when (msg.what) {
+//            1 -> { //图片
+//
+//            }
+//            2 -> { //漫画
+//
+//            }
+//            3 -> { //集数
+//
+//            }
+//            4 -> { //显示漫画
+//
+//            }
+//            5 -> { //查询
+//
+//            }
+//            6 -> { //home
+//
+//            }
+//            7 -> {
+//
+//            }
+//            8 -> {
+//
+//            }
+//        }
+//        false
+//    }
+
+    private fun what6(it: String) {
+        val document = Jsoup.parse(it)
+        val element = document.getElementsByClass("middleright-right")
+        val elements = element[0].getElementsByClass("middlerighter1")
+        var element1: Element
+        var element2: Element
+        var element3: Element
+        var cartoonInfor: CartoonInfor
+        for (i in 0..4) {
+            val e = elements[i]
+            element1 = e.select(".righter-img a").first() //图片
+            element2 = e.select(".righter-img img").first()
+            element3 = e.select(".righter-mr span")[5]
+            cartoonInfor = CartoonInfor(
+                element1.attr("title"),
+                element1.attr("href"),
+                element2.attr("src"),
+                "分类：" + element3.text()
+            )
+            bannerList.add(cartoonInfor)
+        }
+        bannerLiveData.postValue(bannerList)
+    }
+
+    private fun what7(str2: String) {
+        val str = str2.substring(str2.indexOf("["), str2.lastIndexOf("]") + 1)
+        val gson = Gson()
+        val speciesInfor2s: List<SpeciesInfor2Item> =
+            gson.fromJson(
+                str,
+                SpeciesInfor2::class.java
+            )
+        Log.i(TAG, ": " + speciesInfor2s[0].comic_cover)
+        for ((_, comic_cover, comic_url, _, _, _, _, name) in speciesInfor2s) {
+            speciesList.add(FavouriteInfor(comic_url, "https:$comic_cover", name))
+        }
+        speciesLiveData.postValue(true)
+    }
+
+    private fun what8(s: String) {
+        typeList.add(SpeciesInfor("0", "全部"))
+        val document = Jsoup.parse(s)
+        val typeElms = document.getElementsByClass("search_list_m_right")[4]
+        for (a in typeElms.select("a")) {
+            typeList.add(
+                SpeciesInfor(
+                    a.attr("id").substring(5),
+                    a.attr("title")
+                )
+            )
+        }
+        getSpeciesData()
     }
 
     //remote
-    private val remote = CartoonRemote()
     val errorLiveData = MutableLiveData<String>()
+    private val remote = CartoonRemote(errorLiveData)
 
     /**
      * 漫画本月人气排行
      */
     fun getBanner() {
 //        if (cartoonHome.size() > 0) cartoonHome.clear();
-        remote.getData("https://manhua.dmzj.com/rank/month-block-1.shtml")
-            .catch { errorLiveData.value = it.message }
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getData("https://manhua.dmzj.com/rank/month-block-1.shtml")
+                .collect {
+                    what6(it)
+                }
+        }
 //        NetworkUtils.getInstance()
 //            .OkhttpGet(handler, "https://manhua.dmzj.com/rank/month-block-1.shtml", 6)
     }
@@ -524,7 +528,11 @@ class CartoonViewModel : ViewModel() {
      */
     fun msg3Send(position: Int) {
         val url2 = "https://manhua.dmzj.com"
-        NetworkUtils.getInstance().OkhttpGet(handler, url2 + mgs3List[position].href, 1)
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getData(url2 + mgs3List[position].href).collect {
+                what1(it)
+            }
+        }
 //                        NetworkUtils.getInstance().OkhttpGet(handler, "", 1);//测试网页用
     }
 
@@ -534,23 +542,27 @@ class CartoonViewModel : ViewModel() {
     }
 
     fun onMsg4Dismiss() {
-        if (!YhshThreadPoolFactory.IsShutDown()) {
-            handler.removeCallbacksAndMessages(null)
-            YhshThreadPoolFactory.getInstance().shutDown()
-            imgList.clear()
-        }
+//        if (!YhshThreadPoolFactory.IsShutDown()) {
+//            handler.removeCallbacksAndMessages(null)
+//            YhshThreadPoolFactory.getInstance().shutDown()
+        imgList.clear()
+//        }
         Log.i("TAG", "onDismiss4: ")
     }
 
-
+    //val join= CoroutineScope(Dispatchers.IO).launch {  }
     private fun send(url: String) {
-        YhshThreadPoolFactory.getInstance().executeRequest {
-            try {
-                NetworkUtils.getInstance().send(url, handler, 4)
-            } catch (e: IOException) {
-                e.printStackTrace()
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getImg(url).collect {
+                if (it != null) {
+                    imgList.add(it)
+                    msg4LiveData.postValue(imgList)
+                }
             }
         }
+//        YhshThreadPoolFactory.getInstance().executeRequest{
+//                NetworkUtils.getInstance().send(url, handler, 4)
+//        }
     }
 
     /**
@@ -560,21 +572,33 @@ class CartoonViewModel : ViewModel() {
     fun getSpeciesType() {
         species = "0"
         if (typeList.size > 0) return
-        NetworkUtils.getInstance().OkhttpGet(
-            handler,
-            "https://manhua.dmzj.com/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor",
-            8
-        )
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getData("https://manhua.dmzj.com/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor")
+                .collect {
+                    what8(it)
+                }
+        }
+//        NetworkUtils.getInstance().OkhttpGet(
+//            handler,
+//            "https://manhua.dmzj.com/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor",
+//            8
+//        )
     }
 
     fun getSpeciesData() {
         if (speciesList.size > 0) speciesList.clear()
         Log.i(TAG, "getSpecies:$species")
-        NetworkUtils.getInstance().OkhttpGet(
-            handler,
-            "http://sacg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=$species&p=1&callback=search.renderResult",
-            7
-        )
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getData("http://sacg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=$species&p=1&callback=search.renderResult")
+                .collect {
+                    what7(it)
+                }
+        }
+//        NetworkUtils.getInstance().OkhttpGet(
+//            handler,
+//            "",
+//            7
+//        )
     }
 
     /**
@@ -584,32 +608,62 @@ class CartoonViewModel : ViewModel() {
 
     fun getHomeCartoon(position: Int) {
         val info = cartoonInfors[position]
-        val s = info.href
+        var s = info.href
         putBundle(info.titile, info.img, s, R.id.homeFragment)
         Log.i(TAG, "onClick: $s")
         if (s == "") return
-        if (s.contains("dmzj")) NetworkUtils.getInstance()
-            .OkhttpGet(handler, s, 3) else NetworkUtils.getInstance()
-            .OkhttpGet(handler, Url3 + s, 3)
+        CoroutineScope(Dispatchers.IO).launch {
+            if (!s.contains("dmzj"))
+                s = Url3 + s
+            remote.getData(s).collect {
+                what3(it)
+            }
+        }
+
     }
 
+    private fun pager() {
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getData("https://manhua.dmzj.com/update_$pager.shtml")
+                .collect {
+                    val document = Jsoup.parse(it)
+                    val element = document.getElementsByClass("newpic_content")
+                    val elements = element[0].getElementsByClass("boxdiv1")
+                    var element1: Element
+                    var element2: Element
+                    var element3: Element
+                    var cartoonInfor: CartoonInfor
+                    for (e in elements) {
+                        element1 = e.select(".picborder a").first() //图片
+                        element2 = e.select(".picborder img").first()
+                        element3 = e.select(".pictext li")[2]
+                        cartoonInfor = CartoonInfor(
+                            element1.attr("title"),
+                            element1.attr("href"),
+                            element2.attr("src"),
+                            element3.text()
+                        )
+                        cartoonInfors.add(cartoonInfor)
+                    }
+                    homeLiveData.postValue(cartoonInfors)
+                }
+        }
+    }
 
     fun nextPager() { //下一页
         pager++
-        NetworkUtils.getInstance()
-            .OkhttpGet(handler, "https://manhua.dmzj.com/update_$pager.shtml", 2)
+        pager()
+//            .OkhttpGet(handler, "https://manhua.dmzj.com/update_$pager.shtml", 2)
     }
 
     fun refreshPager() { //刷新
         pager = 1
         cartoonInfors.clear()
-        NetworkUtils.getInstance()
-            .OkhttpGet(handler, "https://manhua.dmzj.com/update_$pager.shtml", 2)
+        pager()
     }
 
     fun getHomeCartoon() {
-        NetworkUtils.getInstance()
-            .OkhttpGet(handler, "https://manhua.dmzj.com/update_$pager.shtml", 2)
+        pager()
     }
 
     /***
@@ -625,7 +679,13 @@ class CartoonViewModel : ViewModel() {
             favouriteInfor.url,
             R.id.favoriteFragment
         )
-        NetworkUtils.getInstance().OkhttpGet(handler, url, 3)
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getData(url)
+                .collect {
+                    what3(it)
+                }
+        }
+//        NetworkUtils.getInstance().OkhttpGet(handler, url, 3)
     }
 
 
@@ -637,7 +697,10 @@ class CartoonViewModel : ViewModel() {
         val s = cartoonInfor.href
         putBundle(cartoonInfor.titile, cartoonInfor.img, s, R.id.homeFragment)
         Log.i(TAG, "onClick: $s")
-        NetworkUtils.getInstance().OkhttpGet(handler, s, 3)
+//        NetworkUtils.getInstance().OkhttpGet(handler, s, 3)
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getData(s).collect { what3(it) }
+        }
     }
 
 
@@ -648,10 +711,16 @@ class CartoonViewModel : ViewModel() {
     //
     fun search(name: String?) {
         Log.i(TAG, "search: $name")
-        NetworkUtils.getInstance().OkhttpGet(
-            handler,
-            "https://sacg.dmzj.com/comicsum/search.php?s=$name", 5
-        )
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getData("https://sacg.dmzj.com/comicsum/search.php?s=$name")
+                .collect {
+                    what5(it)
+                }
+        }
+//        NetworkUtils.getInstance().OkhttpGet(
+//            handler,
+//            "https://sacg.dmzj.com/comicsum/search.php?s=$name", 5
+//        )
     }
 
     //
