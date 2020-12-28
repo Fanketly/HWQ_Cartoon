@@ -64,6 +64,11 @@ class MainActivity : AppCompatActivity() {
             }
             return@setOnNavigationItemSelectedListener true
         }
+        //pg监听
+        viewModel.pgLiveData.observe(this){
+            if (it)b.pgMain.visibility=View.GONE
+            else b.pgMain.visibility=View.VISIBLE
+        }
         //底部监听
         viewModel.bottomLiveData.observe(this) {
             if (it) b.bottomNav.visibility = View.GONE
@@ -72,6 +77,7 @@ class MainActivity : AppCompatActivity() {
         //集数Detail监听
         viewModel.msg3LiveData.observe(this) {
             viewModel.bottomLiveData.value = true
+            viewModel.pgLiveData.value=true
             beginTransaction(viewModel.bundle, DetailedFragment::class.java)
         }
         //Search监听

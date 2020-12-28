@@ -45,6 +45,9 @@ class CartoonViewModel : ViewModel() {
     //监听是否隐藏bottom
     val bottomLiveData = MutableLiveData<Boolean>()
 
+    //加载监听
+    val pgLiveData = MutableLiveData<Boolean>()
+
     //msg2主页漫画
     val cartoonInfors: MutableList<CartoonInfor> = ArrayList()
     val homeLiveData = MutableLiveData<List<CartoonInfor>>()
@@ -54,6 +57,7 @@ class CartoonViewModel : ViewModel() {
     val mgs3List: MutableList<CartoonInfor> = ArrayList()
     val msg3LiveData = MutableLiveData<List<CartoonInfor>>()
     var content: String? = null
+    private val url2 = "https://manhua.dmzj.com"
 
     //msg4显示漫画
     val msg4List: MutableList<String> = ArrayList()
@@ -440,8 +444,6 @@ class CartoonViewModel : ViewModel() {
                     what6(it)
                 }
         }
-//        NetworkUtils.getInstance()
-//            .OkhttpGet(handler, "https://manhua.dmzj.com/rank/month-block-1.shtml", 6)
     }
 
 
@@ -458,15 +460,14 @@ class CartoonViewModel : ViewModel() {
      * 加载图片部分
      */
     fun msg3Send(position: Int) {
-        val url2 = "https://manhua.dmzj.com"
-        CoroutineScope(Dispatchers.IO).launch {
+        pgLiveData.value = false
+        job = CoroutineScope(Dispatchers.IO).launch {
             remote.getData(url2 + mgs3List[position].href).collect {
                 if (imgUrlList.size > 0)
                     imgUrlList.clear()
                 what1(it)
             }
         }
-//                        NetworkUtils.getInstance().OkhttpGet(handler, "", 1);//测试网页用
     }
 
     fun onMsg3Dismiss() { //清除集数
@@ -483,6 +484,7 @@ class CartoonViewModel : ViewModel() {
     private lateinit var job: Job
     private val imgUrlList = mutableListOf<String>()
     private fun loadImg() {
+        pgLiveData.postValue(true)
         job = CoroutineScope(Dispatchers.IO).launch {
             for (url in imgUrlList) {
                 if (!isActive) break
@@ -514,11 +516,6 @@ class CartoonViewModel : ViewModel() {
                     what8(it)
                 }
         }
-//        NetworkUtils.getInstance().OkhttpGet(
-//            handler,
-//            "https://manhua.dmzj.com/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor",
-//            8
-//        )
     }
 
     fun getSpeciesData() {
@@ -530,11 +527,6 @@ class CartoonViewModel : ViewModel() {
                     what7(it)
                 }
         }
-//        NetworkUtils.getInstance().OkhttpGet(
-//            handler,
-//            "",
-//            7
-//        )
     }
 
     /**
@@ -543,6 +535,7 @@ class CartoonViewModel : ViewModel() {
      */
 
     fun getHomeCartoon(position: Int) {
+        pgLiveData.value = false
         val info = cartoonInfors[position]
         var s = info.href
         putBundle(info.titile, info.img, s, R.id.homeFragment)
@@ -555,7 +548,6 @@ class CartoonViewModel : ViewModel() {
                 what3(it)
             }
         }
-
     }
 
     private fun pager() =

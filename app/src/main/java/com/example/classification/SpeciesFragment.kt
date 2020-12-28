@@ -12,7 +12,6 @@ import com.example.favourite.FavouriteRvAdapter
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSpeciesBinding
-import com.example.repository.model.SpeciesInfor
 import com.example.viewModel.CartoonViewModel
 
 
@@ -27,7 +26,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
         b.rvSpeciesTop.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         viewModel.speciesLiveData.observe(viewLifecycleOwner) {
             if (adapter == null) {
-                val adapterTop = DataBindingAdapter<SpeciesInfor>(
+                val adapterTop = DataBindingAdapter(
                     viewModel.typeList,
                     BR.type,
                     R.layout.rv_item_species_top
