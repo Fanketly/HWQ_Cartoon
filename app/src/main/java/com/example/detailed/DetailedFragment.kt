@@ -45,6 +45,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
     private var favouriteMark = 0
     private lateinit var viewModel: CartoonViewModel
     private lateinit var favouriteViewModel: FavouriteViewModel
+    private  var mark: Int?=null
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
@@ -61,7 +62,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
             //跳转所传递的数据
             val name = arguments?.getString("name")
             val img = arguments?.getString("img")
-            val mark = arguments?.getInt("mark")//判断fragment
+            mark = arguments?.getInt("mark")//判断fragment
             val href = arguments?.getString("href")
 
             withContext(Dispatchers.Default) {
@@ -145,6 +146,12 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                                     favouriteViewModel.historyList[historyMark]
                                 )
                         }
+                        R.id.searchFragment -> {
+                            favouriteInfor =
+                                favouriteViewModel.setFavouriteFromHome(
+                                    favouriteViewModel.historyList[historyMark]
+                                )
+                        }
                         R.id.favoriteFragment -> {
                             favouriteViewModel.setFavourite(favouriteInfor)
                         }
@@ -202,7 +209,9 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
     override fun onDestroy() {
         super.onDestroy()
         viewModel.onMsg3Dismiss()
-        viewModel.bottomLiveData.value = false
-        favouriteViewModel.tabLayLiveData.value = false
+        if (mark != R.id.searchSearch)
+            viewModel.bottomLiveData.value = false
+        if (mark == R.id.favoriteFragment)
+            favouriteViewModel.tabLayLiveData.value = false
     }
 }

@@ -9,13 +9,9 @@ import com.example.base.Url3
 import com.example.hwq_cartoon.R
 import com.example.repository.model.*
 import com.example.repository.remote.CartoonRemote
-import com.example.util.YhshThreadPoolFactory
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.util.*
@@ -27,7 +23,7 @@ import java.util.regex.Pattern
  * Date: 2020/12/27
  * Time: 20:35
  */
-@ExperimentalCoroutinesApi
+
 class CartoonViewModel : ViewModel() {
 
     init {
@@ -71,7 +67,8 @@ class CartoonViewModel : ViewModel() {
     //banner
     val bannerList: MutableList<CartoonInfor> = ArrayList()
     val bannerLiveData = MutableLiveData<List<CartoonInfor>>()
-    private fun what3(string: String) {
+
+    private fun what3(string: String) {//集数
         val document = Jsoup.parse(string)
         val elements = document.getElementsByClass("cartoon_online_border")
         content = document.select(".line_height_content").text()
@@ -84,7 +81,8 @@ class CartoonViewModel : ViewModel() {
         if (mgs3List.size > 0) msg3LiveData.postValue(mgs3List)
     }
 
-    private fun what1(string: String) {
+
+    private fun what1(string: String) {//图片
         val document = Jsoup.parse(string)
         val elements = document.getElementsByTag("script")
         if (elements.size != 0) {
@@ -96,7 +94,7 @@ class CartoonViewModel : ViewModel() {
             val ss = s7.substring(0, s7.indexOf(".") - 1)
             Collections.addAll(
                 msg4List,
-                *ss.split("\\|").toTypedArray()
+                *ss.split("|").toTypedArray()
             )
             val s0 = msg4List[0]
             msg4List[0] =
@@ -113,7 +111,7 @@ class CartoonViewModel : ViewModel() {
                 if (i == 2) { //储存第一个地址的前面固定形式
                     Log.i(TAG, "s2: $s") //获取到的第一个地址
                     s = s.substring(s.lastIndexOf("[") + 2, s.lastIndexOf("\""))
-                    val sss = s.split("\\\\\\\\").toTypedArray()
+                    val sss = s.split("\\\\").toTypedArray()
                     Log.i(
                         TAG,
                         "onCreate: " + sss.contentToString()
@@ -284,7 +282,7 @@ class CartoonViewModel : ViewModel() {
                                             split(bj, stringBuffer, "-")
                                         }
                                         bj.contains(".") -> {
-                                            split(bj, stringBuffer, "\\.")
+                                            split(bj, stringBuffer, ".")
                                         }
                                         bj.contains("~") -> {
                                             split(bj, stringBuffer, "~")
@@ -310,14 +308,15 @@ class CartoonViewModel : ViewModel() {
                 }
                 i++
             }
+            loadImg()
         } else {
             Log.i(TAG, "所选漫画消失")
         }
     }
 
-    private fun what5(s: String) {
+    private fun what5(s: String) {//查询
         if (s.isNotEmpty()) {
-            val ss = s.split("\\{").toTypedArray()
+            val ss = s.split("{").toTypedArray()
             var cartoonInfor: CartoonInfor
             if (ss.size > 10) {
                 var ss2: Array<String>
@@ -333,8 +332,8 @@ class CartoonViewModel : ViewModel() {
                     cartoonInfor = CartoonInfor(
                         decode(s51.substring(14, s51.length - 1)),
                         "https://" + s56.substring(21, s56.length - 1)
-                            .replace("\\\\".toRegex(), ""),
-                        s54.substring(9, s54.length - 1).replace("\\\\".toRegex(), "")
+                            .replace("\\", ""),
+                        s54.substring(9, s54.length - 1).replace("\\", "")
                     )
                     searchList.add(cartoonInfor)
                 }
@@ -352,8 +351,8 @@ class CartoonViewModel : ViewModel() {
                     cartoonInfor = CartoonInfor(
                         decode(s51.substring(14, s51.length - 1)),
                         "https://" + s56.substring(21, s56.length - 1)
-                            .replace("\\\\".toRegex(), ""),
-                        s54.substring(9, s54.length - 1).replace("\\\\".toRegex(), "")
+                            .replace("\\", ""),
+                        s54.substring(9, s54.length - 1).replace("\\", "")
                     )
                     searchList.add(cartoonInfor)
                 }
@@ -364,37 +363,14 @@ class CartoonViewModel : ViewModel() {
         }
     }
 
-//    private val handler = Handler(
-//        Looper.myLooper()!!
-//    ) { msg ->
-//        when (msg.what) {
 //            1 -> { //图片
-//
-//            }
 //            2 -> { //漫画
-//
-//            }
 //            3 -> { //集数
-//
-//            }
 //            4 -> { //显示漫画
-//
-//            }
 //            5 -> { //查询
-//
-//            }
 //            6 -> { //home
-//
-//            }
 //            7 -> {
-//
-//            }
 //            8 -> {
-//
-//            }
-//        }
-//        false
-//    }
 
     private fun what6(it: String) {
         val document = Jsoup.parse(it)
@@ -458,7 +434,6 @@ class CartoonViewModel : ViewModel() {
      * 漫画本月人气排行
      */
     fun getBanner() {
-//        if (cartoonHome.size() > 0) cartoonHome.clear();
         CoroutineScope(Dispatchers.IO).launch {
             remote.getData("https://manhua.dmzj.com/rank/month-block-1.shtml")
                 .collect {
@@ -468,51 +443,7 @@ class CartoonViewModel : ViewModel() {
 //        NetworkUtils.getInstance()
 //            .OkhttpGet(handler, "https://manhua.dmzj.com/rank/month-block-1.shtml", 6)
     }
-//
-//
-//    public void getTopCartoon(int position) {
-//        String s = cartoonHome.get(position).getHref();
-//        Log.i(TAG, "onClick: " + s);
-//        if (s.contains("dmzj"))
-//            NetworkUtils.getInstance().OkhttpGet(handler, s, 3);
-//        else
-//            NetworkUtils.getInstance().OkhttpGet(handler, Url3 + s, 3);
-//    }
-//
-//    public FavouriteInfor setFavouriteTop(int position) {
-//        CartoonInfor cartoonInfor = cartoonHome.get(position);
-//        String s = cartoonInfor.getHref();
-//        FavouriteInfor favouriteInfor;
-//        if (s.contains("dmzj"))
-//            favouriteInfor = new FavouriteInfor(s, cartoonInfor.getImg(), cartoonInfor.getTitile());
-//        else
-//            favouriteInfor = new FavouriteInfor(Url3 + s, cartoonInfor.getImg(), cartoonInfor.getTitile());
-//        cartoonModel.insert(favouriteInfor);
-//        return favouriteInfor;
-//    }
 
-    //
-    //
-    //    public void getTopCartoon(int position) {
-    //        String s = cartoonHome.get(position).getHref();
-    //        Log.i(TAG, "onClick: " + s);
-    //        if (s.contains("dmzj"))
-    //            NetworkUtils.getInstance().OkhttpGet(handler, s, 3);
-    //        else
-    //            NetworkUtils.getInstance().OkhttpGet(handler, Url3 + s, 3);
-    //    }
-    //
-    //    public FavouriteInfor setFavouriteTop(int position) {
-    //        CartoonInfor cartoonInfor = cartoonHome.get(position);
-    //        String s = cartoonInfor.getHref();
-    //        FavouriteInfor favouriteInfor;
-    //        if (s.contains("dmzj"))
-    //            favouriteInfor = new FavouriteInfor(s, cartoonInfor.getImg(), cartoonInfor.getTitile());
-    //        else
-    //            favouriteInfor = new FavouriteInfor(Url3 + s, cartoonInfor.getImg(), cartoonInfor.getTitile());
-    //        cartoonModel.insert(favouriteInfor);
-    //        return favouriteInfor;
-    //    }
 
     private fun putBundle(name: String, img: String, href: String, mark: Int) {
         bundle.clear()
@@ -530,6 +461,8 @@ class CartoonViewModel : ViewModel() {
         val url2 = "https://manhua.dmzj.com"
         CoroutineScope(Dispatchers.IO).launch {
             remote.getData(url2 + mgs3List[position].href).collect {
+                if (imgUrlList.size > 0)
+                    imgUrlList.clear()
                 what1(it)
             }
         }
@@ -542,27 +475,30 @@ class CartoonViewModel : ViewModel() {
     }
 
     fun onMsg4Dismiss() {
-//        if (!YhshThreadPoolFactory.IsShutDown()) {
-//            handler.removeCallbacksAndMessages(null)
-//            YhshThreadPoolFactory.getInstance().shutDown()
+        job.cancel()
         imgList.clear()
-//        }
         Log.i("TAG", "onDismiss4: ")
     }
 
-    //val join= CoroutineScope(Dispatchers.IO).launch {  }
-    private fun send(url: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            remote.getImg(url).collect {
-                if (it != null) {
-                    imgList.add(it)
-                    msg4LiveData.postValue(imgList)
+    private lateinit var job: Job
+    private val imgUrlList = mutableListOf<String>()
+    private fun loadImg() {
+        job = CoroutineScope(Dispatchers.IO).launch {
+            for (url in imgUrlList) {
+                if (!isActive) break
+                remote.getImg(url).collect {
+                    if (isActive)
+                        if (it != null) {
+                            imgList.add(it)
+                            msg4LiveData.postValue(imgList)
+                        }
                 }
             }
         }
-//        YhshThreadPoolFactory.getInstance().executeRequest{
-//                NetworkUtils.getInstance().send(url, handler, 4)
-//        }
+    }
+
+    private fun send(url: String) {//what4
+        imgUrlList.add(url)
     }
 
     /**
@@ -622,7 +558,7 @@ class CartoonViewModel : ViewModel() {
 
     }
 
-    private fun pager() {
+    private fun pager() =
         CoroutineScope(Dispatchers.IO).launch {
             remote.getData("https://manhua.dmzj.com/update_$pager.shtml")
                 .collect {
@@ -648,12 +584,11 @@ class CartoonViewModel : ViewModel() {
                     homeLiveData.postValue(cartoonInfors)
                 }
         }
-    }
+
 
     fun nextPager() { //下一页
         pager++
         pager()
-//            .OkhttpGet(handler, "https://manhua.dmzj.com/update_$pager.shtml", 2)
     }
 
     fun refreshPager() { //刷新
@@ -685,7 +620,6 @@ class CartoonViewModel : ViewModel() {
                     what3(it)
                 }
         }
-//        NetworkUtils.getInstance().OkhttpGet(handler, url, 3)
     }
 
 
@@ -695,7 +629,7 @@ class CartoonViewModel : ViewModel() {
     fun getSearch(position: Int) {
         val cartoonInfor = searchList[position]
         val s = cartoonInfor.href
-        putBundle(cartoonInfor.titile, cartoonInfor.img, s, R.id.homeFragment)
+        putBundle(cartoonInfor.titile, cartoonInfor.img, s, R.id.searchFragment)
         Log.i(TAG, "onClick: $s")
 //        NetworkUtils.getInstance().OkhttpGet(handler, s, 3)
         CoroutineScope(Dispatchers.IO).launch {
@@ -827,7 +761,7 @@ class CartoonViewModel : ViewModel() {
                     twoWords(bj2, stringBuffer)
                 }
                 bj.contains(".") -> {
-                    val bjs3 = bj2.split("\\.").toTypedArray()
+                    val bjs3 = bj2.split(".").toTypedArray()
                     var i = 0
                     val bj3Length = bjs3.size
                     while (i < bj3Length) {

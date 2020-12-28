@@ -15,6 +15,8 @@ import com.example.viewModel.CartoonViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.youth.banner.indicator.CircleIndicator
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
