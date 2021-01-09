@@ -12,23 +12,30 @@
 
         <View
             android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/black"
-            android:layout_marginTop="115dp"
-            />
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="55dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@color/hui" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSpeciesTop"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_margin="5dp" />
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollbars="vertical" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSpecies"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="130dp" />
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp" />
 
     </FrameLayout>
 </layout>

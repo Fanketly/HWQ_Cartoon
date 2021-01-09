@@ -49,11 +49,12 @@ class DataBindingAdapter<T>(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.setVariable(varId, list[position])
-        val view=holder.binding.root
+        val view = holder.binding.root
         for (entry in onclickMap) {
-            view.findViewById<View>(entry.key).setOnClickListener { entry.value.invoke(position,list[position]) }
+            view.findViewById<View>(entry.key)
+                .setOnClickListener { entry.value(position, list[position]) }
         }
-        if (mark) view(position,list[position],view)
+        if (mark) view(position, list[position], view)
     }
 
     override fun getItemCount(): Int = list.size

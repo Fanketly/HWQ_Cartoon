@@ -2,7 +2,6 @@ package com.example.favourite
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.base.BaseFragment
 
 /**
  * Created by Android Studio.

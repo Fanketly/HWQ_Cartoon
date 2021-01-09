@@ -8,6 +8,7 @@ import com.example.adapter.DataBindingAdapter
 import com.example.base.BaseFragment
 import com.example.base.logi
 import com.example.base.setUpWithGrid
+import com.example.base.setUpWithLinear
 import com.example.favourite.FavouriteRvAdapter
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
@@ -41,13 +42,14 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
                 adapterTop.getView { p, _, v ->
                     val tv = v.findViewById<TextView>(R.id.tvSpeciesTopRvItem)
                     if (p == mark)
-                        tv.setTextColor(Color.BLUE)
+                        tv.setTextColor(requireActivity().getColor(R.color.theme_blue))
                     else
-                        tv.setTextColor(Color.BLACK)
+                        tv.setTextColor(requireActivity().getColor(R.color.species_hui))
                 }
                 adapter = FavouriteRvAdapter(viewModel.speciesList, requireContext())
-                b.rvSpeciesTop.setUpWithGrid(adapterTop, 7)
-                b.rvSpecies.setUpWithGrid(adapter, 4)
+//                b.rvSpeciesTop.setUpWithGrid(adapterTop, 6)
+                b.rvSpeciesTop.setUpWithLinear(adapterTop)
+                b.rvSpecies.setUpWithGrid(adapter, 3)
             } else {
                 adapter?.notifyDataSetChanged()
             }

@@ -24,7 +24,7 @@ class DetailRvAdapter(context: Context?, list: List<CartoonInfor>, private var m
             title.setBackgroundResource(R.drawable.textview_border)
         }
         title.text = data.titile
-        holder.itemView.setOnClickListener { onclick.invoke(position) }
+        holder.itemView.setOnClickListener { onclick(position) }
     }
 
     fun setOnClick(position: (Int) -> Unit) {
