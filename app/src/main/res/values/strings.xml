@@ -7,5 +7,6 @@
     <string name="detail_add">追漫</string>
     <string name="favourite_tip">您还没有任何追漫哦~</string>
     <string name="menu_species">发现</string>
+    <string name="detailsummary">简介</string>
 
 </resources>

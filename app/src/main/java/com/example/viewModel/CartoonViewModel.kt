@@ -42,7 +42,7 @@ class CartoonViewModel : ViewModel() {
     //bundle跳转需要传递的数据
     val bundle = Bundle()
 
-    //监听是否隐藏bottom
+    //监听是否隐藏bottom false为显示
     val bottomLiveData = MutableLiveData<Boolean>()
 
     //加载监听
@@ -75,6 +75,12 @@ class CartoonViewModel : ViewModel() {
     private fun what3(string: String) {//集数
         val document = Jsoup.parse(string)
         val elements = document.getElementsByClass("cartoon_online_border")
+//        Log.i(TAG, "what3:${elements.isEmpty()}")
+        if (elements.isEmpty()) {
+            pgLiveData.postValue(true)
+            errorLiveData.postValue("此漫画无法浏览")
+            return
+        }
         content = document.select(".line_height_content").text()
         val elements1 = elements.select("a")
         var cartoonInfor: CartoonInfor
@@ -153,13 +159,28 @@ class CartoonViewModel : ViewModel() {
                                                     ss0[0]
                                                 )
                                             )
-                                        ) else stringBuffer.append(
-                                            getStringList(
-                                                conversionString(
-                                                    ss0
+                                        )
+                                        else if (ss0.contains("-")) {
+                                            val ss0s = ss0.split("-")
+                                            for (b in ss0s.indices) {
+                                                stringBuffer.append(
+                                                    getStringList(
+                                                        conversion(
+                                                            ss0s[b][0]
+                                                        )
+                                                    )
+                                                )
+                                                if (b == ss0s.size - 1) break
+                                                stringBuffer.append("-")
+                                            }
+                                        } else
+                                            stringBuffer.append(
+                                                getStringList(
+                                                    conversionString(
+                                                        ss0
+                                                    )
                                                 )
                                             )
-                                        )
                                     }
                                     var sk: String
                                     var k = 1
@@ -438,6 +459,7 @@ class CartoonViewModel : ViewModel() {
      * 漫画本月人气排行
      */
     fun getBanner() {
+
         CoroutineScope(Dispatchers.IO).launch {
             remote.getData("https://manhua.dmzj.com/rank/month-block-1.shtml")
                 .collect {
@@ -539,12 +561,12 @@ class CartoonViewModel : ViewModel() {
         val info = cartoonInfors[position]
         var s = info.href
         putBundle(info.titile, info.img, s, R.id.homeFragment)
-        Log.i(TAG, "onClick: $s")
         if (s == "") return
         CoroutineScope(Dispatchers.IO).launch {
             if (!s.contains("dmzj"))
                 s = Url3 + s
             remote.getData(s).collect {
+                Log.i(TAG, "getHomeCartoon: $s")
                 what3(it)
             }
         }
@@ -603,7 +625,7 @@ class CartoonViewModel : ViewModel() {
         putBundle(
             favouriteInfor.title,
             favouriteInfor.imgUrl,
-            favouriteInfor.url,
+            url,
             R.id.favoriteFragment
         )
         CoroutineScope(Dispatchers.IO).launch {
@@ -614,6 +636,27 @@ class CartoonViewModel : ViewModel() {
         }
     }
 
+    /**
+     *historyFragment
+     * */
+    fun historyGet(historyInfor: HistoryInfor) {
+        var url = historyInfor.href
+        Log.i(TAG, "historyGet: $url")
+        putBundle(
+            historyInfor.title,
+            historyInfor.imgUrl,
+            url,
+            R.id.historyFragment
+        )
+        CoroutineScope(Dispatchers.IO).launch {
+            if (!url.contains("dmzj"))
+                url = Url3 + url
+            remote.getData(url)
+                .collect {
+                    what3(it)
+                }
+        }
+    }
 
     /**
      * search
@@ -629,12 +672,6 @@ class CartoonViewModel : ViewModel() {
         }
     }
 
-
-    //    public void setSearchFavourite(int position) {
-    //        CartoonInfor cartoonInfor = listMsg5.get(position);
-    //        cartoonModel.insert(new FavouriteInfor(cartoonInfor.getHref(), cartoonInfor.getImg(), cartoonInfor.getTitile()));
-    //    }
-    //
     fun search(name: String?) {
         Log.i(TAG, "search: $name")
         CoroutineScope(Dispatchers.IO).launch {
@@ -643,10 +680,6 @@ class CartoonViewModel : ViewModel() {
                     what5(it)
                 }
         }
-//        NetworkUtils.getInstance().OkhttpGet(
-//            handler,
-//            "https://sacg.dmzj.com/comicsum/search.php?s=$name", 5
-//        )
     }
 
     //

@@ -38,8 +38,4 @@ public class CartoonDB {
         favouriteInforDao.update(favouriteInfor);
     }
 
-    public void close() {
-        App.favouriteSession.getDatabase().close();
-        App.favouriteSession.clear();
-    }
 }

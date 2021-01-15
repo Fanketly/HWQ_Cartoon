@@ -29,7 +29,6 @@ const val Url3 = "https://manhua.dmzj.com/"
 val headers = Headers {
     val map: MutableMap<String, String> =
         HashMap()
-
     map["Referer"] = "https://manhua.dmzj.com/update_1.shtml"
     map
 }

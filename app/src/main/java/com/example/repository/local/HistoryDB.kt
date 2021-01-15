@@ -18,9 +18,6 @@ class HistoryDB {
     fun loadAll(): List<HistoryInfor> {
         return historyInforDao.loadAll()
     }
-    fun close() {
-        App.historySession.database.close()
-        App.historySession.clear()
-    }
-fun update(historyInfor: HistoryInfor)=historyInforDao.update(historyInfor)
+
+    fun update(historyInfor: HistoryInfor)=historyInforDao.update(historyInfor)
 }

@@ -31,19 +31,22 @@ class HistoryRvAdapter(val context: Context, val list: List<HistoryInfor>) :
         val tvTime = holder.findViewById<TextView>(R.id.tvHistoryTime)
         val tvTitle = holder.findViewById<TextView>(R.id.tvHistoryTitle)
         val tvMark = holder.findViewById<TextView>(R.id.tvHistoryMark)
-        val img=holder.findViewById<ImageView>(R.id.imgHistory)
+        val img = holder.findViewById<ImageView>(R.id.imgHistory)
         btn.setOnClickListener {
-
+            onclick(position)
         }
-        if (data.imgUrl != null&&data.imgUrl.isNotEmpty()) {
+        if (data.imgUrl != null && data.imgUrl.isNotEmpty()) {
             Glide.with(context).asDrawable().load(GlideUrl(data.imgUrl, headers))
                 .skipMemoryCache(true).into(img)
         }
         tvTitle.text = data.title
-        tvTime.text=data.time
-        tvMark.text="上次看至${data.mark+1}集"
-
+        tvTime.text = data.time
+        tvMark.text = "上次看至${data.mark + 1}集"
     }
 
+    private lateinit var onclick: (position: Int) -> Unit
+    fun onclick(o: (position: Int) -> Unit) {
+        onclick = o
+    }
 
 }

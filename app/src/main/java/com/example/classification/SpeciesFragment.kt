@@ -1,6 +1,5 @@
 package com.example.classification
 
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -47,7 +46,6 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
                         tv.setTextColor(requireActivity().getColor(R.color.species_hui))
                 }
                 adapter = FavouriteRvAdapter(viewModel.speciesList, requireContext())
-//                b.rvSpeciesTop.setUpWithGrid(adapterTop, 6)
                 b.rvSpeciesTop.setUpWithLinear(adapterTop)
                 b.rvSpecies.setUpWithGrid(adapter, 3)
             } else {

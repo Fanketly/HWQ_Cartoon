@@ -90,4 +90,8 @@
         android:id="@+id/searchFragment"
         android:name="com.example.search.SearchFragment"
         android:label="SearchFragment" />
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.favourite.HistoryFragment"
+        android:label="HistoryFragment" />
 </navigation>

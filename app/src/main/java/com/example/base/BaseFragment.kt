@@ -25,7 +25,7 @@ abstract class BaseFragment<T : ViewDataBinding>(@LayoutRes val layId: Int) : Fr
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        b = DataBindingUtil.inflate(LayoutInflater.from(context), layId, container, false)
+        b = DataBindingUtil.inflate(inflater, layId, container, false)
         return b.root
     }
 
@@ -33,12 +33,6 @@ abstract class BaseFragment<T : ViewDataBinding>(@LayoutRes val layId: Int) : Fr
     inline fun <reified V: ViewModel> viewModel(clazz: Class<out ViewModel>): V {
         return ViewModelProvider(requireActivity())[clazz] as V
     }
-
-//    fun beginTransaction(bundle: Bundle?, clazz: Class<out Fragment>, layId: Int) =
-//        requireActivity().supportFragmentManager.beginTransaction()
-//            .setCustomAnimations(R.anim.right_in, R.anim.right_out)
-//            .add(layId, clazz, bundle, "detail").commit()
-
 
     fun shortToast(string: String) = Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
     fun longToast(string: String) = Toast.makeText(context, string, Toast.LENGTH_LONG).show()

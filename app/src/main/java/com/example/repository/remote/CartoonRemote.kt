@@ -4,7 +4,6 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.MutableLiveData
 import com.example.util.NetworkUtils
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 /**
@@ -20,7 +19,6 @@ class CartoonRemote(private val error: MutableLiveData<String>) {
     suspend fun getData(url: String) = flow {
         emit(NetworkUtils.okhttpGet(url))
     }.catch { error.postValue(it.message) }
-
 
 
     @WorkerThread

@@ -15,8 +15,6 @@ import com.example.viewModel.CartoonViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.youth.banner.indicator.CircleIndicator
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
@@ -38,7 +36,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             }
         }
 
-
         //搜索栏
         b.searchHome.apply {
             isSubmitButtonEnabled = true
@@ -46,9 +43,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
                     if (!p0?.trim().isNullOrEmpty()) {
                         viewModel.search(p0)
-                      isIconified = true
-                      clearFocus() // 不获取焦点
-                      onActionViewCollapsed()  //可以收起SearchView视图
+                        isIconified = true
+                        clearFocus() // 不获取焦点
+                        onActionViewCollapsed()  //可以收起SearchView视图
                     }
                     return true
                 }

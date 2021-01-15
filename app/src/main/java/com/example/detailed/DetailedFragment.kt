@@ -45,13 +45,13 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
     private var favouriteMark = 0
     private lateinit var viewModel: CartoonViewModel
     private lateinit var favouriteViewModel: FavouriteViewModel
-    private  var mark: Int?=null
+    private var mark: Int? = null
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
         favouriteViewModel =
             ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
-
+        b.frameLayout.setOnClickListener {  }//避免点击到下一层的视图
         //返回
         b.btnDetailBack.setOnClickListener {
 //            Navigation.findNavController(requireView()).navigateUp()
@@ -64,7 +64,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
             val img = arguments?.getString("img")
             mark = arguments?.getInt("mark")//判断fragment
             val href = arguments?.getString("href")
-
             withContext(Dispatchers.Default) {
                 //历史部分,修改上次观看时间
                 val time = Date(System.currentTimeMillis())
@@ -140,20 +139,14 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
             b.btnDetailAdd.setOnClickListener {
                 if (b.btnDetailAdd.text.toString() == "追漫") {
                     when (mark) {
-                        R.id.homeFragment -> {
-                            favouriteInfor =
-                                favouriteViewModel.setFavouriteFromHome(
-                                    favouriteViewModel.historyList[historyMark]
-                                )
-                        }
-                        R.id.searchFragment -> {
-                            favouriteInfor =
-                                favouriteViewModel.setFavouriteFromHome(
-                                    favouriteViewModel.historyList[historyMark]
-                                )
-                        }
                         R.id.favoriteFragment -> {
                             favouriteViewModel.setFavourite(favouriteInfor)
+                        }
+                        else -> {
+                            favouriteInfor =
+                                favouriteViewModel.setFavouriteFromHome(
+                                    favouriteViewModel.historyList[historyMark]
+                                )
                         }
                     }
                     favouriteMark = favouriteViewModel.favouriteListAdd(favouriteInfor!!)
@@ -211,7 +204,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
         viewModel.onMsg3Dismiss()
         if (mark != R.id.searchSearch)
             viewModel.bottomLiveData.value = false
-        if (mark == R.id.favoriteFragment)
+        if (mark == R.id.favoriteFragment || mark == R.id.historyFragment)
             favouriteViewModel.tabLayLiveData.value = false
     }
 }
