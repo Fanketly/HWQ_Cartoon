@@ -33,13 +33,13 @@ public class CartoonImgRvAdapter extends MyAdapter<byte[]> {
     @Override
     public void bindViewHolder(MyViewHolder holder, byte[] data, int position) {
         PhotoView imageView = holder.findViewById(R.id.imageView);
-        imageView.setOnClickListener(v -> onClick.onClick(position));
+        imageView.setOnClickListener(v -> onClick.onClick());
         Glide.with(context).asDrawable().load(data).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
 //        Glide.with(context).asDrawable().load(data).skipMemoryCache(true).into(imageView);
 //        imageView.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
     }
 
     public interface OnClick {
-        void onClick(int position);
+        void onClick();
     }
 }

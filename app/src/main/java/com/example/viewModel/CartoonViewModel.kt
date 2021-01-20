@@ -16,6 +16,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.plus
 
 /**
  * Created by Android Studio.
@@ -72,10 +73,12 @@ class CartoonViewModel : ViewModel() {
     val bannerList: MutableList<CartoonInfor> = ArrayList()
     val bannerLiveData = MutableLiveData<List<CartoonInfor>>()
 
+    //remote
+    val errorLiveData = MutableLiveData<String>()
+    private val remote = CartoonRemote(errorLiveData)
     private fun what3(string: String) {//集数
         val document = Jsoup.parse(string)
         val elements = document.getElementsByClass("cartoon_online_border")
-//        Log.i(TAG, "what3:${elements.isEmpty()}")
         if (elements.isEmpty()) {
             pgLiveData.postValue(true)
             errorLiveData.postValue("此漫画无法浏览")
@@ -91,8 +94,8 @@ class CartoonViewModel : ViewModel() {
         if (mgs3List.size > 0) msg3LiveData.postValue(mgs3List)
     }
 
-
-    private fun what1(string: String) {//图片
+    private val url = "https://images.dmzj.com/"
+    private suspend fun what1(string: String) {//图片
         val document = Jsoup.parse(string)
         val elements = document.getElementsByTag("script")
         if (elements.size != 0) {
@@ -135,7 +138,6 @@ class CartoonViewModel : ViewModel() {
                                 sss[0][0]
                             )
                         )
-                    val url = "https://images.dmzj.com/"
                     if (sss0 == "") //判断*/y/*的y
                         stringBuffer.append(url).append(sss[0])
                             .append("/") else stringBuffer.append(url).append(sss0)
@@ -153,34 +155,37 @@ class CartoonViewModel : ViewModel() {
                                     ssss = s3.split("%").toTypedArray()
                                     val ss0 = ssss[0].replace("/", "")
                                     if (ss0 != "") {
-                                        if (ss0.length == 1) stringBuffer.append(
-                                            getStringList(
-                                                conversion(
-                                                    ss0[0]
-                                                )
-                                            )
-                                        )
-                                        else if (ss0.contains("-")) {
-                                            val ss0s = ss0.split("-")
-                                            for (b in ss0s.indices) {
-                                                stringBuffer.append(
-                                                    getStringList(
-                                                        conversion(
-                                                            ss0s[b][0]
-                                                        )
+                                        when {
+                                            ss0.length == 1 -> stringBuffer.append(
+                                                getStringList(
+                                                    conversion(
+                                                        ss0[0]
                                                     )
                                                 )
-                                                if (b == ss0s.size - 1) break
-                                                stringBuffer.append("-")
+                                            )
+                                            ss0.contains("-") -> {
+                                                split(ss0, stringBuffer, "-")
+                                                //val ss0s = ss0.split("-")
+                                                //for (b in ss0s.indices) {
+                                                //    stringBuffer.append(
+                                                //        getStringList(
+                                                //            conversion(
+                                                //                ss0s[b][0]
+                                                //            )
+                                                //        )
+                                                //    )
+                                                //    if (b == ss0s.size - 1) break
+                                                //    stringBuffer.append("-")
+                                                //}
                                             }
-                                        } else
-                                            stringBuffer.append(
+                                            else -> stringBuffer.append(
                                                 getStringList(
                                                     conversionString(
                                                         ss0
                                                     )
                                                 )
                                             )
+                                        }
                                     }
                                     var sk: String
                                     var k = 1
@@ -223,10 +228,16 @@ class CartoonViewModel : ViewModel() {
                             var ssss0 = ssss[0]
                             if (ssss0 != "" && ssss0 != "/") { //判断%前面是否有
                                 ssss0 = ssss0.replace("/", "")
-                                if (ssss0.contains(".")) {
-                                    stringBuffer.append(ssss0)
-                                } else {
-                                    stringBuffer.append(getStringList(conversion(ssss0[0])))
+                                when {
+                                    ssss0.contains(".") -> {
+                                        stringBuffer.append(ssss0)
+                                    }
+                                    ssss0.contains("-") -> {
+                                        split(ssss0, stringBuffer, "-")
+                                    }
+                                    else -> {
+                                        stringBuffer.append(getStringList(conversion(ssss0[0])))
+                                    }
                                 }
                                 Log.i(TAG, "p: $ssss0")
                             }
@@ -451,15 +462,11 @@ class CartoonViewModel : ViewModel() {
         getSpeciesData()
     }
 
-    //remote
-    val errorLiveData = MutableLiveData<String>()
-    private val remote = CartoonRemote(errorLiveData)
 
     /**
      * 漫画本月人气排行
      */
     fun getBanner() {
-
         CoroutineScope(Dispatchers.IO).launch {
             remote.getData("https://manhua.dmzj.com/rank/month-block-1.shtml")
                 .collect {
@@ -505,18 +512,16 @@ class CartoonViewModel : ViewModel() {
 
     private lateinit var job: Job
     private val imgUrlList = mutableListOf<String>()
-    private fun loadImg() {
+    private suspend fun loadImg() {
         pgLiveData.postValue(true)
-        job = CoroutineScope(Dispatchers.IO).launch {
-            for (url in imgUrlList) {
-                if (!isActive) break
-                remote.getImg(url).collect {
-                    if (isActive)
-                        if (it != null) {
-                            imgList.add(it)
-                            msg4LiveData.postValue(imgList)
-                        }
-                }
+        for (url in imgUrlList) {
+            if (!job.isActive) break
+            remote.getImg(url).collect {
+                if (job.isActive)
+                    if (it != null) {
+                        imgList.add(it)
+                        msg4LiveData.postValue(imgList)
+                    }
             }
         }
     }
@@ -555,48 +560,55 @@ class CartoonViewModel : ViewModel() {
      * 主页
      * homeFragment
      */
+    private var homeJob: Job? = null
 
+    //获取漫画详细
     fun getHomeCartoon(position: Int) {
         pgLiveData.value = false
         val info = cartoonInfors[position]
         var s = info.href
         putBundle(info.titile, info.img, s, R.id.homeFragment)
         if (s == "") return
-        CoroutineScope(Dispatchers.IO).launch {
+        homeJob?.cancel()
+        homeJob = CoroutineScope(Dispatchers.IO).launch {
             if (!s.contains("dmzj"))
                 s = Url3 + s
-            remote.getData(s).collect {
-                Log.i(TAG, "getHomeCartoon: $s")
-                what3(it)
-            }
+            remote.getData(s) { pgLiveData.postValue(true) }
+                .collect {
+                    Log.i(TAG, "getHomeCartoon: $s")
+                    what3(it)
+                }
         }
+
     }
 
+    //获取漫画页面
     private fun pager() =
         CoroutineScope(Dispatchers.IO).launch {
-            remote.getData("https://manhua.dmzj.com/update_$pager.shtml")
-                .collect {
-                    val document = Jsoup.parse(it)
-                    val element = document.getElementsByClass("newpic_content")
-                    val elements = element[0].getElementsByClass("boxdiv1")
-                    var element1: Element
-                    var element2: Element
-                    var element3: Element
-                    var cartoonInfor: CartoonInfor
-                    for (e in elements) {
-                        element1 = e.select(".picborder a").first() //图片
-                        element2 = e.select(".picborder img").first()
-                        element3 = e.select(".pictext li")[2]
-                        cartoonInfor = CartoonInfor(
-                            element1.attr("title"),
-                            element1.attr("href"),
-                            element2.attr("src"),
-                            element3.text()
-                        )
-                        cartoonInfors.add(cartoonInfor)
-                    }
-                    homeLiveData.postValue(cartoonInfors)
+            remote.getData("https://manhua.dmzj.com/update_$pager.shtml") {
+                homeLiveData.postValue(null)
+            }.collect {
+                val document = Jsoup.parse(it)
+                val element = document.getElementsByClass("newpic_content")
+                val elements = element[0].getElementsByClass("boxdiv1")
+                var element1: Element
+                var element2: Element
+                var element3: Element
+                var cartoonInfor: CartoonInfor
+                for (e in elements) {
+                    element1 = e.select(".picborder a").first() //图片
+                    element2 = e.select(".picborder img").first()
+                    element3 = e.select(".pictext li")[2]
+                    cartoonInfor = CartoonInfor(
+                        element1.attr("title"),
+                        element1.attr("href"),
+                        element2.attr("src"),
+                        element3.text()
+                    )
+                    cartoonInfors.add(cartoonInfor)
                 }
+                homeLiveData.postValue(cartoonInfors)
+            }
         }
 
 
@@ -666,7 +678,6 @@ class CartoonViewModel : ViewModel() {
         val s = cartoonInfor.href
         putBundle(cartoonInfor.titile, cartoonInfor.img, s, R.id.searchFragment)
         Log.i(TAG, "onClick: $s")
-//        NetworkUtils.getInstance().OkhttpGet(handler, s, 3)
         CoroutineScope(Dispatchers.IO).launch {
             remote.getData(s).collect { what3(it) }
         }
@@ -773,13 +784,11 @@ class CartoonViewModel : ViewModel() {
 
     private fun split(bj: String, stringBuffer: StringBuilder, mark: String) {
         val bjs = bj.split(mark).toTypedArray()
-        var k = 0
-        val bjsLength = bjs.size
-        while (k < bjsLength) {
-            val bj2 = bjs[k]
+        for (b in bjs.indices) {
+            val bj2 = bjs[b]
             when {
                 bj2.length == 1 -> {
-                    //                                                Log.i(TAG, ": " + bj2.charAt(0));
+                    //Log.i(TAG, ": " + bj2.charAt(0));
                     stringBuffer.append(getStringList(conversion(bj2[0])))
                 }
                 bj2.length == 2 -> {
@@ -798,8 +807,7 @@ class CartoonViewModel : ViewModel() {
                     }
                 }
             }
-            if (k != bjsLength - 1 || k == 0) stringBuffer.append(mark)
-            k++
+            if (b != bjs.size - 1 || b == 0) stringBuffer.append(mark)
         }
     }
 }

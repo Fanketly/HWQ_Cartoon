@@ -62,17 +62,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         //加载主页
         viewModel.homeLiveData.observe(viewLifecycleOwner, {
             Log.i("TAG", "o: ")
-            if (cartoonRvAdapter == null) {
-                cartoonRvAdapter =
-                    CartoonRvAdapter(viewModel.cartoonInfors, context)
-                b.rvHome.setUpWithLinear(cartoonRvAdapter)
-                cartoonRvAdapter!!.setOnClick { position ->
-                    viewModel.getHomeCartoon(position)
+            if (it != null)
+                if (cartoonRvAdapter == null) {
+                    cartoonRvAdapter =
+                        CartoonRvAdapter(viewModel.cartoonInfors, context)
+                    b.rvHome.setUpWithLinear(cartoonRvAdapter)
+                    cartoonRvAdapter!!.setOnClick { position ->
+                        viewModel.getHomeCartoon(position)
+                    }
+                } else {
+                    cartoonRvAdapter!!.notifyDataSetChanged()
                 }
-            } else {
-                cartoonRvAdapter!!.notifyDataSetChanged()
-                b.refreshCartoon.closeHeaderOrFooter()
-            }
+
+            b.refreshCartoon.closeHeaderOrFooter()
         })
 
 

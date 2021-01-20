@@ -18,8 +18,16 @@ class CartoonRemote(private val error: MutableLiveData<String>) {
     @WorkerThread
     suspend fun getData(url: String) = flow {
         emit(NetworkUtils.okhttpGet(url))
-    }.catch { error.postValue(it.message) }
-
+    }.catch {
+        error.postValue(it.message)
+    }
+    @WorkerThread
+    suspend fun getData(url: String,doAny:()->Unit) = flow {
+        emit(NetworkUtils.okhttpGet(url))
+    }.catch {
+        error.postValue(it.message)
+       doAny()
+    }
 
     @WorkerThread
     suspend fun getImg(url: String) = flow { emit(NetworkUtils.send(url)) }
