@@ -433,6 +433,12 @@ class CartoonViewModel : ViewModel() {
     }
 
     private fun what7(str2: String) {
+        Log.i(TAG, "what7: $str2")
+        if (!str2.contains("search.renderResult")) {
+            errorLiveData.postValue("数据加载失败")
+            return
+        }
+        adapterTopLiveData.postValue(true)
         val str = str2.substring(str2.indexOf("["), str2.lastIndexOf("]") + 1)
         val gson = Gson()
         val speciesInfor2s: List<SpeciesInfor2Item> =
@@ -545,6 +551,7 @@ class CartoonViewModel : ViewModel() {
         }
     }
 
+    val adapterTopLiveData = MutableLiveData<Boolean>()//分类切换监听有没有成功 成功就变色
     fun getSpeciesData() {
         if (speciesList.size > 0) speciesList.clear()
         Log.i(TAG, "getSpecies:$species")

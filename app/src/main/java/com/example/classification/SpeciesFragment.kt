@@ -12,33 +12,36 @@ import com.example.favourite.FavouriteRvAdapter
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSpeciesBinding
+import com.example.repository.model.SpeciesInfor
 import com.example.viewModel.CartoonViewModel
 
 
 class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_species) {
+     var adapterTop:DataBindingAdapter<SpeciesInfor>?=null
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         logi("onSpeciesActivityCreated: ")
         var mark = 0
+        var pp=0
         val viewModel = viewModel<CartoonViewModel>(CartoonViewModel::class.java)
         viewModel.getSpeciesType()
         var adapter: FavouriteRvAdapter? = null
         b.rvSpeciesTop.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         viewModel.speciesLiveData.observe(viewLifecycleOwner) {
             if (adapter == null) {
-                val adapterTop = DataBindingAdapter(
+                 adapterTop = DataBindingAdapter(
                     viewModel.typeList,
                     BR.type,
                     R.layout.rv_item_species_top
                 )
-                adapterTop.setOnClick(R.id.tvSpeciesTopRvItem) { p, t ->
-                    adapterTop.notifyItemChanged(mark)
-                    mark = p
-                    adapterTop.notifyItemChanged(mark)
+                adapterTop?.setOnClick(R.id.tvSpeciesTopRvItem) { p, t ->
                     viewModel.species = t.id
                     viewModel.getSpeciesData()
+//                    adapterTop.notifyItemChanged(mark)
+                    pp  = p
+//                    adapterTop.notifyItemChanged(mark)
                 }
-                adapterTop.getView { p, _, v ->
+                adapterTop?.getView { p, _, v ->
                     val tv = v.findViewById<TextView>(R.id.tvSpeciesTopRvItem)
                     if (p == mark)
                         tv.setTextColor(requireActivity().getColor(R.color.theme_blue))
@@ -51,6 +54,11 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
             } else {
                 adapter?.notifyDataSetChanged()
             }
+        }
+        viewModel.adapterTopLiveData.observe(viewLifecycleOwner){
+            adapterTop?.notifyItemChanged(mark)
+            mark = pp
+            adapterTop?.notifyItemChanged(mark)
         }
     }
 
