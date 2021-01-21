@@ -25,7 +25,7 @@ fun <T> RecyclerView.setUpWithGrid(t: T, num: Int) {
 
 fun logi(msg: String) = Log.i(TAG, msg)
 const val TAG = "TAG"
-const val Url3 = "https://manhua.dmzj.com/"
+
 val headers = Headers {
     val map: MutableMap<String, String> =
         HashMap()

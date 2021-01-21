@@ -5,13 +5,17 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.base.TAG
-import com.example.base.Url3
 import com.example.hwq_cartoon.R
 import com.example.repository.model.*
+import com.example.repository.remote.Api
+
 import com.example.repository.remote.CartoonRemote
 import com.google.gson.Gson
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.util.*
@@ -58,7 +62,6 @@ class CartoonViewModel : ViewModel() {
     val mgs3List: MutableList<CartoonInfor> = ArrayList()
     val msg3LiveData = MutableLiveData<List<CartoonInfor>>()
     var content: String? = null
-    private val url2 = "https://manhua.dmzj.com"
 
     //msg4显示漫画
     val msg4List: MutableList<String> = ArrayList()
@@ -76,13 +79,13 @@ class CartoonViewModel : ViewModel() {
     //remote
     val errorLiveData = MutableLiveData<String>()
     private val remote = CartoonRemote(errorLiveData)
-    private fun what3(string: String) {//集数
+    private fun what3(string: String): Boolean {//集数
         val document = Jsoup.parse(string)
         val elements = document.getElementsByClass("cartoon_online_border")
         if (elements.isEmpty()) {
             pgLiveData.postValue(true)
             errorLiveData.postValue("此漫画无法浏览")
-            return
+            return false
         }
         content = document.select(".line_height_content").text()
         val elements1 = elements.select("a")
@@ -92,9 +95,10 @@ class CartoonViewModel : ViewModel() {
             mgs3List.add(cartoonInfor)
         }
         if (mgs3List.size > 0) msg3LiveData.postValue(mgs3List)
+        return true
     }
 
-    private val url = "https://images.dmzj.com/"
+
     private suspend fun what1(string: String) {//图片
         val document = Jsoup.parse(string)
         val elements = document.getElementsByTag("script")
@@ -139,8 +143,8 @@ class CartoonViewModel : ViewModel() {
                             )
                         )
                     if (sss0 == "") //判断*/y/*的y
-                        stringBuffer.append(url).append(sss[0])
-                            .append("/") else stringBuffer.append(url).append(sss0)
+                        stringBuffer.append(Api.imgUrl).append(sss[0])
+                            .append("/") else stringBuffer.append(Api.imgUrl).append(sss0)
                         .append("/")
                     var ssss: Array<String>
                     var j = 1
@@ -474,7 +478,7 @@ class CartoonViewModel : ViewModel() {
      */
     fun getBanner() {
         CoroutineScope(Dispatchers.IO).launch {
-            remote.getData("https://manhua.dmzj.com/rank/month-block-1.shtml")
+            remote.getData(Api.url2 + "/rank/month-block-1.shtml")
                 .collect {
                     what6(it)
                 }
@@ -497,7 +501,10 @@ class CartoonViewModel : ViewModel() {
     fun msg3Send(position: Int) {
         pgLiveData.value = false
         job = CoroutineScope(Dispatchers.IO).launch {
-            remote.getData(url2 + mgs3List[position].href).collect {
+            remote.getData(Api.url2 + mgs3List[position].href)
+            {
+                pgLiveData.postValue(true)
+            }.collect {
                 if (imgUrlList.size > 0)
                     imgUrlList.clear()
                 what1(it)
@@ -542,9 +549,12 @@ class CartoonViewModel : ViewModel() {
      */
     fun getSpeciesType() {
         species = "0"
-        if (typeList.size > 0) return
+        if (typeList.size > 0) {//判断是否有加载过分类，有就加载现有数据
+            speciesLiveData.value = true
+            return
+        }
         CoroutineScope(Dispatchers.IO).launch {
-            remote.getData("https://manhua.dmzj.com/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor")
+            remote.getData(Api.url2 + "/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor")
                 .collect {
                     what8(it)
                 }
@@ -556,7 +566,10 @@ class CartoonViewModel : ViewModel() {
         if (speciesList.size > 0) speciesList.clear()
         Log.i(TAG, "getSpecies:$species")
         CoroutineScope(Dispatchers.IO).launch {
-            remote.getData("http://sacg.dmzj.com/mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=$species&p=1&callback=search.renderResult")
+            remote.getData(
+                Api.sacgUrl + "mh/index.php?c=category&m=doSearch&status=0" +
+                        "&reader_group=0&zone=0&initial=all&type=$species&p=1&callback=search.renderResult"
+            )
                 .collect {
                     what7(it)
                 }
@@ -575,11 +588,14 @@ class CartoonViewModel : ViewModel() {
         val info = cartoonInfors[position]
         var s = info.href
         putBundle(info.titile, info.img, s, R.id.homeFragment)
-        if (s == "") return
+        if (s.isEmpty()) {
+            pgLiveData.value = true
+            return
+        }
         homeJob?.cancel()
         homeJob = CoroutineScope(Dispatchers.IO).launch {
             if (!s.contains("dmzj"))
-                s = Url3 + s
+                s = Api.url2 + "/" + s//需要加"/"
             remote.getData(s) { pgLiveData.postValue(true) }
                 .collect {
                     Log.i(TAG, "getHomeCartoon: $s")
@@ -592,7 +608,7 @@ class CartoonViewModel : ViewModel() {
     //获取漫画页面
     private fun pager() =
         CoroutineScope(Dispatchers.IO).launch {
-            remote.getData("https://manhua.dmzj.com/update_$pager.shtml") {
+            remote.getData(Api.url2 + "/update_$pager.shtml") {//需要加"/"
                 homeLiveData.postValue(null)
             }.collect {
                 val document = Jsoup.parse(it)
@@ -638,7 +654,7 @@ class CartoonViewModel : ViewModel() {
      * favouriteFragment
      *
      */
-    fun favouriteGet(favouriteInfor: FavouriteInfor) {
+    fun favouriteGet(favouriteInfor: FavouriteInfor, tabLayLiveData: MutableLiveData<Boolean>) {
         val url = favouriteInfor.url
         Log.i(TAG, "favouriteGet: $url")
         putBundle(
@@ -650,7 +666,7 @@ class CartoonViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             remote.getData(url)
                 .collect {
-                    what3(it)
+                    if (what3(it)) tabLayLiveData.postValue(true)
                 }
         }
     }
@@ -669,7 +685,7 @@ class CartoonViewModel : ViewModel() {
         )
         CoroutineScope(Dispatchers.IO).launch {
             if (!url.contains("dmzj"))
-                url = Url3 + url
+                url = Api.url2 + "/" + url//需要加"/"
             remote.getData(url)
                 .collect {
                     what3(it)
@@ -693,7 +709,7 @@ class CartoonViewModel : ViewModel() {
     fun search(name: String?) {
         Log.i(TAG, "search: $name")
         CoroutineScope(Dispatchers.IO).launch {
-            remote.getData("https://sacg.dmzj.com/comicsum/search.php?s=$name")
+            remote.getData(Api.sacgUrl + "comicsum/search.php?s=$name")
                 .collect {
                     what5(it)
                 }

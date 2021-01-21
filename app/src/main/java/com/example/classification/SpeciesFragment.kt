@@ -17,19 +17,19 @@ import com.example.viewModel.CartoonViewModel
 
 
 class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_species) {
-     var adapterTop:DataBindingAdapter<SpeciesInfor>?=null
+    var adapterTop: DataBindingAdapter<SpeciesInfor>? = null
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         logi("onSpeciesActivityCreated: ")
         var mark = 0
-        var pp=0
+        var pp = 0
         val viewModel = viewModel<CartoonViewModel>(CartoonViewModel::class.java)
         viewModel.getSpeciesType()
         var adapter: FavouriteRvAdapter? = null
         b.rvSpeciesTop.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         viewModel.speciesLiveData.observe(viewLifecycleOwner) {
             if (adapter == null) {
-                 adapterTop = DataBindingAdapter(
+                adapterTop = DataBindingAdapter(
                     viewModel.typeList,
                     BR.type,
                     R.layout.rv_item_species_top
@@ -37,9 +37,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
                 adapterTop?.setOnClick(R.id.tvSpeciesTopRvItem) { p, t ->
                     viewModel.species = t.id
                     viewModel.getSpeciesData()
-//                    adapterTop.notifyItemChanged(mark)
-                    pp  = p
-//                    adapterTop.notifyItemChanged(mark)
+                    pp = p
                 }
                 adapterTop?.getView { p, _, v ->
                     val tv = v.findViewById<TextView>(R.id.tvSpeciesTopRvItem)
@@ -55,7 +53,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
                 adapter?.notifyDataSetChanged()
             }
         }
-        viewModel.adapterTopLiveData.observe(viewLifecycleOwner){
+        viewModel.adapterTopLiveData.observe(viewLifecycleOwner) {
             adapterTop?.notifyItemChanged(mark)
             mark = pp
             adapterTop?.notifyItemChanged(mark)

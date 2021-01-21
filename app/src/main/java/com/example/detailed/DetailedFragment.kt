@@ -155,7 +155,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     shortToast("追漫成功")
                 } else {
                     Log.i(TAG, "onActivityCreated: $favouriteMark")
-                    favouriteViewModel.favouriteDel(favouriteInfor, favouriteMark)
+                    favouriteViewModel.favouriteDel(favouriteMark)
                     b.btnDetailAdd.text = "追漫"
                     shortToast("已取消追漫")
                 }

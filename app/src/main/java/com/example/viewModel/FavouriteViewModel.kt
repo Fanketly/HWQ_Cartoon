@@ -2,11 +2,11 @@ package com.example.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.base.Url3
 import com.example.repository.local.CartoonDB
 import com.example.repository.local.HistoryDB
 import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.HistoryInfor
+import com.example.repository.remote.Api
 
 /**
  * Created by Android Studio.
@@ -21,7 +21,7 @@ class FavouriteViewModel : ViewModel() {
     private val favouriteDB = CartoonDB()
     val historyList: MutableList<HistoryInfor> = mutableListOf()
     val favouriteList: MutableList<FavouriteInfor> = mutableListOf()
-    var delOrIns=true//判断是删除还是添加，方便rv刷新
+    var delOrIns = true//判断是删除还是添加，方便rv刷新
     val historyLivaData = MutableLiveData<Int>()
     val favouriteLivaData = MutableLiveData<Int>()
 
@@ -46,7 +46,12 @@ class FavouriteViewModel : ViewModel() {
         favouriteInfor = if (s.contains("dmzj")) {
             FavouriteInfor(s, historyInfor.imgUrl, historyInfor.title)
         } else {
-            FavouriteInfor(historyInfor.mark, Url3 + s, historyInfor.imgUrl, historyInfor.title)
+            FavouriteInfor(
+                historyInfor.mark,
+                Api.url2 + "/" + s,
+                historyInfor.imgUrl,
+                historyInfor.title
+            )
         }
         favouriteDB.insert(favouriteInfor)
         return favouriteInfor
@@ -57,11 +62,10 @@ class FavouriteViewModel : ViewModel() {
         favouriteDB.insert(favourite)
     }
 
-    fun favouriteDel(favouriteInfor: FavouriteInfor?, favouriteMark: Int) {
-        favouriteList.removeAt(favouriteMark)
-        delOrIns=true
+    fun favouriteDel(favouriteMark: Int) {
+        delOrIns = true
         favouriteLivaData.value = favouriteMark
-        favouriteDB.del(favouriteInfor)
+        favouriteDB.del(favouriteList.removeAt(favouriteMark))
     }
 
     fun updateFavourite(favouriteInfor: FavouriteInfor?) {
@@ -70,7 +74,7 @@ class FavouriteViewModel : ViewModel() {
 
     fun favouriteListAdd(favouriteInfor: FavouriteInfor): Int {
         favouriteList.add(favouriteInfor)
-        delOrIns=false
+        delOrIns = false
         val p = favouriteList.size - 1
         favouriteLivaData.value = p
         return p

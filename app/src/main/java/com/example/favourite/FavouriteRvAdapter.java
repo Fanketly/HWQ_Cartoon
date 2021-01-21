@@ -1,6 +1,7 @@
 package com.example.favourite;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,7 +32,7 @@ public class FavouriteRvAdapter extends MyAdapter<FavouriteInfor> {
     private final Headers headers;
 
     public FavouriteRvAdapter(@NotNull List<FavouriteInfor> list, Context context) {
-        super(context, R.layout.rv_item_favourite,list);
+        super(context, R.layout.rv_item_favourite, list);
         this.context = context;
         headers = () -> {
             Map<String, String> map = new HashMap<>();
@@ -50,6 +51,10 @@ public class FavouriteRvAdapter extends MyAdapter<FavouriteInfor> {
         TextView title = holder.findViewById(R.id.tvCartoonTitle);
         title.setText(data.getTitle());
         holder.getItemView().setOnClickListener(v -> onClick.onClick(position));
+        holder.getItemView().setOnLongClickListener(view -> {
+            onClick.longOnClick(position);
+            return false;
+        });
         ImageView imageView = holder.findViewById(R.id.imgCartoon);
         if (data.getImgUrl() != null) {
 //            Glide.with(context).asDrawable().load(glideUrl).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
@@ -59,6 +64,8 @@ public class FavouriteRvAdapter extends MyAdapter<FavouriteInfor> {
 
     public interface OnClick {
         void onClick(int position);
+
+        void longOnClick(int p);
     }
 
 
