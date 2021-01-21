@@ -654,7 +654,7 @@ class CartoonViewModel : ViewModel() {
      * favouriteFragment
      *
      */
-    fun favouriteGet(favouriteInfor: FavouriteInfor, tabLayLiveData: MutableLiveData<Boolean>) {
+    fun favouriteGet(favouriteInfor: FavouriteInfor) {
         val url = favouriteInfor.url
         Log.i(TAG, "favouriteGet: $url")
         putBundle(
@@ -666,7 +666,7 @@ class CartoonViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             remote.getData(url)
                 .collect {
-                    if (what3(it)) tabLayLiveData.postValue(true)
+                   what3(it)
                 }
         }
     }

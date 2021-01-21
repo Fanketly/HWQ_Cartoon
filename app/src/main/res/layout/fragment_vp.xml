@@ -20,7 +20,18 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabFavourite"
-            android:layout_width="match_parent"
-            android:layout_height="50dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center|top" />
+
+        <TextView
+            android:id="@+id/tvVpFavouriteClear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top|end"
+            android:layout_marginTop="18dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/vpfavourite_clear"
+            android:textSize="12sp" />
     </FrameLayout>
 </layout>

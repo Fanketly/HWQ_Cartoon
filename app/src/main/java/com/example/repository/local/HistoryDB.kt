@@ -19,5 +19,6 @@ class HistoryDB {
         return historyInforDao.loadAll()
     }
 
-    fun update(historyInfor: HistoryInfor)=historyInforDao.update(historyInfor)
+    fun update(historyInfor: HistoryInfor) = historyInforDao.update(historyInfor)
+    fun clear() = historyInforDao.deleteAll()
 }

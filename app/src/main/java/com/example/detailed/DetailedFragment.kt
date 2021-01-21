@@ -204,7 +204,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
         viewModel.onMsg3Dismiss()
         if (mark != R.id.searchSearch)
             viewModel.bottomLiveData.value = false
-        if (mark == R.id.favoriteFragment || mark == R.id.historyFragment)
-            favouriteViewModel.tabLayLiveData.value = false
+
     }
 }

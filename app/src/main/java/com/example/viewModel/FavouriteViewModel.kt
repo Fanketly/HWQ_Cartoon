@@ -16,12 +16,13 @@ import com.example.repository.remote.Api
  * 历史和喜爱数据库
  */
 class FavouriteViewModel : ViewModel() {
-    val tabLayLiveData = MutableLiveData<Boolean>()
     private val historyDB = HistoryDB()
     private val favouriteDB = CartoonDB()
     val historyList: MutableList<HistoryInfor> = mutableListOf()
     val favouriteList: MutableList<FavouriteInfor> = mutableListOf()
-    var delOrIns = true//判断是删除还是添加，方便rv刷新
+
+    /**判断是删除还是添加，方便rv刷新**/
+    var delOrIns = true
     val historyLivaData = MutableLiveData<Int>()
     val favouriteLivaData = MutableLiveData<Int>()
 
@@ -37,6 +38,12 @@ class FavouriteViewModel : ViewModel() {
 
     fun historyUpdate(historyInfor: HistoryInfor) {
         historyDB.update(historyInfor)
+    }
+
+    fun historyClear() {
+        historyDB.clear()
+        historyList.clear()
+        historyLivaData.value = -1
     }
 
     //homeFragment

@@ -1,7 +1,6 @@
 package com.example.favourite
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
@@ -31,7 +30,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
         //漫画点击监听
         favouriteRvAdapter?.setOnClick(object : FavouriteRvAdapter.OnClick {
             override fun onClick(position: Int) {
-                viewModel.favouriteGet(list[position], favouriteViewModel.tabLayLiveData)
+                viewModel.favouriteGet(list[position])
             }
 
             override fun longOnClick(p: Int) {
