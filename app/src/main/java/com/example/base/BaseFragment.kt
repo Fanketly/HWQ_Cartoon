@@ -30,10 +30,16 @@ abstract class BaseFragment<T : ViewDataBinding>(@LayoutRes val layId: Int) : Fr
     }
 
 
-    inline fun <reified V: ViewModel> viewModel(clazz: Class<out ViewModel>): V {
+    inline fun <reified V : ViewModel> viewModel(clazz: Class<out ViewModel>): V {
         return ViewModelProvider(requireActivity())[clazz] as V
     }
 
-    fun shortToast(string: String) = Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
+    private var toast: Toast? = null
+    fun shortToast(string: String) {
+        toast?.cancel()
+        toast = Toast.makeText(context, string, Toast.LENGTH_SHORT)
+        toast?.show()
+    }
+
     fun longToast(string: String) = Toast.makeText(context, string, Toast.LENGTH_LONG).show()
 }

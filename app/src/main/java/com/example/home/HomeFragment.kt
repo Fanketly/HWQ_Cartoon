@@ -30,7 +30,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             viewModel.getBanner()
 //        b.bannerHome.setBannerGalleryMZ(500)
         viewModel.bannerLiveData.observe(viewLifecycleOwner) { list ->
-            b.bannerHome.addBannerLifecycleObserver(this).let {
+            b.bannerHome.let {
+                it.addBannerLifecycleObserver(this)
                 it.adapter = BannerHomeAdapter(list, requireContext())
                 it.indicator = CircleIndicator(context)
             }
@@ -62,17 +63,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         //加载主页
         viewModel.homeLiveData.observe(viewLifecycleOwner, {
             Log.i("TAG", "o: ")
-            if (it != null)
-                if (cartoonRvAdapter == null) {
-                    cartoonRvAdapter =
-                        CartoonRvAdapter(viewModel.cartoonInfors, context)
-                    b.rvHome.setUpWithLinear(cartoonRvAdapter)
-                    cartoonRvAdapter!!.setOnClick { position ->
-                        viewModel.getHomeCartoon(position)
-                    }
-                } else {
-                    cartoonRvAdapter!!.notifyDataSetChanged()
+            if (cartoonRvAdapter == null) {
+                cartoonRvAdapter =
+                    CartoonRvAdapter(viewModel.cartoonInfors, context)
+                b.rvHome.setUpWithLinear(cartoonRvAdapter)
+                cartoonRvAdapter!!.setOnClick { position ->
+                    viewModel.getHomeCartoon(position)
                 }
+            } else {
+                cartoonRvAdapter!!.notifyDataSetChanged()
+            }
 
             b.refreshCartoon.closeHeaderOrFooter()
         })

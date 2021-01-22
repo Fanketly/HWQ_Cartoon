@@ -21,7 +21,7 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_h
         b.rvHistory.addItemDecoration(SpacesItemDecoration(30))
         b.rvHistory.setUpWithLinear(adapter)
         viewModel.historyLivaData.observe(viewLifecycleOwner) {
-//            if (it == -2) return@observe
+            if (it == -2) return@observe
             Log.i("TAG", "onActivityCreated: $it")
             if (it == -1) {
                 adapter.notifyDataSetChanged()
@@ -29,6 +29,7 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_h
             }
             adapter.notifyItemChanged(it)
         }
+        viewModel.historyLivaData.value=-2//只要没发送新的value 就return
         adapter.onclick {
             cartoonViewModel.historyGet(viewModel.historyList[it])
         }

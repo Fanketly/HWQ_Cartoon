@@ -41,7 +41,7 @@ class CartoonViewModel : ViewModel() {
     val typeList: MutableList<SpeciesInfor> = ArrayList()
     val speciesLiveData = MutableLiveData<Boolean>()
 
-    //判断是否在searchFragment
+    /**判断是否在searchFragment**/
     var isSearchFragment = false
 
     //bundle跳转需要传递的数据
@@ -55,12 +55,12 @@ class CartoonViewModel : ViewModel() {
 
     //msg2主页漫画
     val cartoonInfors: MutableList<CartoonInfor> = ArrayList()
-    val homeLiveData = MutableLiveData<List<CartoonInfor>>()
+    val homeLiveData = MutableLiveData<Boolean>()
     private var pager = 1
 
     //msg3集数
     val mgs3List: MutableList<CartoonInfor> = ArrayList()
-    val msg3LiveData = MutableLiveData<List<CartoonInfor>>()
+    val msg3LiveData = MutableLiveData<Boolean>()
     var content: String? = null
 
     //msg4显示漫画
@@ -80,6 +80,7 @@ class CartoonViewModel : ViewModel() {
     val errorLiveData = MutableLiveData<String>()
     private val remote = CartoonRemote(errorLiveData)
     private fun what3(string: String): Boolean {//集数
+
         val document = Jsoup.parse(string)
         val elements = document.getElementsByClass("cartoon_online_border")
         if (elements.isEmpty()) {
@@ -94,7 +95,7 @@ class CartoonViewModel : ViewModel() {
             cartoonInfor = CartoonInfor(e.text(), e.attr("href"))
             mgs3List.add(cartoonInfor)
         }
-        if (mgs3List.size > 0) msg3LiveData.postValue(mgs3List)
+        if (mgs3List.size > 0) msg3LiveData.postValue(null)
         return true
     }
 
@@ -169,18 +170,6 @@ class CartoonViewModel : ViewModel() {
                                             )
                                             ss0.contains("-") -> {
                                                 split(ss0, stringBuffer, "-")
-                                                //val ss0s = ss0.split("-")
-                                                //for (b in ss0s.indices) {
-                                                //    stringBuffer.append(
-                                                //        getStringList(
-                                                //            conversion(
-                                                //                ss0s[b][0]
-                                                //            )
-                                                //        )
-                                                //    )
-                                                //    if (b == ss0s.size - 1) break
-                                                //    stringBuffer.append("-")
-                                                //}
                                             }
                                             else -> stringBuffer.append(
                                                 getStringList(
@@ -528,7 +517,7 @@ class CartoonViewModel : ViewModel() {
     private suspend fun loadImg() {
         pgLiveData.postValue(true)
         for (url in imgUrlList) {
-            if (!job.isActive) break
+            if (job.isActive)
             remote.getImg(url).collect {
                 if (job.isActive)
                     if (it != null) {
@@ -609,7 +598,7 @@ class CartoonViewModel : ViewModel() {
     private fun pager() =
         CoroutineScope(Dispatchers.IO).launch {
             remote.getData(Api.url2 + "/update_$pager.shtml") {//需要加"/"
-                homeLiveData.postValue(null)
+                errorLiveData.postValue(null)
             }.collect {
                 val document = Jsoup.parse(it)
                 val element = document.getElementsByClass("newpic_content")
@@ -630,7 +619,7 @@ class CartoonViewModel : ViewModel() {
                     )
                     cartoonInfors.add(cartoonInfor)
                 }
-                homeLiveData.postValue(cartoonInfors)
+                homeLiveData.postValue(null)
             }
         }
 

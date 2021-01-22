@@ -193,6 +193,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     btnBack.setOnClickListener { alertDialog.dismiss() }
                     alertDialog.setView(view4)
                     alertDialog.show()
+                    return@observe
                 }
                 if (msg4.isNotEmpty()) cartoonImgRvAdapter.notifyItemChanged(msg4.size - 1)
             })

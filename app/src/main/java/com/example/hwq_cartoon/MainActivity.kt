@@ -76,15 +76,15 @@ class MainActivity : AppCompatActivity() {
         }
         //集数Detail监听
         viewModel.msg3LiveData.observe(this) {
-            viewModel.bottomLiveData.value = true
-            viewModel.pgLiveData.value=true
+            b.pgMain.visibility=View.GONE
+            b.bottomNav.visibility = View.GONE
             beginTransaction(viewModel.bundle, DetailedFragment::class.java)
         }
         //Search监听
         viewModel.searchLiveData.observe(this) {
             if (!viewModel.isSearchFragment)
                 if (it) {
-                    viewModel.bottomLiveData.value = true
+                    b.bottomNav.visibility = View.GONE
                     beginTransaction(null, SearchFragment::class.java)
                     viewModel.isSearchFragment = true
                 } else {
