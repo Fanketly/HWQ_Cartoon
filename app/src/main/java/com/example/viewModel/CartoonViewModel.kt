@@ -35,6 +35,8 @@ class CartoonViewModel : ViewModel() {
         Log.i(TAG, "CREATE: ")
     }
 
+    //https://images.dmzj1.com/k/%E7%9C%8B%E4%B8%8D%E5%87%BA%E8%A1%A8%E6%83%85%E7%9A%84%E7%99%BD%E9%93%B6%E5%90%8C%E5%AD%A6/%E7%AC%AC01%E8%AF%9D/i-304.jpg
+    //  https://images.dmzj1.com/k/%E7%9C%8B%E4%B8%8D%E5%87%BA%E8%A1%A8%E6%83%85%E7%9A%84%E7%99%BD%E9%93%B6%E5%90%8C%E5%AD%A6/%E7%AC%AC01%E8%AF%9D/18-304.jpg
     //species
     var species = "3255"
     val speciesList: MutableList<FavouriteInfor> = ArrayList()
@@ -80,7 +82,6 @@ class CartoonViewModel : ViewModel() {
     val errorLiveData = MutableLiveData<String>()
     private val remote = CartoonRemote(errorLiveData)
     private fun what3(string: String): Boolean {//集数
-
         val document = Jsoup.parse(string)
         val elements = document.getElementsByClass("cartoon_online_border")
         if (elements.isEmpty()) {
@@ -135,14 +136,17 @@ class CartoonViewModel : ViewModel() {
                         "onCreate: " + sss.contentToString()
                     ) //处理之后的第一个
                     val stringBuffer = StringBuilder()
-                    val c = sss[0][0]
-                    var sss0: String
-                    sss0 =
+                    val sss0 = if (sss[0].isNotEmpty()) {
+                        val c = sss[0][0]
                         if (conversion(c) >= msg4List.size) c.toString() else getStringList2(
                             conversion(
-                                sss[0][0]
+                                c
                             )
                         )
+                    }else{
+                        ""
+                    }
+
                     if (sss0 == "") //判断*/y/*的y
                         stringBuffer.append(Api.imgUrl).append(sss[0])
                             .append("/") else stringBuffer.append(Api.imgUrl).append(sss0)
@@ -244,32 +248,42 @@ class CartoonViewModel : ViewModel() {
                                         stringBuffer.append("%").append(
                                             getStringList(
                                                 conversion(
-                                                    ssss[k][0]
+                                                    ssssk[0]
                                                 )
                                             )
                                         )
                                     }
                                     ssssk.contains(".") -> {
-                                        stringBuffer.append("%").append(
-                                            getStringList(
-                                                conversion(
-                                                    ssss[k][0]
+                                        stringBuffer.apply {
+                                            append("%")
+                                            append(
+                                                getStringList(
+                                                    conversion(
+                                                        ssssk[0]
+                                                    )
                                                 )
                                             )
-                                        )
-                                            .append(".")
-                                            .append(getStringList(conversion(ssss[k][2])))
+                                            append(".")
+                                            if (ssssk.length == 3)
+                                                stringBuffer.append(getStringList(conversion(ssssk[2])))
+                                        }
+
                                     }
                                     ssssk.contains("-") -> {
-                                        stringBuffer.append("%").append(
-                                            getStringList(
-                                                conversion(
-                                                    ssss[k][0]
+                                        stringBuffer.apply {
+                                            append("%")
+                                            append(
+                                                getStringList(
+                                                    conversion(
+                                                        ssssk[0]
+                                                    )
                                                 )
                                             )
-                                        )
-                                            .append("-")
-                                            .append(getStringList(conversion(ssss[k][2])))
+                                            append("-")
+                                            if (ssssk.length == 3)
+                                                stringBuffer.append(getStringList(conversion(ssssk[2])))
+                                        }
+
                                     }
                                 }
                                 k++
@@ -308,6 +322,7 @@ class CartoonViewModel : ViewModel() {
                                 if (bj.length >= 2) {
                                     when {
                                         bj.contains("-") -> {
+                                            Log.i(TAG, "what1:bj.contains(-) ")
                                             split(bj, stringBuffer, "-")
                                         }
                                         bj.contains(".") -> {
@@ -518,13 +533,13 @@ class CartoonViewModel : ViewModel() {
         pgLiveData.postValue(true)
         for (url in imgUrlList) {
             if (job.isActive)
-            remote.getImg(url).collect {
-                if (job.isActive)
-                    if (it != null) {
-                        imgList.add(it)
-                        msg4LiveData.postValue(imgList)
-                    }
-            }
+                remote.getImg(url).collect {
+                    if (job.isActive)
+                        if (it != null) {
+                            imgList.add(it)
+                            msg4LiveData.postValue(imgList)
+                        }
+                }
         }
     }
 
@@ -655,7 +670,7 @@ class CartoonViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             remote.getData(url)
                 .collect {
-                   what3(it)
+                    what3(it)
                 }
         }
     }
@@ -738,9 +753,10 @@ class CartoonViewModel : ViewModel() {
     }
 
     private fun getStringList(num: Int): String { //有就有，没有就返回原数值
-        return if (msg4List[num] == "") {
-            //            Log.i(TAG, "getStringList: " + num);
-            num.toString()
+        return if (msg4List[num].isEmpty()) {
+            Log.i(TAG, "getStringList: $num");
+//            num.toString()
+            getStringListChar.toString()
         } else msg4List[num]
     }
 
@@ -750,6 +766,7 @@ class CartoonViewModel : ViewModel() {
 
     private fun conversion(s: Char): Int {
         var a = 0
+        getStringListChar = s
         when {
             s.toInt() in 48..57 -> {
                 a = s.toInt() - 48 //0-9
@@ -768,6 +785,7 @@ class CartoonViewModel : ViewModel() {
         Log.i(TAG, "conversion: $s")
         var a = 0
         val intS = s.toInt()
+        getStringListChar=s[0]
         if (intS >= 10) {
             a = intS + 51
         }
@@ -794,6 +812,7 @@ class CartoonViewModel : ViewModel() {
         }
     }
 
+    private var getStringListChar: Char = 'a'
     private fun split(bj: String, stringBuffer: StringBuilder, mark: String) {
         val bjs = bj.split(mark).toTypedArray()
         for (b in bjs.indices) {
@@ -801,6 +820,7 @@ class CartoonViewModel : ViewModel() {
             when {
                 bj2.length == 1 -> {
                     //Log.i(TAG, ": " + bj2.charAt(0));
+
                     stringBuffer.append(getStringList(conversion(bj2[0])))
                 }
                 bj2.length == 2 -> {
