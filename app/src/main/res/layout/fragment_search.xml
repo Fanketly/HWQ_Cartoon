@@ -25,16 +25,22 @@
                 android:contentDescription="@string/todo"
                 android:src="@drawable/abc_vector_test" />
 
+
             <SearchView
                 android:id="@+id/searchSearch"
                 android:layout_width="match_parent"
                 android:layout_height="40dp" />
 
         </LinearLayout>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvSearch"
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabSearch"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vpSearch"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
     </LinearLayout>
 </layout>

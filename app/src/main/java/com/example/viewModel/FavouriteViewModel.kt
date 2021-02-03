@@ -43,7 +43,7 @@ class FavouriteViewModel : ViewModel() {
     fun historyClear() {
         historyDB.clear()
         historyList.clear()
-        historyLivaData.value = -1
+        historyLivaData.value = -1//全部刷新
     }
 
     //homeFragment

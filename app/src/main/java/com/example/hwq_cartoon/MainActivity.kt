@@ -76,19 +76,21 @@ class MainActivity : AppCompatActivity() {
         }
         //集数Detail监听
         viewModel.msg3LiveData.observe(this) {
-            b.pgMain.visibility=View.GONE
             b.bottomNav.visibility = View.GONE
             beginTransaction(viewModel.bundle, DetailedFragment::class.java)
         }
         //Search监听
         viewModel.searchLiveData.observe(this) {
             if (!viewModel.isSearchFragment)
-                if (it) {
-                    b.bottomNav.visibility = View.GONE
-                    beginTransaction(null, SearchFragment::class.java)
-                    viewModel.isSearchFragment = true
-                } else {
-                    Toast.makeText(this, "没找到此漫画", Toast.LENGTH_SHORT).show()
+                when(it){
+                    1->{
+                        b.bottomNav.visibility = View.GONE
+                        beginTransaction(null, SearchFragment::class.java)
+                        viewModel.isSearchFragment = true
+                    }
+                    2->{
+
+                    }
                 }
         }
         //错误监听

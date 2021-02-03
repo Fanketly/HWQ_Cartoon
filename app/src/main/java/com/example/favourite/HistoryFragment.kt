@@ -22,7 +22,6 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_h
         b.rvHistory.setUpWithLinear(adapter)
         viewModel.historyLivaData.observe(viewLifecycleOwner) {
             if (it == -2) return@observe
-            Log.i("TAG", "onActivityCreated: $it")
             if (it == -1) {
                 adapter.notifyDataSetChanged()
                 return@observe

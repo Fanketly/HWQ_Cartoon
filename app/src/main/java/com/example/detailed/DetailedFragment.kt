@@ -23,10 +23,7 @@ import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.HistoryInfor
 import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.FavouriteViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,7 +48,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
         viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
         favouriteViewModel =
             ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
-        b.frameLayout.setOnClickListener {  }//避免点击到下一层的视图
+        b.frameLayout.setOnClickListener { }//避免点击到下一层的视图
         //返回
         b.btnDetailBack.setOnClickListener {
 //            Navigation.findNavController(requireView()).navigateUp()
@@ -105,24 +102,31 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
             b.tvDetailName.text = name
             b.tvDetailContent.text = viewModel.content
             b.tvDetailContent.movementMethod = ScrollingMovementMethod()
-
-            Glide.with(requireContext()).asDrawable()
-                .load(GlideUrl(img, headers))
-                .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(b.imgDetail)
-            //集数Rv
+            if (img!!.contains("wuqimh"))
+                Glide.with(requireContext()).asDrawable()
+                    .load(img)
+                    .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(b.imgDetail)
+            else
+                Glide.with(requireContext()).asDrawable()
+                    .load(GlideUrl(img, headers))
+                    .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(b.imgDetail)
+            //集数Rv,判断是否在喜爱中
             val favouriteDialogRvAdapter = if (favouriteInfor != null)
                 DetailRvAdapter(
                     context,
-                    viewModel.mgs3List,
+                    viewModel.msg3List,
                     favouriteInfor?.mark ?: 0
                 )
             else
-                DetailRvAdapter(context, viewModel.mgs3List, historyInfor?.mark ?: 0)
+                DetailRvAdapter(context, viewModel.msg3List, historyInfor?.mark ?: 0)
 
             b.rvDetail.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             b.rvDetail.setUpWithGrid(favouriteDialogRvAdapter, 4)
             //点击集数
             favouriteDialogRvAdapter.setOnClick { p: Int ->
+                if (viewModel.pgLiveData.value == false) return@setOnClick
                 Log.i(TAG, "his:$historyMark ")
                 viewModel.msg3Send(p)
                 favouriteDialogRvAdapter.itemChange(p)
@@ -193,12 +197,14 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     btnBack.setOnClickListener { alertDialog.dismiss() }
                     alertDialog.setView(view4)
                     alertDialog.show()
+                    viewModel.pgLiveData.value = true
                     return@observe
                 }
                 if (msg4.isNotEmpty()) cartoonImgRvAdapter.notifyItemChanged(msg4.size - 1)
             })
         }
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
