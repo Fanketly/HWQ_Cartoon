@@ -49,14 +49,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
                 adapter = FavouriteRvAdapter(viewModel.speciesList, requireContext())
                 b.rvSpeciesTop.setUpWithLinear(adapterTop)
                 b.rvSpecies.setUpWithGrid(adapter, 3)
-                adapter?.setOnClick(object : FavouriteRvAdapter.OnClick {
-                    override fun onClick(position: Int) {
-                        viewModel.getSpeciesCartoon(position)
-                    }
-
-                    override fun longOnClick(p: Int) {
-                    }
-                })
+                adapter?.setOnClick(onclick = { viewModel.getSpeciesCartoon(it) }) {}
             } else {
                 adapter?.notifyDataSetChanged()
             }

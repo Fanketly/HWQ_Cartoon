@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.08344733" />
+        app:layout_constraintGuide_percent="0.05" />
 
     <LinearLayout
         android:id="@+id/layCartoonDialog"
@@ -35,8 +35,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:contentDescription="@string/todo"
-            app:srcCompat="@drawable/abc_vector_test" />
+            android:layout_marginStart="4dp"
+            android:background="@drawable/ic_baseline_arrow_back_ios_24"
+            android:contentDescription="@string/todo" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

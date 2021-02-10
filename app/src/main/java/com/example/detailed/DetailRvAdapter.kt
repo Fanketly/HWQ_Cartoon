@@ -19,9 +19,9 @@ class DetailRvAdapter(context: Context?, list: List<CartoonInfor>, private var m
     override fun bindViewHolder(holder: MyViewHolder, data: CartoonInfor, position: Int) {
         val title = holder.findViewById<TextView>(R.id.tvCartoonDialogTitle)
         if (position == mark) {
-            title.setBackgroundResource(R.drawable.text_boder_blue)
+            title.setBackgroundResource(R.drawable.text_boder_radius_blue)
         } else {
-            title.setBackgroundResource(R.drawable.textview_border)
+            title.setBackgroundResource(R.drawable.text_boder_radius)
         }
         title.text = data.titile
         holder.itemView.setOnClickListener { onclick(position) }
@@ -37,4 +37,6 @@ class DetailRvAdapter(context: Context?, list: List<CartoonInfor>, private var m
         notifyItemChanged(mark2)
         notifyItemChanged(mark)
     }
+
+
 }

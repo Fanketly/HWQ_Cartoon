@@ -59,6 +59,7 @@ class CartoonViewModel : ViewModel() {
     val msg3List: MutableList<CartoonInfor> = ArrayList()
     val msg3LiveData = MutableLiveData<Boolean>()
     var content: String? = null
+    var update: String? = null
 
     //msg4显示漫画
     val msg4List: MutableList<String> = ArrayList()
@@ -80,12 +81,13 @@ class CartoonViewModel : ViewModel() {
     private suspend fun what3(string: String) {//集数
         val document = Jsoup.parse(string)
         val elements = document.getElementsByClass("cartoon_online_border")
-        Log.i(TAG, "what3: ${elements.text()}")
+//        Log.i(TAG, "what3: ${document}")
         if (elements.text().isEmpty()) {
             pgLiveData.postValue(true)
             errorLiveData.postValue("此漫画无法浏览")
             return
         }
+        update = document.getElementsByClass("update2").text() ?: ""
         content = document.select(".line_height_content").text()
         val elements1 = elements.select("a")
         var cartoonInfor: CartoonInfor
@@ -613,352 +615,352 @@ class CartoonViewModel : ViewModel() {
             if (!job!!.isActive) break
             remote.getImg(url).collect {
                 if (job!!.isActive)
-                imgList.add(it!!)
+                    imgList.add(it!!)
                 if (job!!.isActive)
                     msg4LiveData.postValue(imgList)
+            }
+        }
+        if (imgUrlList.size > 0) imgUrlList.clear()
+    }
+
+    private fun send(url: String) {//what4
+        imgUrlList.add(url)
+    }
+
+    /**
+     * 分类
+     * SpeciesFragment
+     */
+    fun getSpeciesType() {
+        species = "0"
+        if (typeList.size > 0) {//判断是否有加载过分类，有就加载现有数据
+            speciesLiveData.value = true
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getData(Api.url2 + "/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor")
+                .collect {
+                    what8(it)
                 }
-            }
-            if (imgUrlList.size > 0) imgUrlList.clear()
         }
+    }
 
-        private fun send(url: String) {//what4
-            imgUrlList.add(url)
-        }
-
-        /**
-         * 分类
-         * SpeciesFragment
-         */
-        fun getSpeciesType() {
-            species = "0"
-            if (typeList.size > 0) {//判断是否有加载过分类，有就加载现有数据
-                speciesLiveData.value = true
-                return
-            }
-            CoroutineScope(Dispatchers.IO).launch {
-                remote.getData(Api.url2 + "/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor")
-                    .collect {
-                        what8(it)
-                    }
-            }
-        }
-
-        val adapterTopLiveData = MutableLiveData<Boolean>()//分类切换监听有没有成功 成功就变色
-        fun getSpeciesData() {
-            if (speciesList.size > 0) speciesList.clear()
-            Log.i(TAG, "getSpecies:$species")
-            CoroutineScope(Dispatchers.IO).launch {
-                remote.getData(
-                    Api.sacgUrl + "mh/index.php?c=category&m=doSearch&status=0" +
-                            "&reader_group=0&zone=0&initial=all&type=$species&p=1&callback=search.renderResult"
-                )
-                    .collect {
-                        what7(it)
-                    }
-            }
-        }
-
-        fun getSpeciesCartoon(position: Int) {
-            if (pgLiveData.value == false) return
-            pgLiveData.value = false
-            val info = speciesList[position]
-            val s = info.url
-            putBundle(info.title, info.imgUrl, s, R.id.speciesFragment)
-            if (s.isEmpty()) {
-                pgLiveData.value = true
-                return
-            }
-            loadCartoon(s)
-
-        }
-
-        /**
-         * 主页
-         * homeFragment
-         */
-
-        //获取漫画详细
-        fun getHomeCartoon(position: Int) {
-            if (pgLiveData.value == false) return
-            pgLiveData.value = false
-            val info = cartoonInfors[position]
-            val s = info.href
-            putBundle(info.titile, info.img, s, R.id.homeFragment)
-            if (s.isEmpty()) {
-                pgLiveData.value = true
-                return
-            }
-            loadCartoon(s)
-        }
-
-        //获取漫画页面
-        private fun pager() =
-            CoroutineScope(Dispatchers.IO).launch {
-                remote.getData(Api.url2 + "/update_$pager.shtml") {//需要加"/"
-                    errorLiveData.postValue(null)
-                }.collect {
-                    val document = Jsoup.parse(it)
-                    val element = document.getElementsByClass("newpic_content")
-                    val elements = element[0].getElementsByClass("boxdiv1")
-                    var element1: Element
-                    var element2: Element
-                    var element3: Element
-                    var cartoonInfor: CartoonInfor
-                    for (e in elements) {
-                        element1 = e.select(".picborder a").first() //图片
-                        element2 = e.select(".picborder img").first()
-                        element3 = e.select(".pictext li")[2]
-                        cartoonInfor = CartoonInfor(
-                            element1.attr("title"),
-                            element1.attr("href"),
-                            element2.attr("src"),
-                            element3.text()
-                        )
-                        cartoonInfors.add(cartoonInfor)
-                    }
-                    homeLiveData.postValue(null)
-                }
-            }
-
-
-        fun nextPager() { //下一页
-            pager++
-            pager()
-        }
-
-        fun refreshPager() { //刷新
-            pager = 1
-            cartoonInfors.clear()
-            pager()
-        }
-
-        fun getHomeCartoon() {
-            pager()
-        }
-
-        /***
-         * favouriteFragment
-         *
-         */
-        fun favouriteGet(favouriteInfor: FavouriteInfor) {
-            if (pgLiveData.value == false) return
-            pgLiveData.value = false
-            val url = favouriteInfor.url
-            Log.i(TAG, "favouriteGet: $url")
-            putBundle(
-                favouriteInfor.title,
-                favouriteInfor.imgUrl,
-                url,
-                R.id.favoriteFragment
+    val adapterTopLiveData = MutableLiveData<Boolean>()//分类切换监听有没有成功 成功就变色
+    fun getSpeciesData() {
+        if (speciesList.size > 0) speciesList.clear()
+        Log.i(TAG, "getSpecies:$species")
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getData(
+                Api.sacgUrl + "mh/index.php?c=category&m=doSearch&status=0" +
+                        "&reader_group=0&zone=0&initial=all&type=$species&p=1&callback=search.renderResult"
             )
-            loadCartoon(url)
-
-        }
-
-        /**
-         *historyFragment
-         * */
-        fun historyGet(historyInfor: HistoryInfor) {
-            if (pgLiveData.value == false) return
-            pgLiveData.value = false
-            val url = historyInfor.href
-            Log.i(TAG, "historyGet: $url")
-            putBundle(
-                historyInfor.title,
-                historyInfor.imgUrl,
-                url,
-                R.id.historyFragment
-            )
-
-            loadCartoon(url)
-
-        }
-
-        /**
-         * search
-         */
-        fun getSearch(position: Int) {
-            if (pgLiveData.value == false) return
-            pgLiveData.value = false
-            val cartoonInfor = searchList[position]
-            val s = cartoonInfor.href
-            putBundle(cartoonInfor.titile, cartoonInfor.img, s, R.id.searchFragment)
-            loadCartoon(s)
-        }
-
-        fun getSearch57(cartoonInfor: CartoonInfor) {
-            if (pgLiveData.value == false) return
-            pgLiveData.value = false
-            val s = Api.mh57Url + cartoonInfor.href
-            putBundle(cartoonInfor.titile, cartoonInfor.img, s, R.id.searchFragment)
-            loadCartoon(s)
-        }
-
-        private lateinit var searchJob: Job
-        fun search(name: String?) {
-            pgLiveData.value = false
-            Log.i(TAG, "search: $name")
-            searchJob = CoroutineScope(Dispatchers.IO).launch {
-                launch {
-                    remote.getData(Api.sacgUrl + "comicsum/search.php?s=$name")
-                        .collect {
-                            what5(it)
-                        }
+                .collect {
+                    what7(it)
                 }
-                launch {
-                    remote.getData(Api.mh57Url + "/search/q_$name").collect {
-                        mh57Search(it)
-                    }
-                }
-            }
         }
+    }
 
-
-        fun clearSearchList() {
-            Log.i(TAG, "clearSearchList: ")
-            searchJob.cancel()
-            if (searchList.size > 0) searchList.clear()
-            if (searchList57.size > 0) searchList57.clear()
+    fun getSpeciesCartoon(position: Int) {
+        if (pgLiveData.value == false) return
+        pgLiveData.value = false
+        val info = speciesList[position]
+        val s = info.url
+        putBundle(info.title, info.imgUrl, s, R.id.speciesFragment)
+        if (s.isEmpty()) {
+            pgLiveData.value = true
+            return
         }
+        loadCartoon(s)
 
-        private fun mh57Search(string: String) {
-            val jsoup = Jsoup.parse(string)
-            val elements = jsoup.getElementsByClass("cf")
-            if (elements.isEmpty()) {
-                errorLiveData.postValue("57漫画查询不到此漫画")
-                return
-            }
-            for (i in 2 until elements.size) {
-                val e = elements[i]
-                val a = e.select(".bcover")
-                if (a.isEmpty())
-                    continue
-                searchList57.add(
-                    CartoonInfor(
-                        a.attr("title"),
-                        a.attr("href"),
-                        a.select("img").attr("src")
+    }
+
+    /**
+     * 主页
+     * homeFragment
+     */
+
+    //获取漫画详细
+    fun getHomeCartoon(position: Int) {
+        if (pgLiveData.value == false) return
+        pgLiveData.value = false
+        val info = cartoonInfors[position]
+        val s = info.href
+        putBundle(info.titile, info.img, s, R.id.homeFragment)
+        if (s.isEmpty()) {
+            pgLiveData.value = true
+            return
+        }
+        loadCartoon(s)
+    }
+
+    //获取漫画页面
+    private fun pager() =
+        CoroutineScope(Dispatchers.IO).launch {
+            remote.getData(Api.url2 + "/update_$pager.shtml") {//需要加"/"
+                errorLiveData.postValue(null)
+            }.collect {
+                val document = Jsoup.parse(it)
+                val element = document.getElementsByClass("newpic_content")
+                val elements = element[0].getElementsByClass("boxdiv1")
+                var element1: Element
+                var element2: Element
+                var element3: Element
+                var cartoonInfor: CartoonInfor
+                for (e in elements) {
+                    element1 = e.select(".picborder a").first() //图片
+                    element2 = e.select(".picborder img").first()
+                    element3 = e.select(".pictext li")[2]
+                    cartoonInfor = CartoonInfor(
+                        element1.attr("title"),
+                        element1.attr("href"),
+                        element2.attr("src"),
+                        element3.text()
                     )
-                )
-            }
-            if (searchJob.isActive)
-                searchLiveData.postValue(2)
-        }
-
-        /**
-         * 逻辑处理部分
-         */
-        private fun decode(unicodeStr: String?): String? { //UNICODE转中文
-            if (unicodeStr == null) {
-                return null
-            }
-            val retBuf = StringBuilder()
-            val maxLoop = unicodeStr.length
-            var i = 0
-            while (i < maxLoop) {
-                if (unicodeStr[i] == '\\') {
-                    if (i < maxLoop - 5 && (unicodeStr[i + 1] == 'u' || unicodeStr[i + 1] == 'U')) try {
-                        retBuf.append(unicodeStr.substring(i + 2, i + 6).toInt(16).toChar())
-                        i += 5
-                    } catch (localNumberFormatException: NumberFormatException) {
-                        retBuf.append(unicodeStr[i])
-                    } else retBuf.append(unicodeStr[i])
-                } else {
-                    retBuf.append(unicodeStr[i])
+                    cartoonInfors.add(cartoonInfor)
                 }
-                i++
+                homeLiveData.postValue(null)
             }
-            return retBuf.toString()
         }
 
-        private fun getStringList(num: Int): String { //有就有，没有就返回原数值
-            return if (msg4List[num].isEmpty()) {
-//            Log.i(TAG, "getStringList: $num")
-                getStringListChar.toString()
-            } else msg4List[num]
-        }
 
-        private fun getStringList2(num: Int): String { //有就有，没有就没有
-            return msg4List[num]
-        }
+    fun nextPager() { //下一页
+        pager++
+        pager()
+    }
 
-        private fun conversion(s: Char): Int {
-            var a = 0
-            getStringListChar = s
-            when {
-                s.toInt() in 48..57 -> {
-                    a = s.toInt() - 48 //0-9
-                }
-                s.toInt() in 65..90 -> {
-                    a = s.toInt() - 29 //36-61
-                }
-                s.toInt() in 97..122 -> {
-                    a = s.toInt() - 87 //10-35
-                }
-            }
-            return a
-        }
+    fun refreshPager() { //刷新
+        pager = 1
+        cartoonInfors.clear()
+        pager()
+    }
 
-        private fun conversionString(s: String): Int {
-            Log.i(TAG, "conversion: $s")
-            var a = 0
-            val intS = s.toInt()
-            getStringListChar = s[0]
-            if (intS >= 10) {
-                a = intS + 51
-            }
-            Log.i(TAG, "conversion: $a")
-            return a
-        }
+    fun getHomeCartoon() {
+        pager()
+    }
 
-        private fun twoWords(bj: String, stringBuffer: StringBuilder) { //EG：11 or 1a
-            val matcher = Pattern.compile(".*[a-zA-Z]+.*").matcher(bj) //判断有没有包含字母
-            if (matcher.matches()) {
-                stringBuffer.append(getStringList2(bj[1].toInt() - 25))
-            } else {
-                val iBj = bj.toInt()
-                if (iBj >= 10 && iBj + 52 < msg4List.size) { //66=14 66是第67个
-                    val sBj = getStringList2(iBj + 52)
-                    if (sBj != "") {
-                        stringBuffer.append(sBj)
-                    } else {
-                        stringBuffer.append(iBj)
+    /***
+     * favouriteFragment
+     *
+     */
+    fun favouriteGet(favouriteInfor: FavouriteInfor) {
+        if (pgLiveData.value == false) return
+        pgLiveData.value = false
+        val url = favouriteInfor.url
+        Log.i(TAG, "favouriteGet: $url")
+        putBundle(
+            favouriteInfor.title,
+            favouriteInfor.imgUrl,
+            url,
+            R.id.favoriteFragment
+        )
+        loadCartoon(url)
+
+    }
+
+    /**
+     *historyFragment
+     * */
+    fun historyGet(historyInfor: HistoryInfor) {
+        if (pgLiveData.value == false) return
+        pgLiveData.value = false
+        val url = historyInfor.href
+        Log.i(TAG, "historyGet: $url")
+        putBundle(
+            historyInfor.title,
+            historyInfor.imgUrl,
+            url,
+            R.id.historyFragment
+        )
+
+        loadCartoon(url)
+
+    }
+
+    /**
+     * search
+     */
+    fun getSearch(position: Int) {
+        if (pgLiveData.value == false) return
+        pgLiveData.value = false
+        val cartoonInfor = searchList[position]
+        val s = cartoonInfor.href
+        putBundle(cartoonInfor.titile, cartoonInfor.img, s, R.id.searchFragment)
+        loadCartoon(s)
+    }
+
+    fun getSearch57(cartoonInfor: CartoonInfor) {
+        if (pgLiveData.value == false) return
+        pgLiveData.value = false
+        val s = Api.mh57Url + cartoonInfor.href
+        putBundle(cartoonInfor.titile, cartoonInfor.img, s, R.id.searchFragment)
+        loadCartoon(s)
+    }
+
+    private lateinit var searchJob: Job
+    fun search(name: String?) {
+        pgLiveData.value = false
+        Log.i(TAG, "search: $name")
+        searchJob = CoroutineScope(Dispatchers.IO).launch {
+            launch {
+                remote.getData(Api.sacgUrl + "comicsum/search.php?s=$name")
+                    .collect {
+                        what5(it)
                     }
-                } else {
-                    stringBuffer.append(iBj)
-                }
             }
-        }
-
-        /**保存传入的字符，用于list对应为空时返回原字符**/
-        private var getStringListChar: Char = 'a'
-        private fun split(bj: String, stringBuffer: StringBuilder, mark: String) {
-            val bjs = bj.split(mark).toTypedArray()
-            for (b in bjs.indices) {
-                val bj2 = bjs[b]
-                when {
-                    bj2.length == 1 -> {
-                        //Log.i(TAG, ": " + bj2.charAt(0));
-
-                        stringBuffer.append(getStringList(conversion(bj2[0])))
-                    }
-                    bj2.length == 2 -> {
-                        twoWords(bj2, stringBuffer)
-                    }
-                    bj.contains(".") -> {
-                        val bjs3 = bj2.split(".").toTypedArray()
-                        var i = 0
-                        val bj3Length = bjs3.size
-                        while (i < bj3Length) {
-                            val bj3 = bjs3[i]
-                            if (bj3.length == 1) stringBuffer.append(getStringList(conversion(bj3[0])))
-                            if (bj3.length == 2) twoWords(bj3, stringBuffer)
-                            if (i != bj3Length - 1 || i == 0) stringBuffer.append(".")
-                            i++
-                        }
-                    }
+            launch {
+                remote.getData(Api.mh57Url + "/search/q_$name").collect {
+                    mh57Search(it)
                 }
-                if (b != bjs.size - 1 || b == 0) stringBuffer.append(mark)
             }
         }
     }
+
+
+    fun clearSearchList() {
+        Log.i(TAG, "clearSearchList: ")
+        searchJob.cancel()
+        if (searchList.size > 0) searchList.clear()
+        if (searchList57.size > 0) searchList57.clear()
+    }
+
+    private fun mh57Search(string: String) {
+        val jsoup = Jsoup.parse(string)
+        val elements = jsoup.getElementsByClass("cf")
+        if (elements.isEmpty()) {
+            errorLiveData.postValue("57漫画查询不到此漫画")
+            return
+        }
+        for (i in 2 until elements.size) {
+            val e = elements[i]
+            val a = e.select(".bcover")
+            if (a.isEmpty())
+                continue
+            searchList57.add(
+                CartoonInfor(
+                    a.attr("title"),
+                    a.attr("href"),
+                    a.select("img").attr("src")
+                )
+            )
+        }
+        if (searchJob.isActive)
+            searchLiveData.postValue(2)
+    }
+
+    /**
+     * 逻辑处理部分
+     */
+    private fun decode(unicodeStr: String?): String? { //UNICODE转中文
+        if (unicodeStr == null) {
+            return null
+        }
+        val retBuf = StringBuilder()
+        val maxLoop = unicodeStr.length
+        var i = 0
+        while (i < maxLoop) {
+            if (unicodeStr[i] == '\\') {
+                if (i < maxLoop - 5 && (unicodeStr[i + 1] == 'u' || unicodeStr[i + 1] == 'U')) try {
+                    retBuf.append(unicodeStr.substring(i + 2, i + 6).toInt(16).toChar())
+                    i += 5
+                } catch (localNumberFormatException: NumberFormatException) {
+                    retBuf.append(unicodeStr[i])
+                } else retBuf.append(unicodeStr[i])
+            } else {
+                retBuf.append(unicodeStr[i])
+            }
+            i++
+        }
+        return retBuf.toString()
+    }
+
+    private fun getStringList(num: Int): String { //有就有，没有就返回原数值
+        return if (msg4List[num].isEmpty()) {
+//            Log.i(TAG, "getStringList: $num")
+            getStringListChar.toString()
+        } else msg4List[num]
+    }
+
+    private fun getStringList2(num: Int): String { //有就有，没有就没有
+        return msg4List[num]
+    }
+
+    private fun conversion(s: Char): Int {
+        var a = 0
+        getStringListChar = s
+        when {
+            s.toInt() in 48..57 -> {
+                a = s.toInt() - 48 //0-9
+            }
+            s.toInt() in 65..90 -> {
+                a = s.toInt() - 29 //36-61
+            }
+            s.toInt() in 97..122 -> {
+                a = s.toInt() - 87 //10-35
+            }
+        }
+        return a
+    }
+
+    private fun conversionString(s: String): Int {
+        Log.i(TAG, "conversion: $s")
+        var a = 0
+        val intS = s.toInt()
+        getStringListChar = s[0]
+        if (intS >= 10) {
+            a = intS + 51
+        }
+        Log.i(TAG, "conversion: $a")
+        return a
+    }
+
+    private fun twoWords(bj: String, stringBuffer: StringBuilder) { //EG：11 or 1a
+        val matcher = Pattern.compile(".*[a-zA-Z]+.*").matcher(bj) //判断有没有包含字母
+        if (matcher.matches()) {
+            stringBuffer.append(getStringList2(bj[1].toInt() - 25))
+        } else {
+            val iBj = bj.toInt()
+            if (iBj >= 10 && iBj + 52 < msg4List.size) { //66=14 66是第67个
+                val sBj = getStringList2(iBj + 52)
+                if (sBj != "") {
+                    stringBuffer.append(sBj)
+                } else {
+                    stringBuffer.append(iBj)
+                }
+            } else {
+                stringBuffer.append(iBj)
+            }
+        }
+    }
+
+    /**保存传入的字符，用于list对应为空时返回原字符**/
+    private var getStringListChar: Char = 'a'
+    private fun split(bj: String, stringBuffer: StringBuilder, mark: String) {
+        val bjs = bj.split(mark).toTypedArray()
+        for (b in bjs.indices) {
+            val bj2 = bjs[b]
+            when {
+                bj2.length == 1 -> {
+                    //Log.i(TAG, ": " + bj2.charAt(0));
+
+                    stringBuffer.append(getStringList(conversion(bj2[0])))
+                }
+                bj2.length == 2 -> {
+                    twoWords(bj2, stringBuffer)
+                }
+                bj.contains(".") -> {
+                    val bjs3 = bj2.split(".").toTypedArray()
+                    var i = 0
+                    val bj3Length = bjs3.size
+                    while (i < bj3Length) {
+                        val bj3 = bjs3[i]
+                        if (bj3.length == 1) stringBuffer.append(getStringList(conversion(bj3[0])))
+                        if (bj3.length == 2) twoWords(bj3, stringBuffer)
+                        if (i != bj3Length - 1 || i == 0) stringBuffer.append(".")
+                        i++
+                    }
+                }
+            }
+            if (b != bjs.size - 1 || b == 0) stringBuffer.append(mark)
+        }
+    }
+}

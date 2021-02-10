@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.Headers
 import java.util.*
 
@@ -36,13 +35,11 @@ val headers = Headers {
     map["Referer"] = "https://manhua.dmzj.com/update_1.shtml"
     map
 }
-val headers2 = Headers {
-    val map: MutableMap<String, String> =
-        HashMap()
-    map["Referer"] = "http://www.wuqimh.com/"
-    map
-}
+
 @BindingAdapter("setImg")
 fun setImg(imageView: ImageView, url: String) {
+    Glide.with(imageView).asDrawable().skipMemoryCache(true).load(url).into(imageView)
+}
+fun setImg(imageView: ImageView, url: Any) {
     Glide.with(imageView).asDrawable().skipMemoryCache(true).load(url).into(imageView)
 }

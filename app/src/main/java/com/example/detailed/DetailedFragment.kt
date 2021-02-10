@@ -1,5 +1,6 @@
 package com.example.detailed
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -13,8 +14,6 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.example.base.*
 import com.example.hwq_cartoon.R
@@ -43,6 +42,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
     private lateinit var viewModel: CartoonViewModel
     private lateinit var favouriteViewModel: FavouriteViewModel
     private var mark: Int? = null
+
+    @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
@@ -101,17 +102,12 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
             //漫画名与图片
             b.tvDetailName.text = name
             b.tvDetailContent.text = viewModel.content
+            b.tvDetailUpdate.text = "最后更新时间:${viewModel.update}"
             b.tvDetailContent.movementMethod = ScrollingMovementMethod()
             if (img!!.contains("wuqimh"))
-                Glide.with(requireContext()).asDrawable()
-                    .load(img)
-                    .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(b.imgDetail)
+                setImg(b.imgDetail, img)
             else
-                Glide.with(requireContext()).asDrawable()
-                    .load(GlideUrl(img, headers))
-                    .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(b.imgDetail)
+                setImg(b.imgDetail, GlideUrl(img, headers))
             //集数Rv,判断是否在喜爱中
             val favouriteDialogRvAdapter = if (favouriteInfor != null)
                 DetailRvAdapter(
@@ -165,7 +161,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                 }
             }
             //显示漫画
-            viewModel.msg4LiveData.observe(viewLifecycleOwner, { msg4: List<ByteArray?> ->
+            viewModel.msg4LiveData.observe(viewLifecycleOwner, { msg4: List<ByteArray> ->
                 if (msg4.size == 1) {
                     val builder = AlertDialog.Builder(requireContext())
                     val alertDialog = builder.create()
@@ -176,7 +172,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     val layTop = view4.findViewById<LinearLayout>(R.id.layCartoonDialog)
                     viewModel.msg4List.clear()
                     cartoonImgRvAdapter =
-                        CartoonImgRvAdapter(context, msg4)
+                        CartoonImgRvAdapter(requireContext(), msg4)
                     alertDialog.setOnDismissListener {
                         viewModel.onMsg4Dismiss()
                         Runtime.getRuntime().gc()

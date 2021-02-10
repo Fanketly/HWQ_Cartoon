@@ -65,7 +65,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             Log.i("TAG", "o: ")
             if (cartoonRvAdapter == null) {
                 cartoonRvAdapter =
-                    CartoonRvAdapter(viewModel.cartoonInfors, context)
+                    CartoonRvAdapter(viewModel.cartoonInfors, requireContext())
                 b.rvHome.setUpWithLinear(cartoonRvAdapter)
                 cartoonRvAdapter!!.setOnClick { position ->
                     viewModel.getHomeCartoon(position)

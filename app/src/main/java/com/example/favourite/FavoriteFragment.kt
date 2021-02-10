@@ -24,26 +24,22 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
         if (list.size > 0)
             b.tvFavouriteTip.visibility = View.GONE
         if (favouriteRvAdapter == null)
-            favouriteRvAdapter = FavouriteRvAdapter(list, context)
+            favouriteRvAdapter = FavouriteRvAdapter(list, requireContext())
         b.rvFavourite.setUpWithGrid(favouriteRvAdapter, 3)
         b.rvFavourite.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         //漫画点击监听
-        favouriteRvAdapter?.setOnClick(object : FavouriteRvAdapter.OnClick {
-            override fun onClick(position: Int) {
-                viewModel.favouriteGet(list[position])
-            }
-
-            override fun longOnClick(p: Int) {
-                AlertDialog.Builder(context).setMessage("是否取消追漫")
-                    .setPositiveButton(
-                        "确定"
-                    ) { _, _ ->
-                        favouriteViewModel.favouriteDel(p)
-                    }
-                    .setNegativeButton("取消") { p0, _ ->
-                        p0.dismiss()
-                    }.show()
-            }
+        favouriteRvAdapter?.setOnClick(onclick = {
+            viewModel.favouriteGet(list[it])
+        },longOnclick= {
+            AlertDialog.Builder(context).setMessage("是否取消追漫")
+                .setPositiveButton(
+                    "确定"
+                ) { _, _ ->
+                    favouriteViewModel.favouriteDel(it)
+                }
+                .setNegativeButton("取消") { p0, _ ->
+                    p0.dismiss()
+                }.show()
         })
         //漫画rv监听
         favouriteViewModel.favouriteLivaData.observe(viewLifecycleOwner) {
