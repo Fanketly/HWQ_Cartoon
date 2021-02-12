@@ -9,7 +9,8 @@
     <string name="menu_species">发现</string>
     <string name="detailsummary">简介</string>
     <string name="vpfavourite_clear">清空历史</string>
-<string-array name="search_kind">
+    <string name="n_m">N/M</string>
+    <string-array name="search_kind">
     <item>动漫之家</item>
     <item>拷贝漫画</item>
 </string-array>

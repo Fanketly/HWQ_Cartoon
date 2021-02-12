@@ -38,6 +38,19 @@
             android:layout_marginStart="4dp"
             android:background="@drawable/ic_baseline_arrow_back_ios_24"
             android:contentDescription="@string/todo" />
+
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvCartoonNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/n_m"
+        android:textColor="#D8D8D8"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toEndOf="@+id/layCartoonDialog"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

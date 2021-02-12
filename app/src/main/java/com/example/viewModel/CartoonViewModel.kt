@@ -609,7 +609,7 @@ class CartoonViewModel : ViewModel() {
     }
 
     private var job: Job? = null
-    private val imgUrlList = mutableListOf<String>()
+     val imgUrlList = mutableListOf<String>()
     private suspend fun loadImg() {
         for (url in imgUrlList) {
             if (!job!!.isActive) break

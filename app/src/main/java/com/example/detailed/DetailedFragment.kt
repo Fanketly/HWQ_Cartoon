@@ -12,7 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.model.GlideUrl
 import com.example.base.*
@@ -25,6 +27,7 @@ import com.example.viewModel.FavouriteViewModel
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 /***
  * 页面 漫画详细
@@ -170,6 +173,16 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     val recyclerView4: RecyclerView = view4.findViewById(R.id.rvCartoon)
                     val btnBack = view4.findViewById<ImageButton>(R.id.btnCartoondialogBack)
                     val layTop = view4.findViewById<LinearLayout>(R.id.layCartoonDialog)
+                    val tvNum = view4.findViewById<TextView>(R.id.tvCartoonNum)
+                    val num = viewModel.imgUrlList.size
+                    recyclerView4.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                            super.onScrolled(recyclerView, dx, dy)
+                            val position =
+                                (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                            tvNum.text = "${position + 1}/$num"
+                        }
+                    })
                     viewModel.msg4List.clear()
                     cartoonImgRvAdapter =
                         CartoonImgRvAdapter(requireContext(), msg4)
