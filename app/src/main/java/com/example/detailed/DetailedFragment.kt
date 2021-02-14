@@ -45,6 +45,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
     private lateinit var viewModel: CartoonViewModel
     private lateinit var favouriteViewModel: FavouriteViewModel
     private var mark: Int? = null
+    private lateinit var favouriteDialogRvAdapter: DetailRvAdapter
 
     @SuppressLint("SetTextI18n")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -112,7 +113,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
             else
                 setImg(b.imgDetail, GlideUrl(img, headers))
             //集数Rv,判断是否在喜爱中
-            val favouriteDialogRvAdapter = if (favouriteInfor != null)
+            favouriteDialogRvAdapter = if (favouriteInfor != null)
                 DetailRvAdapter(
                     context,
                     viewModel.msg3List,
@@ -125,18 +126,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
             b.rvDetail.setUpWithGrid(favouriteDialogRvAdapter, 4)
             //点击集数
             favouriteDialogRvAdapter.setOnClick { p: Int ->
-                if (viewModel.pgLiveData.value == false) return@setOnClick
-                Log.i(TAG, "his:$historyMark ")
-                viewModel.msg3Send(p)
-                favouriteDialogRvAdapter.itemChange(p)
-                historyInfor?.mark = p//当前页面
-                favouriteViewModel.historyList[historyMark].mark = p//历史list
-                favouriteViewModel.historyUpdate(historyInfor!!)//历史数据库
-                favouriteViewModel.historyLivaData.value = historyMark
-                if (b.btnDetailAdd.text.toString() == "已追漫") {
-                    favouriteInfor?.mark = p//当前页面
-                    favouriteViewModel.updateFavourite(favouriteInfor)//喜爱数据库
-                }
+                update(p)
             }
             //添加到喜爱,从喜爱中删除 添加到数据库,添加到list，添加到livedata
             b.btnDetailAdd.setOnClickListener {
@@ -175,12 +165,28 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     val layTop = view4.findViewById<LinearLayout>(R.id.layCartoonDialog)
                     val tvNum = view4.findViewById<TextView>(R.id.tvCartoonNum)
                     val num = viewModel.imgUrlList.size
+                    var lastPosition = -1//记录上一个itemview
                     recyclerView4.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                             super.onScrolled(recyclerView, dx, dy)
                             val position =
                                 (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                            if (lastPosition == position) return
+                            lastPosition = position
                             tvNum.text = "${position + 1}/$num"
+                            if (position + 1 == num && viewModel.msg3List.size - 1 > historyInfor!!.mark) {
+                                AlertDialog.Builder(requireContext()).setMessage("是否加载下一话")
+                                    .setNegativeButton("否") { d, _ ->
+                                        d.dismiss()
+                                    }.setPositiveButton("是") { d, _ ->
+                                        alertDialog.setOnDismissListener { }
+                                        viewModel.onMsg4Dismiss()
+                                        alertDialog.dismiss()
+                                        shortToast("正在加载下一页")
+                                        d.dismiss()
+                                        update(historyInfor!!.mark + 1)
+                                    }.show()
+                            }
                         }
                     })
                     viewModel.msg4List.clear()
@@ -214,12 +220,26 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
         }
     }
 
+    /**更新观看集数并加载漫画**/
+    private fun update(p: Int) {
+        if (viewModel.pgLiveData.value == false) return
+        Log.i(TAG, "his:$historyMark ")
+        viewModel.msg3Send(p)
+        favouriteDialogRvAdapter.itemChange(p)
+        historyInfor?.mark = p//当前页面
+        favouriteViewModel.historyList[historyMark].mark = p//历史list
+        favouriteViewModel.historyUpdate(historyInfor!!)//历史数据库
+        favouriteViewModel.historyLivaData.value = historyMark
+        if (b.btnDetailAdd.text.toString() == "已追漫") {
+            favouriteInfor?.mark = p//当前页面
+            favouriteViewModel.updateFavourite(favouriteInfor)//喜爱数据库
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel.onMsg3Dismiss()
         if (mark != R.id.searchSearch)
             viewModel.bottomLiveData.value = false
-
     }
 }

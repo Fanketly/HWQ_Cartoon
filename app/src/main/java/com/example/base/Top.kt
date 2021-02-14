@@ -1,6 +1,5 @@
 package com.example.base
 
-import android.util.Log
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,7 +25,6 @@ fun <T> RecyclerView.setUpWithGrid(t: T, num: Int) {
     adapter = t as RecyclerView.Adapter<*>
 }
 
-fun logi(msg: String) = Log.i(TAG, msg)
 const val TAG = "TAG"
 
 val headers = Headers {
