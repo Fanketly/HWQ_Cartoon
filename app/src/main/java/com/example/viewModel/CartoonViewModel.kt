@@ -135,18 +135,43 @@ class CartoonViewModel : ViewModel() {
         }
         val s = elements[5].data()
         Log.i(TAG, "what157: ${elements[5]}")
-        Log.i(TAG, "what157: ${s.substring(s.lastIndexOf(",'") + 2, s.indexOf("'.split"))}")
+//        Log.i(TAG, "what157: ${s.substring(s.lastIndexOf(",'") + 2, s.indexOf("'.split"))}")
         msg4List.addAll(s.substring(s.lastIndexOf(",'") + 2, s.indexOf("'.split")).split("|"))
         val strings = s.substring(s.indexOf(":[") + 2, s.indexOf("],")).split(",").toTypedArray()
+        var startUrl: String? = null
         for (str in strings) {
             if (!job!!.isActive) return
             val string2 =
                 str.substring(str.indexOf("\\'/") + 3, str.lastIndexOf("\\'"))
+            Log.i(TAG, "what157: $string2")
             val stringBuilder = StringBuilder()
-            split(string2, stringBuilder, "/")
-//            Log.i(TAG, "what157: $string2")
-//            Log.i(TAG, "what157: ${Api.img57Url+stringBuilder}")
-            send(Api.img57Url + stringBuilder)
+            if (startUrl == null) {
+                if(string2.contains("://"))
+                startUrl = getStringList(conversion(string2[0])) + ":/"
+                else
+                    startUrl=Api.img57Url
+            }
+            stringBuilder.append(startUrl)
+            for (s2 in string2.substring(4).split("/")) {
+                when {
+                    s2.contains("-") -> {
+                        stringBuilder.append("/")
+                        split(s2, stringBuilder, "-")
+                    }
+                    s2.contains(".") -> {
+                        stringBuilder.append("/")
+                        split(s2, stringBuilder, ".")
+                    }
+                    s2.contains("~") -> {
+                        stringBuilder.append("/")
+                        split(s2, stringBuilder, "~")
+                    }
+                    else -> {
+                        stringBuilder.append("/").append(getStringList(conversion(s2[0])))
+                    }
+                }
+            }
+            send(stringBuilder.toString())
         }
         loadImg()
     }
@@ -938,16 +963,9 @@ class CartoonViewModel : ViewModel() {
         val bjs = bj.split(mark).toTypedArray()
         for (b in bjs.indices) {
             val bj2 = bjs[b]
+//            Log.i(TAG, "split:bj2$bj2 ")
             when {
-                bj2.length == 1 -> {
-                    //Log.i(TAG, ": " + bj2.charAt(0));
-
-                    stringBuffer.append(getStringList(conversion(bj2[0])))
-                }
-                bj2.length == 2 -> {
-                    twoWords(bj2, stringBuffer)
-                }
-                bj.contains(".") -> {
+                bj2.contains(".") -> {
                     val bjs3 = bj2.split(".").toTypedArray()
                     var i = 0
                     val bj3Length = bjs3.size
@@ -959,6 +977,14 @@ class CartoonViewModel : ViewModel() {
                         i++
                     }
                 }
+                bj2.length == 1 -> {
+                    //Log.i(TAG, ": " + bj2.charAt(0));
+                    stringBuffer.append(getStringList(conversion(bj2[0])))
+                }
+                bj2.length == 2 -> {
+                    twoWords(bj2, stringBuffer)
+                }
+
             }
             if (b != bjs.size - 1 || b == 0) stringBuffer.append(mark)
         }
