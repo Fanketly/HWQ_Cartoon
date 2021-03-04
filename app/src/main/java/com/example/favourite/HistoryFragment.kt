@@ -1,8 +1,7 @@
 package com.example.favourite
 
 import android.os.Bundle
-import android.util.Log
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import com.example.adapter.SpacesItemDecoration
 import com.example.base.BaseFragment
 import com.example.base.setUpWithLinear
@@ -12,11 +11,10 @@ import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.FavouriteViewModel
 
 class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_history) {
-    private lateinit var viewModel: FavouriteViewModel
+    private val viewModel: FavouriteViewModel by activityViewModels()
+    private val cartoonViewModel: CartoonViewModel by activityViewModels()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
-        val cartoonViewModel: CartoonViewModel = viewModel(CartoonViewModel::class.java)
         val adapter = HistoryRvAdapter(requireContext(), viewModel.historyList)
         b.rvHistory.addItemDecoration(SpacesItemDecoration(30))
         b.rvHistory.setUpWithLinear(adapter)
@@ -28,7 +26,7 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_h
             }
             adapter.notifyItemChanged(it)
         }
-        viewModel.historyLivaData.value=-2//只要没发送新的value 就return
+        viewModel.historyLivaData.value = -2//只要没发送新的value 就return
         adapter.onclick {
             cartoonViewModel.historyGet(viewModel.historyList[it])
         }

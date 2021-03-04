@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.base.TAG
 import com.example.hwq_cartoon.R
 import com.example.repository.model.*
 import com.example.repository.remote.Api
-
 import com.example.repository.remote.CartoonRemote
 import com.google.gson.Gson
 import kotlinx.coroutines.*
@@ -27,7 +27,6 @@ import kotlin.plus
  */
 
 class CartoonViewModel : ViewModel() {
-
     init {
         Log.i(TAG, "CREATE: ")
     }
@@ -76,8 +75,10 @@ class CartoonViewModel : ViewModel() {
     val bannerLiveData = MutableLiveData<List<CartoonInfor>>()
 
     //remote
-    val errorLiveData = MutableLiveData<String>()
-    private val remote = CartoonRemote(errorLiveData)
+    private val remote = CartoonRemote()
+    val errorLiveData = remote.error
+
+    //    private val remote = CartoonRemote(errorLiveData)
     private suspend fun what3(string: String) {//集数
         val document = Jsoup.parse(string)
         val elements = document.getElementsByClass("cartoon_online_border")
@@ -135,7 +136,6 @@ class CartoonViewModel : ViewModel() {
         }
         val s = elements[5].data()
         Log.i(TAG, "what157: ${elements[5]}")
-//        Log.i(TAG, "what157: ${s.substring(s.lastIndexOf(",'") + 2, s.indexOf("'.split"))}")
         msg4List.addAll(s.substring(s.lastIndexOf(",'") + 2, s.indexOf("'.split")).split("|"))
         val strings = s.substring(s.indexOf(":[") + 2, s.indexOf("],")).split(",").toTypedArray()
         var startUrl: String? = null
@@ -146,10 +146,10 @@ class CartoonViewModel : ViewModel() {
             Log.i(TAG, "what157: $string2")
             val stringBuilder = StringBuilder()
             if (startUrl == null) {
-                if(string2.contains("://"))
-                startUrl = getStringList(conversion(string2[0])) + ":/"
+                startUrl = if (string2.contains("://"))
+                    getStringList(conversion(string2[0])) + ":/"
                 else
-                    startUrl=Api.img57Url
+                    Api.img57Url
             }
             stringBuilder.append(startUrl)
             for (s2 in string2.substring(4).split("/")) {
@@ -176,6 +176,7 @@ class CartoonViewModel : ViewModel() {
         loadImg()
     }
 
+    //老代码不想优化
     private suspend fun what1(string: String) {//图片
         val document = Jsoup.parse(string)
         val elements = document.getElementsByTag("script")
@@ -488,7 +489,7 @@ class CartoonViewModel : ViewModel() {
 
     /***加载漫画,判断漫画源**/
     private fun loadCartoon(url: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             if (url.contains("wuqimh")) {
                 remote.getData(url) {
                     pgLiveData.postValue(true)
@@ -574,7 +575,7 @@ class CartoonViewModel : ViewModel() {
      * 漫画本月人气排行
      */
     fun getBanner() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             remote.getData(Api.url2 + "/rank/month-block-1.shtml")
                 .collect {
                     what6(it)
@@ -662,7 +663,7 @@ class CartoonViewModel : ViewModel() {
             speciesLiveData.value = true
             return
         }
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             remote.getData(Api.url2 + "/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor")
                 .collect {
                     what8(it)
@@ -674,7 +675,7 @@ class CartoonViewModel : ViewModel() {
     fun getSpeciesData() {
         if (speciesList.size > 0) speciesList.clear()
         Log.i(TAG, "getSpecies:$species")
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             remote.getData(
                 Api.sacgUrl + "mh/index.php?c=category&m=doSearch&status=0" +
                         "&reader_group=0&zone=0&initial=all&type=$species&p=1&callback=search.renderResult"
@@ -720,7 +721,7 @@ class CartoonViewModel : ViewModel() {
 
     //获取漫画页面
     private fun pager() =
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch(Dispatchers.IO) {
             remote.getData(Api.url2 + "/update_$pager.shtml") {//需要加"/"
                 errorLiveData.postValue(null)
             }.collect {

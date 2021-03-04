@@ -12,6 +12,7 @@ import org.greenrobot.greendao.annotation.Id;
  */
 @Entity
 public class FavouriteInfor {
+
     @Id(autoincrement = true)
     private Long id;
     private int mark;//mark为上次看的集数

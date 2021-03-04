@@ -3,6 +3,7 @@ package com.example.search
 import android.os.Bundle
 import android.util.Log
 import android.widget.SearchView
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.CartoonRvAdapter
 import com.example.adapter.DataBindingAdapter
@@ -17,7 +18,7 @@ import com.example.repository.model.CartoonInfor
 import com.example.viewModel.CartoonViewModel
 
 class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_search) {
-    private lateinit var viewModel: CartoonViewModel
+    private val viewModel: CartoonViewModel by activityViewModels()
     private var name = ""
     private lateinit var rv: RecyclerView
     private lateinit var rv2: RecyclerView
@@ -26,8 +27,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
         b.laySearch.setOnClickListener { }
         var adapter: CartoonRvAdapter? = null
         var adapter2: DataBindingAdapter<CartoonInfor>? = null
-
-        viewModel = viewModel(CartoonViewModel::class.java)
+//        viewModel = viewModel(CartoonViewModel::class.java)
         b.btnSearchBack.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()

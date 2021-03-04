@@ -2,6 +2,7 @@ package com.example.classification
 
 import android.os.Bundle
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.DataBindingAdapter
 import com.example.base.BaseFragment
@@ -17,11 +18,11 @@ import com.example.viewModel.CartoonViewModel
 
 class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_species) {
     var adapterTop: DataBindingAdapter<SpeciesInfor>? = null
+    private val viewModel: CartoonViewModel by activityViewModels()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         var mark = 0
         var pp = 0
-        val viewModel = viewModel<CartoonViewModel>(CartoonViewModel::class.java)
         viewModel.getSpeciesType()
         var adapter: FavouriteRvAdapter? = null
         b.rvSpeciesTop.overScrollMode = RecyclerView.OVER_SCROLL_NEVER

@@ -14,19 +14,22 @@ import kotlinx.coroutines.flow.flow
  */
 
 
-class CartoonRemote(private val error: MutableLiveData<String>) {
+class CartoonRemote {
+    val error = MutableLiveData<String>()
+
     @WorkerThread
     suspend fun getData(url: String) = flow {
         emit(NetworkUtils.okhttpGet(url))
     }.catch {
         error.postValue(it.message)
     }
+
     @WorkerThread
-    suspend fun getData(url: String,doAny:()->Unit) = flow {
+    suspend fun getData(url: String, doAny: () -> Unit) = flow {
         emit(NetworkUtils.okhttpGet(url))
     }.catch {
         error.postValue(it.message)
-       doAny()
+        doAny()
     }
 
     @WorkerThread

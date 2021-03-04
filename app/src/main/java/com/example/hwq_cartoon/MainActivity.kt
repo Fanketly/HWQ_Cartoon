@@ -5,10 +5,10 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import com.example.detailed.DetailedFragment
@@ -18,11 +18,11 @@ import com.example.viewModel.CartoonViewModel
 
 //adb connect 127.0.0.1:21503
 class MainActivity : AppCompatActivity() {
+    val viewModel: CartoonViewModel by viewModels()
     private var itemid = R.id.homeFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val b: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        val viewModel = ViewModelProvider(this)[CartoonViewModel::class.java]
         val controller = Navigation.findNavController(this, R.id.fragCartoon)
         NavigationUI.setupWithNavController(b.bottomNav, controller)
         controller.addOnDestinationChangedListener { _, destination, _ ->
@@ -65,9 +65,9 @@ class MainActivity : AppCompatActivity() {
             return@setOnNavigationItemSelectedListener true
         }
         //pg监听
-        viewModel.pgLiveData.observe(this){
-            if (it)b.pgMain.visibility=View.GONE
-            else b.pgMain.visibility=View.VISIBLE
+        viewModel.pgLiveData.observe(this) {
+            if (it) b.pgMain.visibility = View.GONE
+            else b.pgMain.visibility = View.VISIBLE
         }
         //底部监听
         viewModel.bottomLiveData.observe(this) {
@@ -82,20 +82,20 @@ class MainActivity : AppCompatActivity() {
         //Search监听
         viewModel.searchLiveData.observe(this) {
             if (!viewModel.isSearchFragment)
-                when(it){
-                    1->{
+                when (it) {
+                    1 -> {
                         b.bottomNav.visibility = View.GONE
                         beginTransaction(null, SearchFragment::class.java)
                         viewModel.isSearchFragment = true
                     }
-                    2->{
+                    2 -> {
 
                     }
                 }
         }
         //错误监听
-        viewModel.errorLiveData.observe(this){
-            Toast.makeText(this,it,Toast.LENGTH_SHORT).show()
+        viewModel.errorLiveData.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         }
     }
 

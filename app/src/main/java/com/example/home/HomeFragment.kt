@@ -3,12 +3,13 @@ package com.example.home
 import android.os.Bundle
 import android.util.Log
 import android.widget.SearchView
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.CartoonRvAdapter
 import com.example.adapter.SpacesItemDecoration
 import com.example.base.BaseFragment
 import com.example.base.TAG
-import com.example.base.setUpWithLinear
+import com.example.base.setUpWithGrid
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentHomeBinding
 import com.example.viewModel.CartoonViewModel
@@ -18,17 +19,17 @@ import com.youth.banner.indicator.CircleIndicator
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
+    private val viewModel: CartoonViewModel by activityViewModels()
+
     //需要传递的数据
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val viewModel = viewModel<CartoonViewModel>(CartoonViewModel::class.java)
         if (viewModel.cartoonInfors.size == 0)
             viewModel.getHomeCartoon()
         var cartoonRvAdapter: CartoonRvAdapter? = null
         //轮播图
         if (viewModel.bannerList.size == 0)
             viewModel.getBanner()
-//        b.bannerHome.setBannerGalleryMZ(500)
         viewModel.bannerLiveData.observe(viewLifecycleOwner) { list ->
             b.bannerHome.let {
                 it.addBannerLifecycleObserver(this)
@@ -66,7 +67,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             if (cartoonRvAdapter == null) {
                 cartoonRvAdapter =
                     CartoonRvAdapter(viewModel.cartoonInfors, requireContext())
-                b.rvHome.setUpWithLinear(cartoonRvAdapter)
+                b.rvHome.setUpWithGrid(cartoonRvAdapter, 2)
                 cartoonRvAdapter!!.setOnClick { position ->
                     viewModel.getHomeCartoon(position)
                 }

@@ -11,7 +11,6 @@ import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentVpBinding
 import com.example.viewModel.FavouriteViewModel
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 
 class FavouriteVpFragment : BaseFragment<FragmentVpBinding>(R.layout.fragment_vp) {
 

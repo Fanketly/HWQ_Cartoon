@@ -9,8 +9,6 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 
 /**
  * Created by Android Studio.
@@ -18,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
  * Date: 2020/12/10
  * Time: 13:55
  */
+
 abstract class BaseFragment<T : ViewDataBinding>(@LayoutRes val layId: Int) : Fragment() {
     lateinit var b: T
     override fun onCreateView(
@@ -29,10 +28,9 @@ abstract class BaseFragment<T : ViewDataBinding>(@LayoutRes val layId: Int) : Fr
         return b.root
     }
 
+//    inline fun <reified V : ViewModel> viewModel(): V =
+//        ViewModelProvider(requireActivity())[V::class.java]
 
-    inline fun <reified V : ViewModel> viewModel(clazz: Class<out ViewModel>): V {
-        return ViewModelProvider(requireActivity())[clazz] as V
-    }
 
     private var toast: Toast? = null
     fun shortToast(string: String) {
