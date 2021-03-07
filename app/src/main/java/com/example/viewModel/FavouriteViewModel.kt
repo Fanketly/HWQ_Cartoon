@@ -20,6 +20,7 @@ class FavouriteViewModel : ViewModel() {
     private val favouriteDB = CartoonDB()
     val historyList: MutableList<HistoryInfor> = mutableListOf()
     val favouriteList: MutableList<FavouriteInfor> = mutableListOf()
+    val likesLiveData = MutableLiveData<Boolean>()
 
     /**判断是删除还是添加，方便rv刷新**/
     var delOrIns = true
@@ -29,7 +30,16 @@ class FavouriteViewModel : ViewModel() {
     init {
         historyList.addAll(historyDB.loadAll())
         favouriteList.addAll(favouriteDB.loadAll())
+        likesIsZero()
     }
+
+    fun likesIsZero() {
+        if (favouriteList.size == 0)
+            likesLiveData.postValue(true)
+        else
+            likesLiveData.postValue(false)
+    }
+
 
     fun historyInsert(historyInfor: HistoryInfor) {
         historyDB.insert(historyInfor)

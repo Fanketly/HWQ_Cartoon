@@ -14,15 +14,16 @@ import com.example.viewModel.FavouriteViewModel
 
 class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment_favorite) {
     private var favouriteRvAdapter: FavouriteRvAdapter? = null
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
         val favouriteViewModel =
             ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
         val list = favouriteViewModel.favouriteList
-        if (list.size > 0)
-            b.tvFavouriteTip.visibility = View.GONE
+        favouriteViewModel.likesLiveData.observe(viewLifecycleOwner) {
+            if (it) b.tvFavouriteTip.visibility = View.VISIBLE
+            else b.tvFavouriteTip.visibility = View.GONE
+        }
         if (favouriteRvAdapter == null)
             favouriteRvAdapter = FavouriteRvAdapter(list, requireContext())
         b.rvFavourite.setUpWithGrid(favouriteRvAdapter, 3)
@@ -30,7 +31,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
         //漫画点击监听
         favouriteRvAdapter?.setOnClick(onclick = {
             viewModel.favouriteGet(list[it])
-        },longOnclick= {
+        }, longOnclick = {
             AlertDialog.Builder(context).setMessage("是否取消追漫")
                 .setPositiveButton(
                     "确定"

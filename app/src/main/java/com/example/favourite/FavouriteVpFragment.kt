@@ -13,10 +13,10 @@ import com.example.viewModel.FavouriteViewModel
 import com.google.android.material.tabs.TabLayout
 
 class FavouriteVpFragment : BaseFragment<FragmentVpBinding>(R.layout.fragment_vp) {
-
+    private lateinit var viewModel: FavouriteViewModel
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val viewModel = ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
         val list = listOf(FavoriteFragment(), HistoryFragment())
         val favouritevpAdapter = FavouritevpAdapter(this, list)
         b.vpFavourite.offscreenPageLimit = 2
@@ -53,6 +53,15 @@ class FavouriteVpFragment : BaseFragment<FragmentVpBinding>(R.layout.fragment_vp
                 b.tabFavourite.getTabAt(position)?.select()
             }
         })
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        Log.i(TAG, "onHiddenChanged: $hidden")
+        if (!hidden) {
+            viewModel.likesIsZero()
+        }
+
     }
 
     override fun onDestroy() {

@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         speciesFragment = SpeciesFragment()
         fragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.right_in, R.anim.right_out)
-            .add(R.id.layMain, homeFragment).commit()
+            .add(R.id.layMain2, homeFragment).commit()
         lastFragment = homeFragment
         //
         b.lifecycleOwner = this
@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity() {
         } else
             fragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out)
-                .add(R.id.layMain, fragment).hide(lastFragment).commit()
+                .add(R.id.layMain2, fragment).hide(lastFragment).commit()
         lastFragment = fragment
     }
 
