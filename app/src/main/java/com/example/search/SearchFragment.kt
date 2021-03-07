@@ -1,7 +1,6 @@
 package com.example.search
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +15,7 @@ import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSearchBinding
 import com.example.repository.model.CartoonInfor
 import com.example.viewModel.CartoonViewModel
+import com.example.viewModel.SearchViewModel
 
 class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_search) {
     private val viewModel: CartoonViewModel by activityViewModels()
@@ -27,7 +27,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
         b.laySearch.setOnClickListener { }
         var adapter: CartoonRvAdapter? = null
         var adapter2: DataBindingAdapter<CartoonInfor>? = null
-//        viewModel = viewModel(CartoonViewModel::class.java)
         b.btnSearchBack.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
@@ -58,6 +57,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                 2 -> if (adapter2 == null) {//57漫画
                     adapter2 = DataBindingAdapter(
                         viewModel.searchList57,
+                        SearchViewModel::class.java,
+                        CartoonInfor::class.java,
                         BR.data,
                         R.layout.rv_item_57_cartoon
                     )

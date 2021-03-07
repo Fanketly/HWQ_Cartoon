@@ -16,8 +16,10 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_h
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val adapter = HistoryRvAdapter(requireContext(), viewModel.historyList)
-        b.rvHistory.addItemDecoration(SpacesItemDecoration(30))
-        b.rvHistory.setUpWithLinear(adapter)
+        with(b.rvHistory) {
+            addItemDecoration(SpacesItemDecoration(30))
+            setUpWithLinear(adapter)
+        }
         viewModel.historyLivaData.observe(viewLifecycleOwner) {
             if (it == -2) return@observe
             if (it == -1) {

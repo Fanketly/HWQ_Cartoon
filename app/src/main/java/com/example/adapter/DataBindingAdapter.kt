@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class DataBindingAdapter<T>(
     private val list: List<T>,
+    private val clazz: Class<*>,
+    private val data: Class<*>,
     private val varId: Int,
     @LayoutRes private val layId: Int
 ) :
@@ -42,19 +44,24 @@ class DataBindingAdapter<T>(
         onclickMap[id] = onclick
     }
 
+
     fun getView(v: (p: Int, t: T, v: View) -> Unit) {
         mark = true
         view = v
     }
 
+
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.setVariable(varId, list[position])
+        val t = list[position]
+        holder.binding.setVariable(varId, clazz.getConstructor(data).newInstance(t))
         val view = holder.binding.root
-        for (entry in onclickMap) {
-            view.findViewById<View>(entry.key)
-                .setOnClickListener { entry.value(position, list[position]) }
-        }
-        if (mark) view(position, list[position], view)
+        if (onclickMap.size > 0)
+            for (entry in onclickMap) {
+                view.findViewById<View>(entry.key)
+                    .setOnClickListener { entry.value(position, t) }
+            }
+        if (mark) view(position, t, view)
     }
 
     override fun getItemCount(): Int = list.size

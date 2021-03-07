@@ -14,10 +14,11 @@ import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSpeciesBinding
 import com.example.repository.model.SpeciesInfor
 import com.example.viewModel.CartoonViewModel
+import com.example.viewModel.SpeciesViewModel
 
 
 class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_species) {
-    var adapterTop: DataBindingAdapter<SpeciesInfor>? = null
+    private var adapterTop: DataBindingAdapter<SpeciesInfor>? = null
     private val viewModel: CartoonViewModel by activityViewModels()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -30,6 +31,8 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
             if (adapter == null) {
                 adapterTop = DataBindingAdapter(
                     viewModel.typeList,
+                    SpeciesViewModel::class.java,
+                    SpeciesInfor::class.java,
                     BR.type,
                     R.layout.rv_item_species_top
                 )

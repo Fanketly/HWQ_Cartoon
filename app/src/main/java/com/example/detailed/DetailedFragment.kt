@@ -196,22 +196,24 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                         viewModel.onMsg4Dismiss()
                         Runtime.getRuntime().gc()
                     }
-                    //设置window背景，默认的背景会有Padding值，不能全屏。当然不一定要是透明，你可以设置其他背景，替换默认的背景即可。
-                    alertDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.BLACK))
-                    //一定要在setContentView之后调用，否则无效
-                    alertDialog.window!!.setLayout(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT
-                    )
-                    recyclerView4.setUpWithLinear(cartoonImgRvAdapter)
-                    cartoonImgRvAdapter.setOnClick {
-                        if (layTop.visibility == View.VISIBLE)
-                            layTop.visibility = View.GONE
-                        else layTop.visibility = View.VISIBLE
+                    with(alertDialog) {
+                        //设置window背景，默认的背景会有Padding值，不能全屏。当然不一定要是透明，你可以设置其他背景，替换默认的背景即可。
+                        window!!.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+                        //一定要在setContentView之后调用，否则无效
+                        window!!.setLayout(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT
+                        )
+                        recyclerView4.setUpWithLinear(cartoonImgRvAdapter)
+                        cartoonImgRvAdapter.setOnClick {
+                            if (layTop.visibility == View.VISIBLE)
+                                layTop.visibility = View.GONE
+                            else layTop.visibility = View.VISIBLE
+                        }
+                        btnBack.setOnClickListener { dismiss() }
+                        setView(view4)
+                        show()
                     }
-                    btnBack.setOnClickListener { alertDialog.dismiss() }
-                    alertDialog.setView(view4)
-                    alertDialog.show()
                     viewModel.pgLiveData.value = true
                     return@observe
                 }
@@ -227,12 +229,14 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
         viewModel.msg3Send(p)
         favouriteDialogRvAdapter.itemChange(p)
         historyInfor?.mark = p//当前页面
-        favouriteViewModel.historyList[historyMark].mark = p//历史list
-        favouriteViewModel.historyUpdate(historyInfor!!)//历史数据库
-        favouriteViewModel.historyLivaData.value = historyMark
-        if (b.btnDetailAdd.text.toString() == "已追漫") {
-            favouriteInfor?.mark = p//当前页面
-            favouriteViewModel.updateFavourite(favouriteInfor)//喜爱数据库
+        with(favouriteViewModel) {
+            historyList[historyMark].mark = p//历史list
+            historyUpdate(historyInfor!!)//历史数据库
+            historyLivaData.value = historyMark
+            if (b.btnDetailAdd.text.toString() == "已追漫") {
+                favouriteInfor?.mark = p//当前页面
+                updateFavourite(favouriteInfor)//喜爱数据库
+            }
         }
     }
 

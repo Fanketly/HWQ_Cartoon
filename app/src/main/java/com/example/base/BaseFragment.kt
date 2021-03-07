@@ -25,11 +25,11 @@ abstract class BaseFragment<T : ViewDataBinding>(@LayoutRes val layId: Int) : Fr
         savedInstanceState: Bundle?
     ): View? {
         b = DataBindingUtil.inflate(inflater, layId, container, false)
+        b.lifecycleOwner = this
         return b.root
     }
 
-//    inline fun <reified V : ViewModel> viewModel(): V =
-//        ViewModelProvider(requireActivity())[V::class.java]
+
 
 
     private var toast: Toast? = null

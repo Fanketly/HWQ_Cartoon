@@ -31,13 +31,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         if (viewModel.bannerList.size == 0)
             viewModel.getBanner()
         viewModel.bannerLiveData.observe(viewLifecycleOwner) { list ->
-            b.bannerHome.let {
-                it.addBannerLifecycleObserver(this)
-                it.adapter = BannerHomeAdapter(list, requireContext())
-                it.indicator = CircleIndicator(context)
+            b.bannerHome.apply {
+                addBannerLifecycleObserver(this@HomeFragment)
+                adapter = BannerHomeAdapter(list, requireContext())
+                indicator = CircleIndicator(context)
             }
         }
-
         //搜索栏
         b.searchHome.apply {
             isSubmitButtonEnabled = true
@@ -57,10 +56,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 }
             })
         }
-
         //rv
-        b.rvHome.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-        b.rvHome.addItemDecoration(SpacesItemDecoration(30))
+        with(b.rvHome) {
+            overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            addItemDecoration(SpacesItemDecoration(30))
+        }
         //加载主页
         viewModel.homeLiveData.observe(viewLifecycleOwner, {
             Log.i("TAG", "o: ")
@@ -77,9 +77,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
             b.refreshCartoon.closeHeaderOrFooter()
         })
-
-
-
+        //刷新和加载
         b.refreshCartoon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 viewModel.refreshPager()
@@ -93,6 +91,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden)
+            b.bannerHome.stop()
+        else
+            b.bannerHome.start()
+    }
 
     override fun onDestroy() {
         super.onDestroy()

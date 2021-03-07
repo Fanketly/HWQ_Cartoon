@@ -43,18 +43,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.94" />
 
-            <fragment
-                android:id="@+id/fragCartoon"
-                android:name="androidx.navigation.fragment.NavHostFragment"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:defaultNavHost="true"
-                app:layout_constraintBottom_toTopOf="@+id/guideline8"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:navGraph="@navigation/cartoon"
-                tools:ignore="FragmentTagUsage" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ProgressBar

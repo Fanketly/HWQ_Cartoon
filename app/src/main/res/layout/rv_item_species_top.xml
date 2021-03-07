@@ -4,7 +4,7 @@
     <data>
        <variable
            name="type"
-           type="com.example.repository.model.SpeciesInfor" />
+           type="com.example.viewModel.SpeciesViewModel" />
     </data>
 
     <LinearLayout
