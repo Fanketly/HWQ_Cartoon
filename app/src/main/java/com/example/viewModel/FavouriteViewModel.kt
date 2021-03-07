@@ -30,7 +30,6 @@ class FavouriteViewModel : ViewModel() {
     init {
         historyList.addAll(historyDB.loadAll())
         favouriteList.addAll(favouriteDB.loadAll())
-        likesIsZero()
     }
 
     fun likesIsZero() {

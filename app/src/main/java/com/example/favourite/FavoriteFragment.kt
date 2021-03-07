@@ -20,6 +20,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
         val favouriteViewModel =
             ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
         val list = favouriteViewModel.favouriteList
+        favouriteViewModel.likesIsZero()
         favouriteViewModel.likesLiveData.observe(viewLifecycleOwner) {
             if (it) b.tvFavouriteTip.visibility = View.VISIBLE
             else b.tvFavouriteTip.visibility = View.GONE
