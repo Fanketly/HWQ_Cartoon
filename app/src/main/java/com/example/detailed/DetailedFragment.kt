@@ -243,7 +243,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
     override fun onDestroy() {
         super.onDestroy()
         viewModel.onMsg3Dismiss()
-        if (mark != R.id.searchSearch)
+        if (mark != R.id.searchFragment)
             viewModel.bottomLiveData.value = false
+
     }
 }
