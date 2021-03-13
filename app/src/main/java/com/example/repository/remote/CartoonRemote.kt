@@ -15,7 +15,9 @@ import kotlinx.coroutines.flow.flow
 
 
 class CartoonRemote {
-    val error = MutableLiveData<String>()
+    private val errorLiveData = MutableLiveData<String>()
+    val error
+        get() = errorLiveData
 
     @WorkerThread
     suspend fun getData(url: String) = flow {

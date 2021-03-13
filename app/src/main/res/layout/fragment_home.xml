@@ -45,12 +45,25 @@
                         android:layout_marginTop="160dp"
                         android:paddingStart="10dp"
                         android:text="57漫画推荐"
+                        android:textColor="@color/black"
                         android:textSize="18sp" />
 
                     <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvHomeRecommend"
+                        android:layout_width="match_parent"
+                        android:layout_height="130dp"
+                        android:layout_marginTop="190dp"
+                        android:background="@color/white" />
+
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="190dp" />
+                        android:layout_marginTop="330dp"
+                        android:layout_marginBottom="10dp"
+                        android:paddingStart="10dp"
+                        android:text="最近更新"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 
             </com.google.android.material.appbar.AppBarLayout>
@@ -60,7 +73,6 @@
                 android:id="@+id/refreshCartoon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="0dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

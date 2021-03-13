@@ -19,7 +19,10 @@ fun <T> RecyclerView.setUpWithLinear(t: T) {
     layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     adapter = t as RecyclerView.Adapter<*>
 }
-
+fun <T> RecyclerView.setUpWithLinearHORIZONTAL(t: T) {
+    layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    adapter = t as RecyclerView.Adapter<*>
+}
 fun <T> RecyclerView.setUpWithGrid(t: T, num: Int) {
     layoutManager = GridLayoutManager(context, num)
     adapter = t as RecyclerView.Adapter<*>

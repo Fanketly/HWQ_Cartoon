@@ -17,6 +17,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 import kotlin.plus
 
 /**
@@ -53,6 +54,10 @@ class CartoonViewModel : ViewModel() {
     val cartoonInfors: MutableList<CartoonInfor> = ArrayList()
     val homeLiveData = MutableLiveData<Boolean>()
     private var pager = 1
+
+    //主页57推荐漫画
+    private val homeRecommendList by lazy { ArrayList<CartoonInfor>() }
+    val homeRecommendLiveData by lazy { MutableLiveData<List<CartoonInfor>>() }
 
     //msg3集数
     val msg3List: MutableList<CartoonInfor> = ArrayList()
@@ -748,6 +753,47 @@ class CartoonViewModel : ViewModel() {
             }
         }
 
+
+    //推荐
+    fun get57Recommend() {
+        viewModelScope.launch(Dispatchers.IO) {
+            remote.getData(Api.mh57Url)
+                .collect {
+                    val document = Jsoup.parse(it)
+                    val element: Element = document.select(".update-wrap").first()
+                    for (e in element.select("li")) {
+                        val a = e.select("a").first()
+                        val img = a.select("img").first()
+                        var src = img.attr("src")
+                        if (src.isEmpty()) src = img.attr("data-src")
+                        homeRecommendList.add(
+                            CartoonInfor(
+                                a.attr("title"),
+                                Api.mh57Url + a.attr("href"),
+                                src
+                            )
+                        )
+                    }
+                    homeRecommendLiveData.postValue(homeRecommendList)
+                    Log.i(TAG, "get57Recommend: $element")
+                }
+        }
+    }
+
+    //获取推荐漫画详细
+    fun getHomeRecommendCartoon(position: Int) {
+        if (pgLiveData.value == false) return
+        pgLiveData.value = false
+        val info = homeRecommendList[position]
+        val s = info.href
+        Log.i(TAG, "getHomeRecommendCartoon: ${s + info.img}")
+        putBundle(info.titile, info.img, s, R.id.homeFragment)
+        if (s.isEmpty()) {
+            pgLiveData.value = true
+            return
+        }
+        loadCartoon(s)
+    }
 
     fun nextPager() { //下一页
         pager++

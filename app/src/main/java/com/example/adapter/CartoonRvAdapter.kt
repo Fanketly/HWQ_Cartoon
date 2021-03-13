@@ -15,9 +15,9 @@ import com.example.repository.model.CartoonInfor
  * Date: 2021/2/10
  * Time: 22:01
  */
-class CartoonRvAdapter(list: MutableList<CartoonInfor>, context: Context) : MyAdapter<CartoonInfor>(
+class CartoonRvAdapter(list: List<CartoonInfor>, context: Context,val layId:Int) : MyAdapter<CartoonInfor>(
     context,
-    R.layout.cartoon_rv_item, list
+    layId, list
 ) {
     override fun bindViewHolder(holder: MyViewHolder, data: CartoonInfor, position: Int) {
         val title = holder.findViewById<TextView>(R.id.tvCartoonTitle)
@@ -27,13 +27,14 @@ class CartoonRvAdapter(list: MutableList<CartoonInfor>, context: Context) : MyAd
                 position
             )
         }
-        val type = holder.findViewById<TextView>(R.id.tvCartoonType)
-        type.text = data.type
         val imageView = holder.findViewById<ImageView>(R.id.imgCartoon)
         if (data.img != null && data.img.isNotEmpty()) {
             Glide.with(holder.context).asDrawable().load(data.img)
                 .skipMemoryCache(true).into(imageView)
         }
+        if (layId==R.layout.rv_item_home_recommend)return
+        val type = holder.findViewById<TextView>(R.id.tvCartoonType)
+        type.text = data.type
     }
 
     private lateinit var onClick: (p: Int) -> Unit

@@ -46,7 +46,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
             }
             when (it) {
                 1 -> if (adapter == null) {//动漫之家
-                    adapter = CartoonRvAdapter(viewModel.searchList, requireContext())
+                    adapter = CartoonRvAdapter(viewModel.searchList, requireContext(),R.layout.cartoon_rv_item)
                     rv.setUpWithLinear(adapter)
                     adapter?.setOnClick { p ->
                         viewModel.getSearch(p)

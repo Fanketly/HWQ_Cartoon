@@ -7,9 +7,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.CartoonRvAdapter
 import com.example.adapter.SpacesItemDecoration
-import com.example.base.BaseFragment
-import com.example.base.TAG
-import com.example.base.setUpWithGrid
+import com.example.base.*
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentHomeBinding
 import com.example.viewModel.CartoonViewModel
@@ -27,9 +25,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         if (viewModel.cartoonInfors.size == 0)
             viewModel.getHomeCartoon()
         var cartoonRvAdapter: CartoonRvAdapter? = null
+        //推荐
+        viewModel.get57Recommend()
+        viewModel.homeRecommendLiveData.observe(viewLifecycleOwner) {
+            val adapter = CartoonRvAdapter(it, requireContext(), R.layout.rv_item_home_recommend)
+            adapter.setOnClick { p ->
+                viewModel.getHomeRecommendCartoon(p)
+            }
+            b.rvHomeRecommend.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+            b.rvHomeRecommend.setUpWithLinearHORIZONTAL(adapter)
+        }
         //轮播图
-        if (viewModel.bannerList.size == 0)
-            viewModel.getBanner()
+//        if (viewModel.bannerList.size == 0)
+        viewModel.getBanner()
         viewModel.bannerLiveData.observe(viewLifecycleOwner) { list ->
             b.bannerHome.apply {
                 addBannerLifecycleObserver(this@HomeFragment)
@@ -59,14 +67,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         //rv
         with(b.rvHome) {
             overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-            addItemDecoration(SpacesItemDecoration(30))
+            addItemDecoration(SpacesItemDecoration(20))
         }
         //加载主页
         viewModel.homeLiveData.observe(viewLifecycleOwner, {
             Log.i("TAG", "o: ")
             if (cartoonRvAdapter == null) {
                 cartoonRvAdapter =
-                    CartoonRvAdapter(viewModel.cartoonInfors, requireContext())
+                    CartoonRvAdapter(
+                        viewModel.cartoonInfors,
+                        requireContext(),
+                        R.layout.cartoon_rv_item
+                    )
                 b.rvHome.setUpWithGrid(cartoonRvAdapter, 2)
                 cartoonRvAdapter!!.setOnClick { position ->
                     viewModel.getHomeCartoon(position)
