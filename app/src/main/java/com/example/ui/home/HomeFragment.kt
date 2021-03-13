@@ -1,4 +1,4 @@
-package com.example.home
+package com.example.ui.home
 
 import android.os.Bundle
 import android.util.Log

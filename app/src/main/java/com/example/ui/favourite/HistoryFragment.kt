@@ -1,4 +1,4 @@
-package com.example.favourite
+package com.example.ui.favourite
 
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels

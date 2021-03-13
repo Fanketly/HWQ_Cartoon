@@ -1,4 +1,4 @@
-package com.example.favourite
+package com.example.ui.favourite
 
 import android.annotation.SuppressLint
 import android.content.Context

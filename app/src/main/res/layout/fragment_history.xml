@@ -8,7 +8,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.favourite.HistoryFragment">
+        tools:context="com.example.ui.favourite.HistoryFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvHistory"

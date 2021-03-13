@@ -1,4 +1,4 @@
-package com.example.search
+package com.example.ui.search
 
 import android.os.Bundle
 import android.widget.SearchView

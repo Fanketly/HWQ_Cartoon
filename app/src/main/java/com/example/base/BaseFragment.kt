@@ -24,12 +24,11 @@ abstract class BaseFragment<T : ViewDataBinding>(@LayoutRes val layId: Int) : Fr
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         b = DataBindingUtil.inflate(inflater, layId, container, false)
         b.lifecycleOwner = this
         return b.root
     }
-
-
 
 
     private var toast: Toast? = null

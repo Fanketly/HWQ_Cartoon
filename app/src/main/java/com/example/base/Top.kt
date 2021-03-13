@@ -27,7 +27,7 @@ fun <T> RecyclerView.setUpWithGrid(t: T, num: Int) {
 
 const val TAG = "TAG"
 
-val headers = Headers {
+ val headers = Headers {
     val map: MutableMap<String, String> =
         HashMap()
     map["Referer"] = "https://manhua.dmzj.com/update_1.shtml"
@@ -38,6 +38,7 @@ val headers = Headers {
 fun setImg(imageView: ImageView, url: String) {
     Glide.with(imageView).asDrawable().skipMemoryCache(true).load(url).into(imageView)
 }
+
 fun setImg(imageView: ImageView, url: Any) {
     Glide.with(imageView).asDrawable().skipMemoryCache(true).load(url).into(imageView)
 }

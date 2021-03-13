@@ -1,4 +1,4 @@
-package com.example.favourite
+package com.example.ui.favourite
 
 import android.content.Context
 import android.widget.ImageView

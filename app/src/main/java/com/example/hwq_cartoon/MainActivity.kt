@@ -10,18 +10,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.example.classification.SpeciesFragment
-import com.example.detailed.DetailedFragment
-import com.example.favourite.FavouriteVpFragment
-import com.example.home.HomeFragment
 import com.example.hwq_cartoon.databinding.ActivityMainBinding
-import com.example.search.SearchFragment
+import com.example.ui.classification.SpeciesFragment
+import com.example.ui.detailed.DetailedFragment
+import com.example.ui.favourite.FavouriteVpFragment
+import com.example.ui.home.HomeFragment
+import com.example.ui.search.SearchFragment
 import com.example.viewModel.CartoonViewModel
 
 //adb connect 127.0.0.1:21503
 class MainActivity : AppCompatActivity() {
     private val viewModel: CartoonViewModel by viewModels()
-//    private var itemid = R.id.homeFragment
+
+    //    private var itemid = R.id.homeFragment
     private lateinit var fragmentManager: FragmentManager
     private lateinit var homeFragment: HomeFragment
     private lateinit var favouriteVpFragment: FavouriteVpFragment
@@ -49,35 +50,35 @@ class MainActivity : AppCompatActivity() {
         b.bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
 //            val id = item.itemId
 //            if (itemid != id) {
-                when (item.itemId) {
-                    R.id.homeFragment -> {
-                        add(homeFragment)
+            when (item.itemId) {
+                R.id.homeFragment -> {
+                    add(homeFragment)
 //                        when (itemid) {
 //                            R.id.favoriteVpFragment ->
 //                                controller.navigate(R.id.action_favoriteVpFragment_to_homeFragment)
 //                            R.id.speciesFragment ->
 //                                controller.navigate(R.id.action_speciesFragment_to_homeFragment)
 //                        }
-                    }
-                    R.id.favoriteVpFragment -> {
-                        add(favouriteVpFragment)
+                }
+                R.id.favoriteVpFragment -> {
+                    add(favouriteVpFragment)
 //                        when (itemid) {
 //                            R.id.homeFragment ->
 //                                controller.navigate(R.id.action_homeFragment_to_favoriteVpFragment)
 //                            R.id.speciesFragment ->
 //                                controller.navigate(R.id.action_speciesFragment_to_favoriteVpFragment)
 //                        }
-                    }
-                    R.id.speciesFragment -> {
-                        add(speciesFragment)
+                }
+                R.id.speciesFragment -> {
+                    add(speciesFragment)
 //                        when (itemid) {
 //                            R.id.homeFragment ->
 //                                controller.navigate(R.id.action_homeFragment_to_speciesFragment)
 //                            R.id.favoriteVpFragment ->
 //                                controller.navigate(R.id.action_favoriteVpFragment_to_speciesFragment)
 //                        }
-                    }
                 }
+            }
 //            }
 
             return@setOnNavigationItemSelectedListener true
@@ -120,7 +121,7 @@ class MainActivity : AppCompatActivity() {
             .add(R.id.layMain, clazz, bundle, "detail").commit()
 
     private fun add(fragment: Fragment) {
-        if(fragment==lastFragment)return
+        if (fragment == lastFragment) return
         if (fragment.isAdded) {
             fragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out)

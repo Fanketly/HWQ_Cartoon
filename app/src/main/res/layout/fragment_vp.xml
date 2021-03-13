@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/white"
-        tools:context="com.example.favourite.FavouriteVpFragment">
+        tools:context="com.example.ui.favourite.FavouriteVpFragment">
 
 
         <androidx.viewpager2.widget.ViewPager2

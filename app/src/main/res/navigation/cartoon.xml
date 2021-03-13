@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.home.HomeFragment"
+        android:name="com.example.ui.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -31,17 +31,17 @@
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.example.favourite.FavoriteFragment"
+        android:name="com.example.ui.favourite.FavoriteFragment"
         android:label="FavoriteFragment"
         tools:layout="@layout/fragment_favorite" />
     <fragment
         android:id="@+id/detailedFragment"
-        android:name="com.example.detailed.DetailedFragment"
+        android:name="com.example.ui.detailed.DetailedFragment"
         android:label="fragment_detailed"
         tools:layout="@layout/fragment_detailed" />
     <fragment
         android:id="@+id/favoriteVpFragment"
-        android:name="com.example.favourite.FavouriteVpFragment"
+        android:name="com.example.ui.favourite.FavouriteVpFragment"
         android:label="fragment_vp"
         tools:layout="@layout/fragment_vp">
         <action
@@ -65,7 +65,7 @@
     </fragment>
     <fragment
         android:id="@+id/speciesFragment"
-        android:name="com.example.classification.SpeciesFragment"
+        android:name="com.example.ui.classification.SpeciesFragment"
         android:label="SpeciesFragment" >
         <action
             android:id="@+id/action_speciesFragment_to_favoriteVpFragment"
@@ -88,10 +88,10 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.search.SearchFragment"
+        android:name="com.example.ui.search.SearchFragment"
         android:label="SearchFragment" />
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.example.favourite.HistoryFragment"
+        android:name="com.example.ui.favourite.HistoryFragment"
         android:label="HistoryFragment" />
 </navigation>

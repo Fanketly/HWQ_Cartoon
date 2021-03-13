@@ -1,4 +1,4 @@
-package com.example.favourite
+package com.example.ui.favourite
 
 import android.app.AlertDialog
 import android.os.Bundle

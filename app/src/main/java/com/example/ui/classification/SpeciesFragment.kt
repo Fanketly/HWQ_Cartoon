@@ -1,4 +1,4 @@
-package com.example.classification
+package com.example.ui.classification
 
 import android.os.Bundle
 import android.widget.TextView
@@ -8,7 +8,7 @@ import com.example.adapter.DataBindingAdapter
 import com.example.base.BaseFragment
 import com.example.base.setUpWithGrid
 import com.example.base.setUpWithLinear
-import com.example.favourite.FavouriteRvAdapter
+import com.example.ui.favourite.FavouriteRvAdapter
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSpeciesBinding
