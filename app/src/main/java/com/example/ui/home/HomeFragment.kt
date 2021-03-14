@@ -1,15 +1,14 @@
 package com.example.ui.home
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.SearchView
-import androidx.databinding.adapters.ViewBindingAdapter.setOnClick
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.example.adapter.BannerImageAdapter
-import com.example.adapter.CartoonRvAdapter
-import com.example.adapter.HomeRvAdapter
-import com.example.adapter.SpacesItemDecoration
+import com.example.adapter.*
 import com.example.base.*
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentHomeBinding
@@ -33,7 +32,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         //推荐
         viewModel.get57Recommend()
         viewModel.homeRecommendLiveData.observe(viewLifecycleOwner) {
-            val adapter = CartoonRvAdapter(it, requireContext(), R.layout.rv_item_home_recommend)
+//            val adapter = CartoonRvAdapter(it, requireContext(), R.layout.rv_item_home_recommend)
+            val adapter = HomeRecommendRvAdapter(it)
             adapter.setOnClick { p ->
                 viewModel.getHomeRecommendCartoon(p)
             }
@@ -53,6 +53,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         //搜索栏
         b.searchHome.apply {
             isSubmitButtonEnabled = true
+            val id: Int = this.context.resources
+                .getIdentifier("android:id/search_src_text", null, null)
+            val tv = findViewById<TextView>(id)
+            tv.setTextColor(Color.WHITE)
+            tv.setHintTextColor(ContextCompat.getColor(context, R.color.home_background))
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
                     if (!p0?.trim().isNullOrEmpty()) {

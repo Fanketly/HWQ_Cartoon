@@ -1,12 +1,15 @@
 package com.example.ui.search
 
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.SearchView
+import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.example.adapter.*
+import com.example.adapter.DataBindingAdapter
+import com.example.adapter.HomeRvAdapter
+import com.example.adapter.SearchVpAdapter
 import com.example.base.BaseFragment
-import com.example.base.setUpWithGrid
 import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
@@ -23,7 +26,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         b.laySearch.setOnClickListener { }
-//        var adapter: CartoonRvAdapter? = null
         var homeRvAdapter: HomeRvAdapter? = null
         var adapter2: DataBindingAdapter<CartoonInfor>? = null
         b.btnSearchBack.setOnClickListener {
@@ -36,8 +38,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
             if (b.vpSearch.adapter == null) {
                 rv = RecyclerView(requireContext())
                 rv2 = RecyclerView(requireContext())
-                rv.addItemDecoration(SpacesItemDecoration(30))
-                rv2.addItemDecoration(SpacesItemDecoration(30))
                 b.vpSearch.adapter = SearchVpAdapter(listOf(rv, rv2))
                 b.tabSearch.setupWithViewPager(b.vpSearch)
                 b.tabSearch.getTabAt(0)?.text = "动漫之家"
@@ -47,10 +47,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                 1 -> if (homeRvAdapter == null) {
                     homeRvAdapter = HomeRvAdapter(viewModel.searchList)
                     homeRvAdapter?.apply {
-                        with(rv) {
-//                            addItemDecoration(SpacesItemDecoration(20))
-                            setUpWithLinear(homeRvAdapter)
-                        }
+                        rv.setUpWithLinear(homeRvAdapter)
                         setOnClick { p ->
                             viewModel.getSearch(p)
                         }
@@ -86,8 +83,12 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
         }
         //search
         b.searchSearch.apply {
+            val id: Int = this.context.resources
+                .getIdentifier("android:id/search_src_text", null, null)
+            val tv=findViewById<TextView>(id)
+            tv.setTextColor(Color.WHITE)
             isSubmitButtonEnabled = true
-            isIconifiedByDefault = false
+//            isIconifiedByDefault = false
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
                     if (name != p0) {
