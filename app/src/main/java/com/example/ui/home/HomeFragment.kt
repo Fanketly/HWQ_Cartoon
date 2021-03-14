@@ -3,9 +3,12 @@ package com.example.ui.home
 import android.os.Bundle
 import android.util.Log
 import android.widget.SearchView
+import androidx.databinding.adapters.ViewBindingAdapter.setOnClick
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
+import com.example.adapter.BannerImageAdapter
 import com.example.adapter.CartoonRvAdapter
+import com.example.adapter.HomeRvAdapter
 import com.example.adapter.SpacesItemDecoration
 import com.example.base.*
 import com.example.hwq_cartoon.R
@@ -19,12 +22,14 @@ import com.youth.banner.indicator.CircleIndicator
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val viewModel: CartoonViewModel by activityViewModels()
 
+
     //需要传递的数据
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (viewModel.cartoonInfors.size == 0)
             viewModel.getHomeCartoon()
-        var cartoonRvAdapter: CartoonRvAdapter? = null
+//        var cartoonRvAdapter: CartoonRvAdapter? = null
+        var homeRvAdapter: HomeRvAdapter? = null
         //推荐
         viewModel.get57Recommend()
         viewModel.homeRecommendLiveData.observe(viewLifecycleOwner) {
@@ -37,14 +42,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         }
         //轮播图
 //        if (viewModel.bannerList.size == 0)
-        viewModel.getBanner()
-        viewModel.bannerLiveData.observe(viewLifecycleOwner) { list ->
-            b.bannerHome.apply {
-                addBannerLifecycleObserver(this@HomeFragment)
-                adapter = BannerHomeAdapter(list, requireContext())
-                indicator = CircleIndicator(context)
-            }
+//        viewModel.getBanner()
+//        viewModel.bannerLiveData.observe(viewLifecycleOwner) { list ->
+        b.bannerHome.apply {
+            addBannerLifecycleObserver(this@HomeFragment)
+            adapter = BannerImageAdapter(viewModel.bannerList)
+            indicator = CircleIndicator(context)
         }
+//        }
         //搜索栏
         b.searchHome.apply {
             isSubmitButtonEnabled = true
@@ -65,28 +70,39 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             })
         }
         //rv
-        with(b.rvHome) {
-            overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-            addItemDecoration(SpacesItemDecoration(20))
-        }
+//        b.rvHome.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+//        b.rvHome.addItemDecoration(SpacesItemDecoration(20))
         //加载主页
         viewModel.homeLiveData.observe(viewLifecycleOwner, {
             Log.i("TAG", "o: ")
-            if (cartoonRvAdapter == null) {
-                cartoonRvAdapter =
-                    CartoonRvAdapter(
-                        viewModel.cartoonInfors,
-                        requireContext(),
-                        R.layout.cartoon_rv_item
-                    )
-                b.rvHome.setUpWithGrid(cartoonRvAdapter, 2)
-                cartoonRvAdapter!!.setOnClick { position ->
-                    viewModel.getHomeCartoon(position)
+            if (homeRvAdapter == null) {
+                homeRvAdapter = HomeRvAdapter(viewModel.cartoonInfors)
+                homeRvAdapter?.apply {
+                    with(b.rvHome) {
+                        addItemDecoration(SpacesItemDecoration(20))
+                        setUpWithGrid(this@apply, 2)
+                    }
+                    setOnClick { p ->
+                        viewModel.getHomeCartoon(p)
+                    }
                 }
             } else {
-                cartoonRvAdapter!!.notifyDataSetChanged()
+                homeRvAdapter?.notifyDataSetChanged()
             }
-
+//            if (cartoonRvAdapter == null) {
+//                cartoonRvAdapter =
+//                    CartoonRvAdapter(
+//                        viewModel.cartoonInfors,
+//                        requireContext(),
+//                        R.layout.cartoon_rv_item
+//                    )
+//                b.rvHome.setUpWithGrid(cartoonRvAdapter, 2)
+//                cartoonRvAdapter!!.setOnClick { position ->
+//                    viewModel.getHomeCartoon(position)
+//                }
+//            } else {
+//                cartoonRvAdapter!!.notifyDataSetChanged()
+//            }
             b.refreshCartoon.closeHeaderOrFooter()
         })
         //刷新和加载

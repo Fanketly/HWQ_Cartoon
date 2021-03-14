@@ -15,6 +15,7 @@ import com.example.ui.classification.SpeciesFragment
 import com.example.ui.detailed.DetailedFragment
 import com.example.ui.favourite.FavouriteVpFragment
 import com.example.ui.home.HomeFragment
+import com.example.ui.me.MeFragment
 import com.example.ui.search.SearchFragment
 import com.example.viewModel.CartoonViewModel
 
@@ -22,12 +23,12 @@ import com.example.viewModel.CartoonViewModel
 class MainActivity : AppCompatActivity() {
     private val viewModel: CartoonViewModel by viewModels()
 
-    //    private var itemid = R.id.homeFragment
     private lateinit var fragmentManager: FragmentManager
     private lateinit var homeFragment: HomeFragment
     private lateinit var favouriteVpFragment: FavouriteVpFragment
     private lateinit var speciesFragment: SpeciesFragment
     private lateinit var lastFragment: Fragment
+    private val meFragment by lazy { MeFragment() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val b: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -42,45 +43,16 @@ class MainActivity : AppCompatActivity() {
         lastFragment = homeFragment
         //
         b.lifecycleOwner = this
-//        NavigationUI.setupWithNavController(b.bottomNav, controller)
-//        controller.addOnDestinationChangedListener { _, destination, _ ->
-//            itemid = destination.id
-//            Log.i("TAG", "onCreate: $itemid")
-//        }
         b.bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
-//            val id = item.itemId
-//            if (itemid != id) {
             when (item.itemId) {
-                R.id.homeFragment -> {
+                R.id.homeFragment ->
                     add(homeFragment)
-//                        when (itemid) {
-//                            R.id.favoriteVpFragment ->
-//                                controller.navigate(R.id.action_favoriteVpFragment_to_homeFragment)
-//                            R.id.speciesFragment ->
-//                                controller.navigate(R.id.action_speciesFragment_to_homeFragment)
-//                        }
-                }
-                R.id.favoriteVpFragment -> {
+                R.id.favoriteVpFragment ->
                     add(favouriteVpFragment)
-//                        when (itemid) {
-//                            R.id.homeFragment ->
-//                                controller.navigate(R.id.action_homeFragment_to_favoriteVpFragment)
-//                            R.id.speciesFragment ->
-//                                controller.navigate(R.id.action_speciesFragment_to_favoriteVpFragment)
-//                        }
-                }
-                R.id.speciesFragment -> {
+                R.id.speciesFragment ->
                     add(speciesFragment)
-//                        when (itemid) {
-//                            R.id.homeFragment ->
-//                                controller.navigate(R.id.action_homeFragment_to_speciesFragment)
-//                            R.id.favoriteVpFragment ->
-//                                controller.navigate(R.id.action_favoriteVpFragment_to_speciesFragment)
-//                        }
-                }
+                R.id.meFragment -> add(meFragment)
             }
-//            }
-
             return@setOnNavigationItemSelectedListener true
         }
         //pg监听

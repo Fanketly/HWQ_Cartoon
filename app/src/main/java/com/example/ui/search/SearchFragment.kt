@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
-import com.example.adapter.CartoonRvAdapter
-import com.example.adapter.DataBindingAdapter
-import com.example.adapter.SearchVpAdapter
-import com.example.adapter.SpacesItemDecoration
+import com.example.adapter.*
 import com.example.base.BaseFragment
+import com.example.base.setUpWithGrid
 import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
@@ -25,7 +23,8 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         b.laySearch.setOnClickListener { }
-        var adapter: CartoonRvAdapter? = null
+//        var adapter: CartoonRvAdapter? = null
+        var homeRvAdapter: HomeRvAdapter? = null
         var adapter2: DataBindingAdapter<CartoonInfor>? = null
         b.btnSearchBack.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
@@ -45,15 +44,29 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                 b.tabSearch.getTabAt(1)?.text = "57漫画"
             }
             when (it) {
-                1 -> if (adapter == null) {//动漫之家
-                    adapter = CartoonRvAdapter(viewModel.searchList, requireContext(),R.layout.cartoon_rv_item)
-                    rv.setUpWithLinear(adapter)
-                    adapter?.setOnClick { p ->
-                        viewModel.getSearch(p)
+                1 -> if (homeRvAdapter == null) {
+                    homeRvAdapter = HomeRvAdapter(viewModel.searchList)
+                    homeRvAdapter?.apply {
+                        with(rv) {
+//                            addItemDecoration(SpacesItemDecoration(20))
+                            setUpWithLinear(homeRvAdapter)
+                        }
+                        setOnClick { p ->
+                            viewModel.getSearch(p)
+                        }
                     }
                 } else {
-                    adapter?.notifyDataSetChanged()
+                    homeRvAdapter?.notifyDataSetChanged()
                 }
+//                1 -> if (adapter == null) {//动漫之家
+//                    adapter = CartoonRvAdapter(viewModel.searchList, requireContext(),R.layout.cartoon_rv_item)
+//                    rv.setUpWithLinear(adapter)
+//                    adapter?.setOnClick { p ->
+//                        viewModel.getSearch(p)
+//                    }
+//                } else {
+//                    adapter?.notifyDataSetChanged()
+//                }
                 2 -> if (adapter2 == null) {//57漫画
                     adapter2 = DataBindingAdapter(
                         viewModel.searchList57,

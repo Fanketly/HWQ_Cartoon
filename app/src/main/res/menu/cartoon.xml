@@ -13,4 +13,8 @@
         android:id="@+id/favoriteVpFragment"
         android:icon="@drawable/ic_baseline_favorite_24"
         android:title="@string/menu_favourite" />
+    <item
+        android:id="@+id/meFragment"
+        android:icon="@drawable/me"
+        android:title="@string/menu_me"/>
 </menu>

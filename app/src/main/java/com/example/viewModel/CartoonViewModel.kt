@@ -76,8 +76,9 @@ class CartoonViewModel : ViewModel() {
     val searchList57: MutableList<CartoonInfor> = ArrayList()
 
     //banner
-    val bannerList: MutableList<CartoonInfor> = ArrayList()
-    val bannerLiveData = MutableLiveData<List<CartoonInfor>>()
+//    val bannerList: MutableList<CartoonInfor> = ArrayList()
+//    val bannerLiveData = MutableLiveData<List<CartoonInfor>>()
+    val bannerList by lazy { arrayListOf(R.drawable.lzsm1, R.drawable.lzsy2, R.drawable.am3) }
 
     //remote
     private val remote = CartoonRemote()
@@ -515,29 +516,29 @@ class CartoonViewModel : ViewModel() {
     }
 
 
-    private fun what6(it: String) {
-        val document = Jsoup.parse(it)
-        val element = document.getElementsByClass("middleright-right")
-        val elements = element[0].getElementsByClass("middlerighter1")
-        var element1: Element
-        var element2: Element
-        var element3: Element
-        var cartoonInfor: CartoonInfor
-        for (i in 0..4) {
-            val e = elements[i]
-            element1 = e.select(".righter-img a").first() //图片
-            element2 = e.select(".righter-img img").first()
-            element3 = e.select(".righter-mr span")[5]
-            cartoonInfor = CartoonInfor(
-                element1.attr("title"),
-                element1.attr("href"),
-                element2.attr("src"),
-                "分类：" + element3.text()
-            )
-            bannerList.add(cartoonInfor)
-        }
-        bannerLiveData.postValue(bannerList)
-    }
+//    private fun what6(it: String) {
+//        val document = Jsoup.parse(it)
+//        val element = document.getElementsByClass("middleright-right")
+//        val elements = element[0].getElementsByClass("middlerighter1")
+//        var element1: Element
+//        var element2: Element
+//        var element3: Element
+//        var cartoonInfor: CartoonInfor
+//        for (i in 0..4) {
+//            val e = elements[i]
+//            element1 = e.select(".righter-img a").first() //图片
+//            element2 = e.select(".righter-img img").first()
+//            element3 = e.select(".righter-mr span")[5]
+//            cartoonInfor = CartoonInfor(
+//                element1.attr("title"),
+//                element1.attr("href"),
+//                element2.attr("src"),
+//                "分类：" + element3.text()
+//            )
+//            bannerList.add(cartoonInfor)
+//        }
+//        bannerLiveData.postValue(bannerList)
+//    }
 
     private fun what7(str2: String) {
         Log.i(TAG, "what7: $str2")
@@ -579,14 +580,14 @@ class CartoonViewModel : ViewModel() {
     /**
      * 漫画本月人气排行
      */
-    fun getBanner() {
-        viewModelScope.launch(Dispatchers.IO) {
-            remote.getData(Api.url2 + "/rank/month-block-1.shtml")
-                .collect {
-                    what6(it)
-                }
-        }
-    }
+//    fun getBanner() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            remote.getData(Api.url2 + "/rank/month-block-1.shtml")
+//                .collect {
+//                    what6(it)
+//                }
+//        }
+//    }
 
 
     private fun putBundle(name: String, img: String, href: String, mark: Int) {

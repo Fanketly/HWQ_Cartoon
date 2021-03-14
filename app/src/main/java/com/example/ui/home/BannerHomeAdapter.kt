@@ -26,7 +26,7 @@ class BannerHomeAdapter(val list: List<CartoonInfor>, val context: Context) :
 //        val linearLayout = LinearLayout(context)
         //注意，必须设置为match_parent，这个是viewpager2强制要求的
         val img = ImageView(context)
-        img.scaleType=ImageView.ScaleType.CENTER_CROP
+        img.scaleType = ImageView.ScaleType.FIT_XY
         img.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
@@ -52,6 +52,10 @@ class BannerHomeAdapter(val list: List<CartoonInfor>, val context: Context) :
 //            .error(R.drawable.guangao)
 //            .fitCenter()
 //            .skipMemoryCache(true).into(holder.img)
-        holder.img.setImageResource(R.drawable.guangao)
+        when (position) {
+            0 -> holder.img.setImageResource(R.drawable.lzsm1)
+            2 -> holder.img.setImageResource(R.drawable.lzsy2)
+            else -> holder.img.setImageResource(R.drawable.guangao)
+        }
     }
 }

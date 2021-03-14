@@ -15,10 +15,11 @@ import com.example.repository.model.CartoonInfor
  * Date: 2021/2/10
  * Time: 22:01
  */
-class CartoonRvAdapter(list: List<CartoonInfor>, context: Context,val layId:Int) : MyAdapter<CartoonInfor>(
-    context,
-    layId, list
-) {
+class CartoonRvAdapter(list: List<CartoonInfor>, context: Context, private val layId: Int) :
+    MyAdapter<CartoonInfor>(
+        context,
+        layId, list
+    ) {
     override fun bindViewHolder(holder: MyViewHolder, data: CartoonInfor, position: Int) {
         val title = holder.findViewById<TextView>(R.id.tvCartoonTitle)
         title.text = data.titile
@@ -32,7 +33,7 @@ class CartoonRvAdapter(list: List<CartoonInfor>, context: Context,val layId:Int)
             Glide.with(holder.context).asDrawable().load(data.img)
                 .skipMemoryCache(true).into(imageView)
         }
-        if (layId==R.layout.rv_item_home_recommend)return
+        if (layId == R.layout.rv_item_home_recommend) return
         val type = holder.findViewById<TextView>(R.id.tvCartoonType)
         type.text = data.type
     }
