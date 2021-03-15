@@ -6,6 +6,7 @@ import com.example.adapter.SpacesItemDecoration
 import com.example.base.BaseFragment
 import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.R
+import com.example.adapter.HistoryRvAdapter
 import com.example.hwq_cartoon.databinding.FragmentHistoryBinding
 import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.FavouriteViewModel
@@ -15,7 +16,7 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_h
     private val cartoonViewModel: CartoonViewModel by activityViewModels()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val adapter = HistoryRvAdapter(requireContext(), viewModel.historyList)
+        val adapter = HistoryRvAdapter(viewModel.historyList)
         with(b.rvHistory) {
             addItemDecoration(SpacesItemDecoration(30))
             setUpWithLinear(adapter)
@@ -29,7 +30,7 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_h
             adapter.notifyItemChanged(it)
         }
         viewModel.historyLivaData.value = -2//只要没发送新的value 就return
-        adapter.onclick {
+        adapter.setOnClick {
             cartoonViewModel.historyGet(viewModel.historyList[it])
         }
     }

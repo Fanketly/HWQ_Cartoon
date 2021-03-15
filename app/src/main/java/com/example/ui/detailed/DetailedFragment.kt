@@ -13,10 +13,13 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.model.GlideUrl
+import com.example.adapter.DetailImgRvAdapter
+import com.example.adapter.DetailRvAdapter
 import com.example.base.*
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentDetailedBinding
@@ -36,7 +39,7 @@ import java.util.*
  * **/
 class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment_detailed) {
 
-    private lateinit var cartoonImgRvAdapter: CartoonImgRvAdapter
+    private lateinit var detailImgRvAdapter: DetailImgRvAdapter
     private val dateformat = SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.CHINA)
     private var favouriteInfor: FavouriteInfor? = null
     private var historyInfor: HistoryInfor? = null
@@ -115,12 +118,11 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
             //集数Rv,判断是否在喜爱中
             favouriteDialogRvAdapter = if (favouriteInfor != null)
                 DetailRvAdapter(
-                    context,
                     viewModel.msg3List,
                     favouriteInfor?.mark ?: 0
                 )
             else
-                DetailRvAdapter(context, viewModel.msg3List, historyInfor?.mark ?: 0)
+                DetailRvAdapter(viewModel.msg3List, historyInfor?.mark ?: 0)
 
             b.rvDetail.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             b.rvDetail.setUpWithGrid(favouriteDialogRvAdapter, 4)
@@ -158,8 +160,10 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                 if (msg4.size == 1) {
                     val builder = AlertDialog.Builder(requireContext())
                     val alertDialog = builder.create()
+                    val constraintLayout = b.root.findViewById<ConstraintLayout>(R.id.linearLayout3)
                     val view4 =
-                        LayoutInflater.from(context).inflate(R.layout.dialog_cartoon, null, false)
+                        LayoutInflater.from(context)
+                            .inflate(R.layout.dialog_cartoon, constraintLayout, false)
                     val recyclerView4: RecyclerView = view4.findViewById(R.id.rvCartoon)
                     val btnBack = view4.findViewById<ImageButton>(R.id.btnCartoondialogBack)
                     val layTop = view4.findViewById<LinearLayout>(R.id.layCartoonDialog)
@@ -190,8 +194,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                         }
                     })
                     viewModel.msg4List.clear()
-                    cartoonImgRvAdapter =
-                        CartoonImgRvAdapter(requireContext(), msg4)
+                    detailImgRvAdapter =
+                        DetailImgRvAdapter(msg4)
                     alertDialog.setOnDismissListener {
                         viewModel.onMsg4Dismiss()
                         Runtime.getRuntime().gc()
@@ -199,13 +203,13 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     with(alertDialog) {
                         //设置window背景，默认的背景会有Padding值，不能全屏。当然不一定要是透明，你可以设置其他背景，替换默认的背景即可。
                         window!!.setBackgroundDrawable(ColorDrawable(Color.BLACK))
-                        //一定要在setContentView之后调用，否则无效
+//                        一定要在setContentView之后调用，否则无效
                         window!!.setLayout(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT
                         )
-                        recyclerView4.setUpWithLinear(cartoonImgRvAdapter)
-                        cartoonImgRvAdapter.setOnClick {
+                        recyclerView4.setUpWithLinear(detailImgRvAdapter)
+                        detailImgRvAdapter.setOnClick {
                             if (layTop.visibility == View.VISIBLE)
                                 layTop.visibility = View.GONE
                             else layTop.visibility = View.VISIBLE
@@ -217,7 +221,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     viewModel.pgLiveData.value = true
                     return@observe
                 }
-                if (msg4.isNotEmpty()) cartoonImgRvAdapter.notifyItemChanged(msg4.size - 1)
+                if (msg4.isNotEmpty()) detailImgRvAdapter.notifyItemChanged(msg4.size - 1)
             })
         }
     }

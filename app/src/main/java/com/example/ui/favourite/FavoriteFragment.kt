@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.base.BaseFragment
 import com.example.base.setUpWithGrid
 import com.example.hwq_cartoon.R
+import com.example.adapter.FavouriteRvAdapter
 import com.example.hwq_cartoon.databinding.FragmentFavoriteBinding
 import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.FavouriteViewModel
@@ -26,7 +27,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
             else b.tvFavouriteTip.visibility = View.GONE
         }
         if (favouriteRvAdapter == null)
-            favouriteRvAdapter = FavouriteRvAdapter(list, requireContext())
+            favouriteRvAdapter = FavouriteRvAdapter(list)
         b.rvFavourite.setUpWithGrid(favouriteRvAdapter, 3)
         b.rvFavourite.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         //漫画点击监听

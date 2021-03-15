@@ -1,8 +1,8 @@
 package com.example.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.example.base.ViewBindingRvAdapter
 import com.example.hwq_cartoon.databinding.CartoonRvItemBinding
 import com.example.repository.model.CartoonInfor
 
@@ -17,7 +17,7 @@ class HomeRvAdapter(list: List<CartoonInfor>) :
     override fun onBind(b: CartoonRvItemBinding, d: CartoonInfor, p: Int) {
         b.tvCartoonTitle.text = d.titile
         b.root.setOnClickListener {
-            onClick(
+            onclick(
                 p
             )
         }
@@ -29,11 +29,8 @@ class HomeRvAdapter(list: List<CartoonInfor>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH<CartoonRvItemBinding> {
-        return VH(viewBinding(LayoutInflater.from(parent.context),parent,false))
+        return viewBinding(parent,false)
     }
 
-    private lateinit var onClick: (p: Int) -> Unit
-    fun setOnClick(onClick: (p: Int) -> Unit) {
-        this.onClick = onClick
-    }
+
 }

@@ -8,7 +8,7 @@ import com.example.adapter.DataBindingAdapter
 import com.example.base.BaseFragment
 import com.example.base.setUpWithGrid
 import com.example.base.setUpWithLinear
-import com.example.ui.favourite.FavouriteRvAdapter
+import com.example.adapter.FavouriteRvAdapter
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSpeciesBinding
@@ -48,7 +48,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_s
                     else
                         tv.setTextColor(requireActivity().getColor(R.color.species_hui))
                 }
-                adapter = FavouriteRvAdapter(viewModel.speciesList, requireContext())
+                adapter = FavouriteRvAdapter(viewModel.speciesList)
                 b.rvSpeciesTop.setUpWithLinear(adapterTop)
                 b.rvSpecies.setUpWithGrid(adapter, 3)
                 adapter?.setOnClick(onclick = { viewModel.getSpeciesCartoon(it) }) {}
