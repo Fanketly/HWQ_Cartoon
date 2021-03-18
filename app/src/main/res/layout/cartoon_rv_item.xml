@@ -4,9 +4,7 @@
     android:id="@+id/layoutCartoon"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    android:layout_marginStart="5dp"
-    android:layout_marginEnd="5dp"
-    android:layout_marginBottom="5dp"
+    android:layout_margin="5dp"
     app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -68,6 +68,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="410dp"
+                        android:layout_marginBottom="5dp"
                         android:background="@color/white"
                         android:drawablePadding="6dp"
                         android:paddingStart="10dp"
@@ -89,6 +90,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:srlHeaderTriggerRate="0.6"
                 app:srlAccentColor="@color/header_background">
 
                 <com.scwang.smart.refresh.header.BezierRadarHeader
@@ -97,7 +99,6 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvHome"
-                    android:paddingTop="10dp"
                     android:background="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
