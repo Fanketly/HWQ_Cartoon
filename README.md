@@ -5,6 +5,6 @@
 可在右侧发行版下载APK。
 
 1. ![输入图片说明](https://images.gitee.com/uploads/images/2021/0122/160621_94428a1c_7500578.png "微信截图_20210122160608.png")
-1. ![输入图片说明](https://images.gitee.com/uploads/images/2021/0122/160815_6a032c31_7500578.png "微信截图_20210122160020.png")
+1. ![输入图片说明](https://images.gitee.com/uploads/images/2021/0319/002416_40af5217_7500578.png "微信截图_20210319002400.png")
 1. ![输入图片说明](https://images.gitee.com/uploads/images/2021/0122/160823_9bff749c_7500578.png "微信截图_20210122160031.png")
 1. ![输入图片说明](https://images.gitee.com/uploads/images/2021/0122/160831_b9e0100b_7500578.png "微信截图_20210122160037.png")
