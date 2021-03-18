@@ -20,8 +20,7 @@ class DataBindingAdapter<T>(
     private val data: Class<*>,
     private val varId: Int,
     @LayoutRes private val layId: Int
-) :
-    RecyclerView.Adapter<DataBindingAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<DataBindingAdapter.ViewHolder>() {
     private var mark = false
     private val onclickMap = LinkedHashMap<Int, (p: Int, t: T) -> Unit>()
 

@@ -154,6 +154,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     b.btnDetailAdd.text = "追漫"
                     shortToast("已取消追漫")
                 }
+                //判断现存追漫数
+                favouriteViewModel.likesIsZero()
             }
             //显示漫画
             viewModel.msg4LiveData.observe(viewLifecycleOwner, { msg4: List<ByteArray> ->
@@ -170,6 +172,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
                     val tvNum = view4.findViewById<TextView>(R.id.tvCartoonNum)
                     val num = viewModel.imgUrlList.size
                     var lastPosition = -1//记录上一个itemview
+                    //判断能否加载下一话
                     recyclerView4.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                             super.onScrolled(recyclerView, dx, dy)

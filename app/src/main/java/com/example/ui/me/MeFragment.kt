@@ -14,7 +14,8 @@ class MeFragment : ViewBindingBaseFragment<FragmentMeBinding>() {
     }
 
     override fun rootView(): FragmentMeBinding {
-        return viewBinding(layoutInflater)
+        return FragmentMeBinding.inflate(layoutInflater)
     }
+
 
 }

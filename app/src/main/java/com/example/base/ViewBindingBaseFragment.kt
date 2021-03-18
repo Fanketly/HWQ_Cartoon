@@ -13,11 +13,17 @@ import androidx.viewbinding.ViewBinding
  * Date: 2021/3/14
  * Time: 16:52
  */
-abstract class ViewBindingBaseFragment<T : ViewBinding>() : Fragment() {
-    inline fun <reified VB : T> viewBinding(layoutInflater: LayoutInflater): VB {
-        return VB::class.java.getMethod("inflate", LayoutInflater::class.java)
-            .invoke(null, layoutInflater) as VB
-    }
+abstract class ViewBindingBaseFragment<T : ViewBinding> : Fragment() {
+
+//    inline fun <reified VB : T> viewBinding(layoutInflater: LayoutInflater): VB {
+//        return VB::class.java.getMethod("inflate", LayoutInflater::class.java)
+//            .invoke(null, layoutInflater) as VB
+//    }
+
+//    inline fun <T> viewBinding(layoutInflater: LayoutInflater): VB {
+//        return VB::class.java.getMethod("inflate", LayoutInflater::class.java)
+//            .invoke(null, layoutInflater) as VB
+//    }
 
     private var _b: T? = null
     val b get() = _b!!
