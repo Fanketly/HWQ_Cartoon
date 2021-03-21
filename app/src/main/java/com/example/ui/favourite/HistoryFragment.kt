@@ -1,6 +1,7 @@
 package com.example.ui.favourite
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.activityViewModels
 import com.example.adapter.SpacesItemDecoration
 import com.example.base.BaseFragment
@@ -14,8 +15,8 @@ import com.example.viewModel.FavouriteViewModel
 class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_history) {
     private val viewModel: FavouriteViewModel by activityViewModels()
     private val cartoonViewModel: CartoonViewModel by activityViewModels()
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val adapter = HistoryRvAdapter(viewModel.historyList)
         with(b.rvHistory) {
             addItemDecoration(SpacesItemDecoration(30))
@@ -34,6 +35,5 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_h
             cartoonViewModel.historyGet(viewModel.historyList[it])
         }
     }
-
 
 }

@@ -1,6 +1,7 @@
 package com.example.ui.classification
 
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -20,8 +21,8 @@ import com.example.viewModel.SpeciesViewModel
 class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>(R.layout.fragment_species) {
     private var adapterTop: DataBindingAdapter<SpeciesInfor>? = null
     private val viewModel: CartoonViewModel by activityViewModels()
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         var mark = 0
         var pp = 0
         viewModel.getSpeciesType()

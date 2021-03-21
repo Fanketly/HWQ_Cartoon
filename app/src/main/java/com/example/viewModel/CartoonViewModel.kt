@@ -34,9 +34,9 @@ class CartoonViewModel : ViewModel() {
 
     //species
     var species = "3255"
-    val speciesList: MutableList<FavouriteInfor> = ArrayList()
-    val typeList: MutableList<SpeciesInfor> = ArrayList()
-    val speciesLiveData = MutableLiveData<Boolean>()
+    val speciesList: MutableList<FavouriteInfor> by lazy { ArrayList() }
+    val typeList: MutableList<SpeciesInfor> by lazy { ArrayList() }
+    val speciesLiveData by lazy { MutableLiveData<Boolean>() }
 
     /**判断是否在searchFragment**/
     var isSearchFragment = false
@@ -56,24 +56,24 @@ class CartoonViewModel : ViewModel() {
     private var pager = 1
 
     //主页57推荐漫画
-    private val homeRecommendList by lazy { ArrayList<CartoonInfor>() }
-    val homeRecommendLiveData by lazy { MutableLiveData<List<CartoonInfor>>() }
+    private val homeRecommendList = ArrayList<CartoonInfor>()
+    val homeRecommendLiveData = MutableLiveData<List<CartoonInfor>>()
 
     //msg3集数
-    val msg3List: MutableList<CartoonInfor> = ArrayList()
-    val msg3LiveData = MutableLiveData<Boolean>()
+    val msg3List: MutableList<CartoonInfor> by lazy { ArrayList() }
+    val msg3LiveData by lazy { MutableLiveData<Boolean>() }
     var content: String? = null
     var update: String? = null
 
     //msg4显示漫画
-    val msg4List: MutableList<String> = ArrayList()
-    private val imgList: MutableList<ByteArray> = ArrayList()
-    val msg4LiveData = MutableLiveData<List<ByteArray>>()
+    val msg4List: MutableList<String> by lazy { ArrayList() }
+    private val imgList: MutableList<ByteArray> by lazy { ArrayList() }
+    val msg4LiveData by lazy { MutableLiveData<List<ByteArray>>() }
 
     //search
-    val searchList: MutableList<CartoonInfor> = ArrayList()
-    val searchLiveData = MutableLiveData<Int>()
-    val searchList57: MutableList<CartoonInfor> = ArrayList()
+    val searchList: MutableList<CartoonInfor> by lazy { ArrayList() }
+    val searchLiveData by lazy { MutableLiveData<Int>() }
+    val searchList57: MutableList<CartoonInfor> by lazy { ArrayList() }
 
     //banner
 //    val bannerList: MutableList<CartoonInfor> = ArrayList()

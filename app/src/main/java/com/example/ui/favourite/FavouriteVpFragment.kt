@@ -3,6 +3,7 @@ package com.example.ui.favourite
 import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.base.BaseFragment
@@ -14,8 +15,8 @@ import com.google.android.material.tabs.TabLayout
 
 class FavouriteVpFragment : BaseFragment<FragmentVpBinding>(R.layout.fragment_vp) {
     private lateinit var viewModel: FavouriteViewModel
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
         val list = listOf(FavoriteFragment(), HistoryFragment())
         val favouritevpAdapter = FavouritevpAdapter(this, list)

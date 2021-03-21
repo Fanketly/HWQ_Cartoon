@@ -1,8 +1,9 @@
-package com.example.ui.home
+ package com.example.ui.home
 
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -21,18 +22,14 @@ import com.youth.banner.indicator.CircleIndicator
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val viewModel: CartoonViewModel by activityViewModels()
 
-
-    //需要传递的数据
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (viewModel.cartoonInfors.size == 0)
             viewModel.getHomeCartoon()
-//        var cartoonRvAdapter: CartoonRvAdapter? = null
         var homeRvAdapter: HomeRvAdapter? = null
         //推荐
         viewModel.get57Recommend()
         viewModel.homeRecommendLiveData.observe(viewLifecycleOwner) {
-//            val adapter = CartoonRvAdapter(it, requireContext(), R.layout.rv_item_home_recommend)
             val adapter = HomeRecommendRvAdapter(it)
             adapter.setOnClick { p ->
                 viewModel.getHomeRecommendCartoon(p)
@@ -74,9 +71,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 }
             })
         }
-        //rv
-//        b.rvHome.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-//        b.rvHome.addItemDecoration(SpacesItemDecoration(20))
         //加载主页
         viewModel.homeLiveData.observe(viewLifecycleOwner, {
             Log.i("TAG", "o: ")
@@ -94,20 +88,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             } else {
                 homeRvAdapter?.notifyDataSetChanged()
             }
-//            if (cartoonRvAdapter == null) {
-//                cartoonRvAdapter =
-//                    CartoonRvAdapter(
-//                        viewModel.cartoonInfors,
-//                        requireContext(),
-//                        R.layout.cartoon_rv_item
-//                    )
-//                b.rvHome.setUpWithGrid(cartoonRvAdapter, 2)
-//                cartoonRvAdapter!!.setOnClick { position ->
-//                    viewModel.getHomeCartoon(position)
-//                }
-//            } else {
-//                cartoonRvAdapter!!.notifyDataSetChanged()
-//            }
             b.refreshCartoon.closeHeaderOrFooter()
         })
         //刷新和加载

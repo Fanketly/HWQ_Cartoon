@@ -51,8 +51,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
     private lateinit var favouriteDialogRvAdapter: DetailRvAdapter
 
     @SuppressLint("SetTextI18n")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
         favouriteViewModel =
             ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.commit
 import com.example.hwq_cartoon.databinding.ActivityMainBinding
 import com.example.ui.classification.SpeciesFragment
 import com.example.ui.detailed.DetailedFragment
@@ -19,29 +20,25 @@ import com.example.ui.me.MeFragment
 import com.example.ui.search.SearchFragment
 import com.example.viewModel.CartoonViewModel
 
-//adb connect 127.0.0.1:21503
+
 class MainActivity : AppCompatActivity() {
     private val viewModel: CartoonViewModel by viewModels()
 
     private lateinit var fragmentManager: FragmentManager
-    private lateinit var homeFragment: HomeFragment
-    private lateinit var favouriteVpFragment: FavouriteVpFragment
-    private lateinit var speciesFragment: SpeciesFragment
+    private val homeFragment: HomeFragment by lazy { HomeFragment() }
+    private val favouriteVpFragment: FavouriteVpFragment by lazy { FavouriteVpFragment() }
+    private val speciesFragment: SpeciesFragment by lazy { SpeciesFragment() }
     private lateinit var lastFragment: Fragment
     private val meFragment by lazy { MeFragment() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val b: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-//        val controller = Navigation.findNavController(this, R.id.fragCartoon)
         fragmentManager = supportFragmentManager
-        homeFragment = HomeFragment()
-        favouriteVpFragment = FavouriteVpFragment()
-        speciesFragment = SpeciesFragment()
         fragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.right_in, R.anim.right_out)
             .add(R.id.layMain2, homeFragment).commit()
         lastFragment = homeFragment
-        //
         b.lifecycleOwner = this
         b.bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
@@ -57,13 +54,11 @@ class MainActivity : AppCompatActivity() {
         }
         //pg监听
         viewModel.pgLiveData.observe(this) {
-            if (it) b.pgMain.visibility = View.GONE
-            else b.pgMain.visibility = View.VISIBLE
+            b.pgMain.visibility = if (it) View.GONE else View.VISIBLE
         }
         //底部监听
         viewModel.bottomLiveData.observe(this) {
-            if (it) b.bottomNav.visibility = View.GONE
-            else b.bottomNav.visibility = View.VISIBLE
+            b.bottomNav.visibility = if (it) View.GONE else View.VISIBLE
         }
         //集数Detail监听
         viewModel.msg3LiveData.observe(this) {
@@ -88,29 +83,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun beginTransaction(bundle: Bundle?, clazz: Class<out Fragment>) =
-        fragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.right_in, R.anim.right_out)
-            .add(R.id.layMain, clazz, bundle, "detail").commit()
+        fragmentManager.commit {
+            setCustomAnimations(R.anim.right_in, R.anim.right_out)
+            add(R.id.layMain, clazz, bundle, "detail")
+        }
 
     private fun add(fragment: Fragment) {
         if (fragment == lastFragment) return
-        if (fragment.isAdded) {
-            fragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.right_in, R.anim.right_out)
-                .show(fragment).hide(lastFragment).commit()
-        } else
-            fragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.right_in, R.anim.right_out)
-                .add(R.id.layMain2, fragment).hide(lastFragment).commit()
-        lastFragment = fragment
+        fragmentManager.commit {
+            setCustomAnimations(R.anim.right_in, R.anim.right_out)
+            if (fragment.isAdded)
+                show(fragment)
+            else
+                add(R.id.layMain2, fragment)
+            hide(lastFragment)
+            lastFragment = fragment
+        }
     }
 
     override fun onBackPressed() {
         val detailedFragment = fragmentManager.findFragmentByTag("detail")
         if (detailedFragment != null) {
-            fragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(detailedFragment)
-                .commit()
+            fragmentManager.commit {
+                setCustomAnimations(R.anim.right_in, R.anim.right_out)
+                remove(detailedFragment)
+            }
             Log.i("TAG", "onBackPressed: ")
         } else {
             super.onBackPressed()

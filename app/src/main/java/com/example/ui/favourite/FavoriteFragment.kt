@@ -15,8 +15,8 @@ import com.example.viewModel.FavouriteViewModel
 
 class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment_favorite) {
     private var favouriteRvAdapter: FavouriteRvAdapter? = null
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
         val favouriteViewModel =
             ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]

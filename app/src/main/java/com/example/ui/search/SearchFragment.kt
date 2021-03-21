@@ -2,6 +2,7 @@ package com.example.ui.search
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
@@ -23,8 +24,9 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
     private var name = ""
     private lateinit var rv: RecyclerView
     private lateinit var rv2: RecyclerView
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         b.laySearch.setOnClickListener { }
         var homeRvAdapter: HomeRvAdapter? = null
         var adapter2: DataBindingAdapter<CartoonInfor>? = null
@@ -104,9 +106,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                 }
             })
         }
-
     }
-
     override fun onDestroy() {
         super.onDestroy()
         viewModel.clearSearchList()
