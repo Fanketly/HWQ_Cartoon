@@ -22,7 +22,7 @@ class DetailRvAdapter(list: List<CartoonInfor>, private var mark: Int) :
                 setBackgroundResource(R.drawable.text_boder_radius_blue)
             else
                 setBackgroundResource(R.drawable.text_boder_radius)
-            text = d.titile
+            text = d.title
         }
         b.root.setOnClickListener { onclick(p) }
     }

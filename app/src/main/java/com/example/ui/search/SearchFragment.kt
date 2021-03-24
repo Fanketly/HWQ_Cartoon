@@ -3,6 +3,7 @@ package com.example.ui.search
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
@@ -16,15 +17,13 @@ import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSearchBinding
 import com.example.repository.model.CartoonInfor
-import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.SearchViewModel
 
-class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_search) {
-    private val viewModel: CartoonViewModel by activityViewModels()
+class SearchFragment : BaseFragment<FragmentSearchBinding>() {
+    private val viewModel: SearchViewModel by activityViewModels()
     private var name = ""
     private lateinit var rv: RecyclerView
     private lateinit var rv2: RecyclerView
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         b.laySearch.setOnClickListener { }
@@ -57,20 +56,9 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                 } else {
                     homeRvAdapter?.notifyDataSetChanged()
                 }
-//                1 -> if (adapter == null) {//动漫之家
-//                    adapter = CartoonRvAdapter(viewModel.searchList, requireContext(),R.layout.cartoon_rv_item)
-//                    rv.setUpWithLinear(adapter)
-//                    adapter?.setOnClick { p ->
-//                        viewModel.getSearch(p)
-//                    }
-//                } else {
-//                    adapter?.notifyDataSetChanged()
-//                }
                 2 -> if (adapter2 == null) {//57漫画
                     adapter2 = DataBindingAdapter(
                         viewModel.searchList57,
-                        SearchViewModel::class.java,
-                        CartoonInfor::class.java,
                         BR.data,
                         R.layout.rv_item_57_cartoon
                     )
@@ -87,7 +75,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
         b.searchSearch.apply {
             val id: Int = this.context.resources
                 .getIdentifier("android:id/search_src_text", null, null)
-            val tv=findViewById<TextView>(id)
+            val tv = findViewById<TextView>(id)
             tv.setTextColor(Color.WHITE)
             isSubmitButtonEnabled = true
 //            isIconifiedByDefault = false
@@ -107,10 +95,15 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
             })
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         viewModel.clearSearchList()
         viewModel.bottomLiveData.value = false
         viewModel.isSearchFragment = false
+    }
+
+    override fun viewBinding(container: ViewGroup): FragmentSearchBinding {
+       return FragmentSearchBinding.inflate(layoutInflater,container,false)
     }
 }

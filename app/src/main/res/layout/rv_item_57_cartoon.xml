@@ -6,7 +6,7 @@
 
         <variable
             name="data"
-            type="com.example.viewModel.SearchViewModel" />
+            type="com.example.repository.model.CartoonInfor" />
     </data>
 
     <androidx.cardview.widget.CardView

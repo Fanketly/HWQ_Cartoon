@@ -14,7 +14,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.model.GlideUrl
@@ -25,7 +25,7 @@ import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentDetailedBinding
 import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.HistoryInfor
-import com.example.viewModel.CartoonViewModel
+import com.example.viewModel.DetailViewModel
 import com.example.viewModel.FavouriteViewModel
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -37,7 +37,7 @@ import java.util.*
  * 逻辑 从数据库读取漫画名字并判断是否已经追漫
  *     对点击的漫画保存到历史数据库，追漫的保存到追漫数据库
  * **/
-class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment_detailed) {
+class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
 
     private lateinit var detailImgRvAdapter: DetailImgRvAdapter
     private val dateformat = SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.CHINA)
@@ -45,17 +45,14 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
     private var historyInfor: HistoryInfor? = null
     private var historyMark = 0//记录在list位置
     private var favouriteMark = 0
-    private lateinit var viewModel: CartoonViewModel
-    private lateinit var favouriteViewModel: FavouriteViewModel
+    private val viewModel: DetailViewModel by activityViewModels()
+    private val favouriteViewModel: FavouriteViewModel by activityViewModels()
     private var mark: Int? = null
     private lateinit var favouriteDialogRvAdapter: DetailRvAdapter
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
-        favouriteViewModel =
-            ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
         b.frameLayout.setOnClickListener { }//避免点击到下一层的视图
         //返回
         b.btnDetailBack.setOnClickListener {
@@ -253,5 +250,9 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>(R.layout.fragment
         if (mark != R.id.searchFragment)
             viewModel.bottomLiveData.value = false
 
+    }
+
+    override fun viewBinding(container: ViewGroup): FragmentDetailedBinding {
+        return FragmentDetailedBinding.inflate(layoutInflater,container,false)
     }
 }

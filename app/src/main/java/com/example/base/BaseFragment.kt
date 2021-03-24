@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
 
 /**
  * Created by Android Studio.
@@ -17,20 +15,22 @@ import androidx.fragment.app.Fragment
  * Time: 13:55
  */
 
-abstract class BaseFragment<T : ViewDataBinding>(@LayoutRes val layId: Int) : Fragment() {
+abstract class BaseFragment<T : ViewBinding> : Fragment() {
     private var _b: T? = null
     val b: T
         get() = _b!!
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _b = DataBindingUtil.inflate(inflater, layId, container, false)
-        _b?.lifecycleOwner = this
+        _b = viewBinding(container!!)
         return _b?.root
     }
 
+    protected abstract fun viewBinding(container: ViewGroup): T
 
     private var toast: Toast? = null
     fun shortToast(string: String) {

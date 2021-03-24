@@ -15,7 +15,7 @@ import com.example.repository.model.CartoonInfor
 class HomeRvAdapter(list: List<CartoonInfor>) :
     ViewBindingRvAdapter<CartoonInfor, CartoonRvItemBinding>(list) {
     override fun onBind(b: CartoonRvItemBinding, d: CartoonInfor, p: Int) {
-        b.tvCartoonTitle.text = d.titile
+        b.tvCartoonTitle.text = d.title
         b.root.setOnClickListener {
             onclick(
                 p

@@ -1,9 +1,10 @@
- package com.example.ui.home
+package com.example.ui.home
 
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -14,14 +15,15 @@ import com.example.base.*
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentHomeBinding
 import com.example.viewModel.CartoonViewModel
+import com.example.viewModel.SearchViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.youth.banner.indicator.CircleIndicator
 
 
-class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
+class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private val viewModel: CartoonViewModel by activityViewModels()
-
+    private val searchViewModel: SearchViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (viewModel.cartoonInfors.size == 0)
@@ -57,9 +59,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             tv.setHintTextColor(ContextCompat.getColor(context, R.color.home_background))
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
+                    isIconified = true
                     if (!p0?.trim().isNullOrEmpty()) {
-                        viewModel.search(p0)
-                        isIconified = true
+                        searchViewModel.search(p0)
                         clearFocus() // 不获取焦点
                         onActionViewCollapsed()  //可以收起SearchView视图
                     }
@@ -115,5 +117,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     override fun onDestroy() {
         super.onDestroy()
         Log.i(TAG, "HOmeonDestroy: ")
+    }
+
+    override fun viewBinding(container: ViewGroup): FragmentHomeBinding {
+        return FragmentHomeBinding.inflate(layoutInflater,container,false)
     }
 }

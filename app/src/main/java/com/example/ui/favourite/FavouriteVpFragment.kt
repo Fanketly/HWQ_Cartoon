@@ -4,22 +4,27 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.base.BaseFragment
 import com.example.base.TAG
-import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentVpBinding
+import com.example.viewModel.DetailViewModel
 import com.example.viewModel.FavouriteViewModel
 import com.google.android.material.tabs.TabLayout
 
-class FavouriteVpFragment : BaseFragment<FragmentVpBinding>(R.layout.fragment_vp) {
-    private lateinit var viewModel: FavouriteViewModel
+class FavouriteVpFragment : BaseFragment<FragmentVpBinding>() {
+    private val viewModel: FavouriteViewModel by activityViewModels()
+    private val detailViewModel: DetailViewModel by activityViewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
-        val list = listOf(FavoriteFragment(), HistoryFragment())
-        val favouritevpAdapter = FavouritevpAdapter(this, list)
+        viewModel.detailViewModel = detailViewModel
+        val favouritevpAdapter = FavouriteVpAdapter(
+            this,
+            listOf(FavoriteFragment(), HistoryFragment())
+        )
         b.vpFavourite.offscreenPageLimit = 2
         b.vpFavourite.adapter = favouritevpAdapter
         b.tabFavourite.addTab(b.tabFavourite.newTab().setText("追漫"))
@@ -68,5 +73,9 @@ class FavouriteVpFragment : BaseFragment<FragmentVpBinding>(R.layout.fragment_vp
     override fun onDestroy() {
         super.onDestroy()
         Log.i(TAG, "FavVponDestroy: ")
+    }
+
+    override fun viewBinding(container: ViewGroup): FragmentVpBinding {
+        return FragmentVpBinding.inflate(layoutInflater, container, false)
     }
 }

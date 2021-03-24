@@ -1,38 +1,31 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.example.ui.favourite.FavouriteVpFragment">
 
-    <data>
 
-    </data>
-
-    <FrameLayout
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vpFavourite"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/white"
-        tools:context="com.example.ui.favourite.FavouriteVpFragment">
+        android:layout_marginTop="60dp" />
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabFavourite"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_gravity="center|top" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vpFavourite"
-            android:layout_marginTop="60dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabFavourite"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_gravity="center|top" />
-
-        <TextView
-            android:id="@+id/tvVpFavouriteClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|top|end"
-            android:layout_marginTop="18dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/vpfavourite_clear"
-            android:textSize="12sp" />
-    </FrameLayout>
-</layout>
+    <TextView
+        android:id="@+id/tvVpFavouriteClear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|top|end"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/vpfavourite_clear"
+        android:textSize="12sp" />
+</FrameLayout>

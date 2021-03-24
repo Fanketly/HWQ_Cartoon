@@ -19,11 +19,16 @@ import com.example.ui.home.HomeFragment
 import com.example.ui.me.MeFragment
 import com.example.ui.search.SearchFragment
 import com.example.viewModel.CartoonViewModel
+import com.example.viewModel.DetailViewModel
+import com.example.viewModel.SearchViewModel
 
 
 class MainActivity : AppCompatActivity() {
+    //viewModel
     private val viewModel: CartoonViewModel by viewModels()
-
+    private val detailViewModel: DetailViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
+    //fragment
     private lateinit var fragmentManager: FragmentManager
     private val homeFragment: HomeFragment by lazy { HomeFragment() }
     private val favouriteVpFragment: FavouriteVpFragment by lazy { FavouriteVpFragment() }
@@ -33,13 +38,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val b: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        val b: ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(b.root)
+        //viewModel
+        viewModel.detailViewModel = detailViewModel
+        searchViewModel.detailViewModel = detailViewModel
+        //切换界面
         fragmentManager = supportFragmentManager
         fragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.right_in, R.anim.right_out)
             .add(R.id.layMain2, homeFragment).commit()
         lastFragment = homeFragment
-        b.lifecycleOwner = this
+//        b.lifecycleOwner = this
         b.bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.homeFragment ->
@@ -61,18 +71,18 @@ class MainActivity : AppCompatActivity() {
             b.bottomNav.visibility = if (it) View.GONE else View.VISIBLE
         }
         //集数Detail监听
-        viewModel.msg3LiveData.observe(this) {
+        detailViewModel.msg3LiveData.observe(this) {
             b.bottomNav.visibility = View.GONE
-            beginTransaction(viewModel.bundle, DetailedFragment::class.java)
+            beginTransaction(detailViewModel.bundle, DetailedFragment::class.java)
         }
         //Search监听
-        viewModel.searchLiveData.observe(this) {
-            if (!viewModel.isSearchFragment)
+        searchViewModel.searchLiveData.observe(this) {
+            if (!searchViewModel.isSearchFragment)
                 when (it) {
                     1 -> {
                         b.bottomNav.visibility = View.GONE
                         beginTransaction(null, SearchFragment::class.java)
-                        viewModel.isSearchFragment = true
+                        searchViewModel.isSearchFragment = true
                     }
                 }
         }

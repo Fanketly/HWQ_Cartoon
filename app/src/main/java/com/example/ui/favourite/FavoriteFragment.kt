@@ -2,22 +2,31 @@ package com.example.ui.favourite
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.base.BaseFragment
-import com.example.base.setUpWithGrid
-import com.example.hwq_cartoon.R
 import com.example.adapter.FavouriteRvAdapter
+import com.example.base.setUpWithGrid
 import com.example.hwq_cartoon.databinding.FragmentFavoriteBinding
-import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.FavouriteViewModel
 
-class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment_favorite) {
+class FavoriteFragment : Fragment() {
     private var favouriteRvAdapter: FavouriteRvAdapter? = null
+    private lateinit var b: FragmentFavoriteBinding
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        b = FragmentFavoriteBinding.inflate(layoutInflater, container, false)
+        return b.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewModel = ViewModelProvider(requireActivity())[CartoonViewModel::class.java]
         val favouriteViewModel =
             ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
         val list = favouriteViewModel.favouriteList
@@ -32,7 +41,7 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
         b.rvFavourite.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         //漫画点击监听
         favouriteRvAdapter?.setOnClick(onclick = {
-            viewModel.favouriteGet(list[it])
+            favouriteViewModel.favouriteGet(list[it])
         }, longOnclick = {
             AlertDialog.Builder(context).setMessage("是否取消追漫")
                 .setPositiveButton(
@@ -54,5 +63,9 @@ class FavoriteFragment : BaseFragment<FragmentFavoriteBinding>(R.layout.fragment
             }
         }
     }
+
+//    override fun viewBinding(container: ViewGroup): FragmentFavoriteBinding {
+//        return FragmentFavoriteBinding.inflate(layoutInflater)
+//    }
 
 }

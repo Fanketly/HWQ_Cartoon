@@ -1,42 +1,54 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    tools:context="com.example.ui.classification.SpeciesFragment">
 
-    <data>
+    <View
+        android:id="@+id/view"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@color/hui" />
 
-    </data>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSpeciesTop"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:overScrollMode="ifContentScrolls"
+        android:scrollbars="vertical" />
 
-    <FrameLayout
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/refreshCartoon"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:srlAccentColor="@color/header_background"
+        app:srlHeaderTriggerRate="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        tools:context="com.example.ui.classification.SpeciesFragment">
+        android:layout_marginStart="60dp">
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="55dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:background="@color/hui" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvSpeciesTop"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:overScrollMode="ifContentScrolls"
-            android:scrollbars="vertical" />
+        <com.scwang.smart.refresh.header.BezierRadarHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSpecies"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="60dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp" />
 
-    </FrameLayout>
-</layout>
+
+        <com.scwang.smart.refresh.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+</FrameLayout>

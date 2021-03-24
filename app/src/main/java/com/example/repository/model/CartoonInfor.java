@@ -7,10 +7,10 @@ package com.example.repository.model;
  * Time: 0:59
  */
 public class CartoonInfor {
-    private String titile,href,img,type;
+    private String title,href,img,type;
 
     public CartoonInfor(String titile, String href, String img, String type) {
-        this.titile = titile;
+        this.title = titile;
         this.href = href;
         this.img = img;
         this.type = type;
@@ -25,7 +25,7 @@ public class CartoonInfor {
     }
 
     public CartoonInfor(String titile, String href, String img) {
-        this.titile = titile;
+        this.title = titile;
         this.href = href;
         this.img = img;
     }
@@ -39,16 +39,16 @@ public class CartoonInfor {
     }
 
     public CartoonInfor(String titile, String href) {
-        this.titile = titile;
+        this.title = titile;
         this.href = href;
     }
 
-    public String getTitile() {
-        return titile;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTitile(String titile) {
-        this.titile = titile;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getHref() {

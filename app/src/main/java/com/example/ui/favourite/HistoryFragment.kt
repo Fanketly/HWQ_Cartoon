@@ -1,20 +1,29 @@
 package com.example.ui.favourite
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.adapter.SpacesItemDecoration
-import com.example.base.BaseFragment
-import com.example.base.setUpWithLinear
-import com.example.hwq_cartoon.R
 import com.example.adapter.HistoryRvAdapter
+import com.example.adapter.SpacesItemDecoration
+import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.databinding.FragmentHistoryBinding
-import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.FavouriteViewModel
 
-class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_history) {
+class HistoryFragment : Fragment() {
     private val viewModel: FavouriteViewModel by activityViewModels()
-    private val cartoonViewModel: CartoonViewModel by activityViewModels()
+    private lateinit var b: FragmentHistoryBinding
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        b = FragmentHistoryBinding.inflate(layoutInflater, container, false)
+        return b.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val adapter = HistoryRvAdapter(viewModel.historyList)
@@ -32,8 +41,9 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(R.layout.fragment_h
         }
         viewModel.historyLivaData.value = -2//只要没发送新的value 就return
         adapter.setOnClick {
-            cartoonViewModel.historyGet(viewModel.historyList[it])
+            viewModel.historyGet(viewModel.historyList[it])
         }
     }
+
 
 }

@@ -14,8 +14,14 @@ import kotlinx.coroutines.flow.flow
  */
 
 
-class CartoonRemote {
+object CartoonRemote {
     private val errorLiveData = MutableLiveData<String>()
+    private val pg = MutableLiveData<Boolean>()
+    private val bottom = MutableLiveData<Boolean>()
+    val bottomLiveData
+        get() = bottom
+    val pgLiveData
+        get() = pg
     val error
         get() = errorLiveData
 
