@@ -18,24 +18,29 @@ class DetailRvAdapter(list: List<CartoonInfor>, private var mark: Int) :
     override fun onBind(b: CartoonDialogRvItemBinding, d: CartoonInfor, p: Int) {
 
         with(b.tvCartoonDialogTitle) {
-            if (p == mark)
+            if (p == mark) {
                 setBackgroundResource(R.drawable.text_boder_radius_blue)
-            else
+//                setTextColor(ContextCompat.getColor(this.context, R.color.black))
+            } else {
                 setBackgroundResource(R.drawable.text_boder_radius)
-            text = d.title
+//                setTextColor(ContextCompat.getColor(this.context, R.color.white))
+            }
+                text = d.title
+            }
+            b.root.setOnClickListener { onclick(p) }
         }
-        b.root.setOnClickListener { onclick(p) }
+
+        fun itemChange(mark: Int) {
+            val mark2 = this.mark
+            this.mark = mark
+            notifyItemChanged(mark2)
+            notifyItemChanged(mark)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            viewType: Int
+        ): VH<CartoonDialogRvItemBinding> {
+            return viewBinding(parent, false)
+        }
     }
-    fun itemChange(mark: Int) {
-        val mark2 = this.mark
-        this.mark = mark
-        notifyItemChanged(mark2)
-        notifyItemChanged(mark)
-    }
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): VH<CartoonDialogRvItemBinding> {
-        return viewBinding( parent, false)
-    }
-}

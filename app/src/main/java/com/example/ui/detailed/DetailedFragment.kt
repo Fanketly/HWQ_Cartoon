@@ -14,11 +14,11 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
 import com.example.adapter.DetailImgRvAdapter
 import com.example.adapter.DetailRvAdapter
 import com.example.base.*
@@ -95,7 +95,10 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                 //判断是否已经追漫
                 for ((index, info) in favouriteViewModel.favouriteList.withIndex()) {
                     if (info.title == name) {
-                        withContext(Dispatchers.Main) { b.btnDetailAdd.text = "已追漫" }
+                        withContext(Dispatchers.Main) {
+//                            b.btnLike.setBackgroundResource(R.drawable.ic_baseline_star_24)
+                            b.btnDetailAdd.text = "已追漫"
+                        }
                         favouriteInfor = info
                         favouriteMark = index
                         break
