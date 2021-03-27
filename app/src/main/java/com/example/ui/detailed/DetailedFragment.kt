@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.example.adapter.DetailImgRvAdapter
 import com.example.adapter.DetailRvAdapter
@@ -56,7 +57,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
         b.frameLayout.setOnClickListener { }//避免点击到下一层的视图
         //返回
         b.btnDetailBack.setOnClickListener {
-//            Navigation.findNavController(requireView()).navigateUp()
             requireActivity().supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
         }
@@ -108,10 +108,12 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             b.tvDetailContent.text = viewModel.content
             b.tvDetailUpdate.text = "最后更新时间:${viewModel.update}"
             b.tvDetailContent.movementMethod = ScrollingMovementMethod()
-            if (img!!.contains("wuqimh"))
-                setImg(b.imgDetail, img)
-            else
-                setImg(b.imgDetail, GlideUrl(img, headers))
+//            if (img!!.contains("wuqimh"))
+//            setImg(b.imgDetail, img!!)
+            Glide.with(requireContext()).asDrawable().skipMemoryCache(true).centerCrop().load(img)
+                .into(b.imgDetailBackground)
+//            else
+//                setImg(b.imgDetail, GlideUrl(img, headers))
             //集数Rv,判断是否在喜爱中
             favouriteDialogRvAdapter = if (favouriteInfor != null)
                 DetailRvAdapter(
@@ -253,6 +255,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
     }
 
     override fun viewBinding(container: ViewGroup): FragmentDetailedBinding {
-        return FragmentDetailedBinding.inflate(layoutInflater,container,false)
+        return FragmentDetailedBinding.inflate(layoutInflater, container, false)
     }
 }

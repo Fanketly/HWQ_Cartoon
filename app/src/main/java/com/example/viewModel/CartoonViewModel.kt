@@ -6,15 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.base.TAG
 import com.example.hwq_cartoon.R
-import com.example.repository.model.*
+import com.example.repository.model.CartoonInfor
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by Android Studio.
@@ -55,29 +54,6 @@ class CartoonViewModel : ViewModel() {
 
     //加载监听
     val pgLiveData = remote.pgLiveData
-
-
-    /***加载漫画,判断漫画源**/
-//    private fun loadCartoon(url: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            if (url.contains("wuqimh")) {
-//                remote.getData(url) {
-//                    pgLiveData.postValue(true)
-//                }.collect {
-//                    detailViewModel.what357(it)
-//                }
-//                return@launch
-//            }
-//            var s = url
-//            if (!s.contains("dmzj"))
-//                s = Api.url2 + "/" + s//需要加"/"
-//            remote.getData(s) { pgLiveData.postValue(true) }
-//                .collect {
-//                    Log.i(TAG, "getHomeCartoon: $s")
-//                    detailViewModel.what3(it)
-//                }
-//        }
-//    }
 
 
     /**
@@ -180,7 +156,7 @@ class CartoonViewModel : ViewModel() {
             pgLiveData.value = true
             return
         }
-        detailViewModel.    loadCartoon(s)
+        detailViewModel.loadCartoon(s)
     }
 
     fun nextPager() { //下一页
@@ -197,8 +173,6 @@ class CartoonViewModel : ViewModel() {
     fun getHomeCartoon() {
         pager()
     }
-
-
 
 
 }

@@ -19,6 +19,10 @@ import com.example.viewModel.SearchViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.youth.banner.indicator.CircleIndicator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
@@ -26,7 +30,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private val searchViewModel: SearchViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (viewModel.cartoonInfors.size == 0)
+        //渐入动画
+        CoroutineScope(Dispatchers.Main).launch {
+            for (i in 1 until 100) {
+                delay(10)
+                b.searchHome.alpha = (i + 10) / 100f
+                b.barHome.alpha = (i + 5) / 100f
+                b.refreshCartoon.alpha = i / 100f
+            }
+        }
             viewModel.getHomeCartoon()
         var homeRvAdapter: HomeRvAdapter? = null
         //推荐
@@ -73,10 +85,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 }
             })
         }
-        //加载主页
+        //加载主页 如果true加载数据 点击导航栏false上拉刷新
         viewModel.homeLiveData.observe(viewLifecycleOwner, {
-            Log.i("TAG", "o: ")
-            if (homeRvAdapter == null) {
+            Log.i("TAG", "homeLiveData:$it ")
+            if (it) if (homeRvAdapter == null) {
                 homeRvAdapter = HomeRvAdapter(viewModel.cartoonInfors)
                 homeRvAdapter?.apply {
                     with(b.rvHome) {
@@ -89,9 +101,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 }
             } else {
                 homeRvAdapter?.notifyDataSetChanged()
+                b.refreshCartoon.closeHeaderOrFooter()
             }
-            b.refreshCartoon.closeHeaderOrFooter()
+            else {
+                b.rvHome.smoothScrollToPosition(0)
+                b.refreshCartoon.autoRefresh()
+            }
         })
+
         //刷新和加载
         b.refreshCartoon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
@@ -120,6 +137,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     }
 
     override fun viewBinding(container: ViewGroup): FragmentHomeBinding {
-        return FragmentHomeBinding.inflate(layoutInflater,container,false)
+        return FragmentHomeBinding.inflate(layoutInflater, container, false)
     }
 }

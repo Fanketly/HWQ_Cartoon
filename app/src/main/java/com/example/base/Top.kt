@@ -36,12 +36,8 @@ const val TAG = "TAG"
     map["Referer"] = "https://manhua.dmzj.com/update_1.shtml"
     map
 }
-
 @BindingAdapter("setImg")
-fun setImg(imageView: ImageView, url: String) {
-    Glide.with(imageView).asDrawable().skipMemoryCache(true).load(url).into(imageView)
-}
-
 fun setImg(imageView: ImageView, url: Any) {
     Glide.with(imageView).asDrawable().skipMemoryCache(true).load(url).into(imageView)
 }
+

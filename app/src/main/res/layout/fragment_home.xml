@@ -3,12 +3,14 @@
     android:id="@+id/layHome"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/aa"
     android:orientation="vertical">
 
     <SearchView
         android:id="@+id/searchHome"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:alpha="0"
         android:background="@color/theme_blue"
         android:closeIcon="@drawable/ic_baseline_close_24"
         android:goIcon="@drawable/ic_baseline_chevron_right_24"
@@ -20,9 +22,11 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/barHome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:alpha="0"
+            android:background="@null">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
@@ -55,17 +59,18 @@
                     android:id="@+id/rvHomeRecommend"
                     android:layout_width="match_parent"
                     android:layout_height="160dp"
-                    android:layout_marginTop="250dp"
+                    android:layout_marginTop="252dp"
                     android:background="@color/white" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="410dp"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="412dp"
+                    android:layout_marginBottom="6dp"
                     android:background="@color/white"
                     android:drawablePadding="6dp"
                     android:paddingStart="10dp"
+                    android:paddingTop="5dp"
                     android:text="最近更新"
                     android:textColor="@color/black"
                     android:textSize="18sp"
@@ -79,6 +84,8 @@
             android:id="@+id/refreshCartoon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:alpha="0"
+            android:background="@color/white"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -94,8 +101,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvHome"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white" />
+                android:layout_height="match_parent" />
 
             <com.scwang.smart.refresh.footer.ClassicsFooter
                 android:layout_width="match_parent"

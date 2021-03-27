@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
@@ -28,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: CartoonViewModel by viewModels()
     private val detailViewModel: DetailViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
+
     //fragment
     private lateinit var fragmentManager: FragmentManager
     private val homeFragment: HomeFragment by lazy { HomeFragment() }
@@ -52,8 +52,12 @@ class MainActivity : AppCompatActivity() {
 //        b.lifecycleOwner = this
         b.bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
-                R.id.homeFragment ->
-                    add(homeFragment)
+                R.id.homeFragment -> {
+                    if (lastFragment == homeFragment) {
+                        viewModel.homeLiveData.postValue(false)
+                    } else
+                        add(homeFragment)
+                }
                 R.id.favoriteVpFragment ->
                     add(favouriteVpFragment)
                 R.id.speciesFragment ->
@@ -95,7 +99,7 @@ class MainActivity : AppCompatActivity() {
     private fun beginTransaction(bundle: Bundle?, clazz: Class<out Fragment>) =
         fragmentManager.commit {
             setCustomAnimations(R.anim.right_in, R.anim.right_out)
-            add(R.id.layMain, clazz, bundle, "detail")
+            add(R.id.layMain2, clazz, bundle, "detail")
         }
 
     private fun add(fragment: Fragment) {
