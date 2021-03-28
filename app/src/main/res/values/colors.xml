@@ -11,4 +11,5 @@
     <color name="species_hui">#494747</color>
     <color name="theme_blue">#03A9F4</color>
     <color name="home_background">#F3F3F3</color>
+    <color name="hui_50alpha">#80919191</color>
 </resources>

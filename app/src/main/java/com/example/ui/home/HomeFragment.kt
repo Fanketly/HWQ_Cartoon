@@ -31,15 +31,33 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //渐入动画
-        CoroutineScope(Dispatchers.Main).launch {
-            for (i in 1 until 100) {
-                delay(10)
-                b.searchHome.alpha = (i + 10) / 100f
-                b.barHome.alpha = (i + 5) / 100f
-                b.refreshCartoon.alpha = i / 100f
-            }
-        }
-            viewModel.getHomeCartoon()
+//        CoroutineScope(Dispatchers.Main).launch {
+//            delay(400)
+//            for(i in 1 until 4) {
+//                delay(100)
+//                b.layHome.scaleX = b.layHome.scaleX + 0.1F
+//                b.layHome.scaleY = b.layHome.scaleY + 0.1F
+//            }
+//            viewModel.bottomLiveData.postValue(true)
+//            delay(500)
+//            for (i in 1 until 27) {
+//                delay(50)
+//                b.layHome.scaleX = b.layHome.scaleX - 0.05F
+//                b.layHome.scaleY = b.layHome.scaleY - 0.05F
+//            }
+//            Log.i(TAG, "onViewCreated: ${b.layHome.scaleX}")
+//            delay(100)
+//            viewModel.bottomLiveData.postValue(false)
+//            for (i in 1 until 100) {
+//                delay(5)
+//                b.searchHome.alpha = (i + 10) / 100f
+//                b.barHome.alpha = (i + 5) / 100f
+//                b.refreshCartoon.alpha = i / 100f
+//                viewModel.bottomAlphaLiveData.postValue(i / 100f)
+//            }
+//        }
+
+        viewModel.getHomeCartoon()
         var homeRvAdapter: HomeRvAdapter? = null
         //推荐
         viewModel.get57Recommend()

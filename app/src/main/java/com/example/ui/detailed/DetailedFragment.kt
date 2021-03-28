@@ -7,14 +7,11 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -50,8 +47,12 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
     private val favouriteViewModel: FavouriteViewModel by activityViewModels()
     private var mark: Int? = null
     private lateinit var favouriteDialogRvAdapter: DetailRvAdapter
+    private var y2: Float = 0f
+    private var tranY: Float = 0f
+    private var y: Float = 0f
+    private var isLike: Boolean = false
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         b.frameLayout.setOnClickListener { }//避免点击到下一层的视图
@@ -59,6 +60,37 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
         b.btnDetailBack.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
+        }
+        val displayMetrics = resources.displayMetrics
+        val ydpi = displayMetrics.heightPixels
+//        Log.i(TAG, "onViewCreated: $ydpi")
+        b.btnDetailAdd.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    //1、event.getRowX（）：触摸点相对于屏幕原点的x坐标
+                    //2、event.getX（）：    触摸点相对于其所在组件原点的x坐标
+                    y = event.rawY
+                    tranY = v.translationY
+//                    Log.i(TAG, "DOWM: $y tranY: $tranY")
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    y2 = event.rawY
+                    if (y2 < (ydpi * 0.39f) || y2 > ydpi - 50)
+                        return@setOnTouchListener false
+//                    Log.i(TAG, "onViewCreated: $y2")o
+//                    b.btnDetailAdd.y = y2
+//                    b.rvDetail.y = y2 +50
+                    b.rvDetail.translationY = tranY + y2 - y
+                    b.btnDetailAdd.translationY = tranY + y2 - y
+                }
+                MotionEvent.ACTION_UP -> {
+                    if (y2 == 0f) {
+                        like()
+                    }
+                    y2 = 0f
+                }
+            }
+            return@setOnTouchListener true
         }
         CoroutineScope(Dispatchers.Main).launch {
             //跳转所传递的数据
@@ -97,7 +129,9 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     if (info.title == name) {
                         withContext(Dispatchers.Main) {
 //                            b.btnLike.setBackgroundResource(R.drawable.ic_baseline_star_24)
-                            b.btnDetailAdd.text = "已追漫"
+//                            b.btnDetailAdd.text = "已追漫"
+                            isLike = true
+                            b.btnDetailAdd.setBackgroundResource(R.drawable.like_blue)
                         }
                         favouriteInfor = info
                         favouriteMark = index
@@ -133,32 +167,37 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                 update(p)
             }
             //添加到喜爱,从喜爱中删除 添加到数据库,添加到list，添加到livedata
-            b.btnDetailAdd.setOnClickListener {
-                if (b.btnDetailAdd.text.toString() == "追漫") {
-                    when (mark) {
-                        R.id.favoriteFragment -> {
-                            favouriteViewModel.setFavourite(favouriteInfor)
-                        }
-                        else -> {
-                            favouriteInfor =
-                                favouriteViewModel.setFavouriteFromHome(
-                                    favouriteViewModel.historyList[historyMark]
-                                )
-                        }
-                    }
-                    favouriteMark = favouriteViewModel.favouriteListAdd(favouriteInfor!!)
-                    Log.i(TAG, "onActivityCreated: $favouriteMark")
-                    b.btnDetailAdd.text = "已追漫"
-                    shortToast("追漫成功")
-                } else {
-                    Log.i(TAG, "onActivityCreated: $favouriteMark")
-                    favouriteViewModel.favouriteDel(favouriteMark)
-                    b.btnDetailAdd.text = "追漫"
-                    shortToast("已取消追漫")
-                }
-                //判断现存追漫数
-                favouriteViewModel.likesIsZero()
-            }
+//            b.btnDetailAdd.setOnClickListener {
+//                if (b.btnDetailAdd.text.toString() == "追漫") {
+//                if (!isLike) {
+//                    when (mark) {
+//                        R.id.favoriteFragment -> {
+//                            favouriteViewModel.setFavourite(favouriteInfor)
+//                        }
+//                        else -> {
+//                            favouriteInfor =
+//                                favouriteViewModel.setFavouriteFromHome(
+//                                    favouriteViewModel.historyList[historyMark]
+//                                )
+//                        }
+//                    }
+//                    favouriteMark = favouriteViewModel.favouriteListAdd(favouriteInfor!!)
+//                    Log.i(TAG, "onActivityCreated: $favouriteMark")
+////                    b.btnDetailAdd.text = "已追漫"
+//                    isLike = true
+//                    b.btnDetailAdd.setBackgroundResource(R.drawable.ic_baseline_star_24)
+//                    shortToast("追漫成功")
+//                } else {
+//                    Log.i(TAG, "onActivityCreated: $favouriteMark")
+//                    favouriteViewModel.favouriteDel(favouriteMark)
+////                    b.btnDetailAdd.text = "追漫"
+//                    isLike = false
+//                    b.btnDetailAdd.setBackgroundResource(R.drawable.ic_baseline_unstar_24)
+//                    shortToast("已取消追漫")
+//                }
+//                //判断现存追漫数
+//                favouriteViewModel.likesIsZero()
+//            }
             //显示漫画
             viewModel.msg4LiveData.observe(viewLifecycleOwner, { msg4: List<ByteArray> ->
                 if (msg4.size == 1) {
@@ -231,6 +270,37 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
         }
     }
 
+    private fun like() {
+        if (!isLike) {
+            when (mark) {
+                R.id.favoriteFragment -> {
+                    favouriteViewModel.setFavourite(favouriteInfor)
+                }
+                else -> {
+                    favouriteInfor =
+                        favouriteViewModel.setFavouriteFromHome(
+                            favouriteViewModel.historyList[historyMark]
+                        )
+                }
+            }
+            favouriteMark = favouriteViewModel.favouriteListAdd(favouriteInfor!!)
+            Log.i(TAG, "onActivityCreated: $favouriteMark")
+//                    b.btnDetailAdd.text = "已追漫"
+            isLike = true
+            b.btnDetailAdd.setBackgroundResource(R.drawable.like_blue)
+            shortToast("追漫成功")
+        } else {
+            Log.i(TAG, "onActivityCreated: $favouriteMark")
+            favouriteViewModel.favouriteDel(favouriteMark)
+//                    b.btnDetailAdd.text = "追漫"
+            isLike = false
+            b.btnDetailAdd.setBackgroundResource(R.drawable.unlike)
+            shortToast("已取消追漫")
+        }
+        //判断现存追漫数
+        favouriteViewModel.likesIsZero()
+    }
+
     /**更新观看集数并加载漫画**/
     private fun update(p: Int) {
         if (viewModel.pgLiveData.value == false) return
@@ -242,7 +312,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             historyList[historyMark].mark = p//历史list
             historyUpdate(historyInfor!!)//历史数据库
             historyLivaData.value = historyMark
-            if (b.btnDetailAdd.text.toString() == "已追漫") {
+//            if (b.btnDetailAdd.text.toString() == "已追漫") {
+            if (isLike) {
                 favouriteInfor?.mark = p//当前页面
                 updateFavourite(favouriteInfor)//喜爱数据库
             }

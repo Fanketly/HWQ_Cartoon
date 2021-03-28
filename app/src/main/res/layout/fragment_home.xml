@@ -3,14 +3,13 @@
     android:id="@+id/layHome"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/aa"
     android:orientation="vertical">
 
     <SearchView
         android:id="@+id/searchHome"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:alpha="0"
+        android:alpha="1"
         android:background="@color/theme_blue"
         android:closeIcon="@drawable/ic_baseline_close_24"
         android:goIcon="@drawable/ic_baseline_chevron_right_24"
@@ -25,7 +24,7 @@
             android:id="@+id/barHome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:alpha="0"
+            android:alpha="1"
             android:background="@null">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -84,7 +83,7 @@
             android:id="@+id/refreshCartoon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:alpha="0"
+            android:alpha="1"
             android:background="@color/white"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintBottom_toBottomOf="parent"

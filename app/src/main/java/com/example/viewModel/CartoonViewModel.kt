@@ -55,6 +55,8 @@ class CartoonViewModel : ViewModel() {
     //加载监听
     val pgLiveData = remote.pgLiveData
 
+    //
+//    val bottomAlphaLiveData = MutableLiveData<Float>()
 
     /**
      * 漫画本月人气排行

@@ -66,6 +66,19 @@ class MainActivity : AppCompatActivity() {
             }
             return@setOnNavigationItemSelectedListener true
         }
+        //
+//        CoroutineScope(Dispatchers.Main).launch {
+//            delay(500)
+//            for (i in 1 until 27) {
+//                delay(50)
+//                b.layMain.scaleX = b.layMain.scaleX - 0.05F
+//                b.layMain.scaleY = b.layMain.scaleY - 0.05F
+//            }
+//            Log.i(TAG, "onViewCreated: ${b.layMain.scaleX}")
+//        }
+//        viewModel.bottomAlphaLiveData.observe(this) {
+//            b.bottomNav.alpha = it
+//        }
         //pg监听
         viewModel.pgLiveData.observe(this) {
             b.pgMain.visibility = if (it) View.GONE else View.VISIBLE
