@@ -8,10 +8,9 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.*
+import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -52,7 +51,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
     private var y: Float = 0f
     private var isLike: Boolean = false
 
-    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
+    @SuppressLint("SetTextI18n", "ClickableViewAccessibility", "InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         b.frameLayout.setOnClickListener { }//避免点击到下一层的视图
@@ -198,13 +197,13 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                 if (msg4.size == 1) {
                     val builder = AlertDialog.Builder(requireContext())
                     val alertDialog = builder.create()
-                    val constraintLayout = b.root.findViewById<ConstraintLayout>(R.id.linearLayout3)
+//                    val constraintLayout = b.root.findViewById<ConstraintLayout>(R.id.linearLayout3)
                     val view4 =
                         LayoutInflater.from(context)
-                            .inflate(R.layout.dialog_cartoon, constraintLayout, false)
+                            .inflate(R.layout.dialog_cartoon,null,false)
                     val recyclerView4: RecyclerView = view4.findViewById(R.id.rvCartoon)
                     val btnBack = view4.findViewById<ImageButton>(R.id.btnCartoondialogBack)
-                    val layTop = view4.findViewById<LinearLayout>(R.id.layCartoonDialog)
+                    val layTop = view4.findViewById<FrameLayout>(R.id.layCartoonDialog)
                     val tvNum = view4.findViewById<TextView>(R.id.tvCartoonNum)
                     val num = viewModel.imgUrlList.size
                     var lastPosition = -1//记录上一个itemview
@@ -235,6 +234,13 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     viewModel.msg4List.clear()
                     detailImgRvAdapter =
                         DetailImgRvAdapter(msg4)
+                    detailImgRvAdapter.setOnClick {
+                        Log.i(TAG, "onViewCreated: ")
+                        if (layTop.visibility == View.VISIBLE)
+                            layTop.visibility = View.GONE
+                        else layTop.visibility = View.VISIBLE
+                    }
+                    recyclerView4.setUpWithLinear(detailImgRvAdapter)
                     alertDialog.setOnDismissListener {
                         viewModel.onMsg4Dismiss()
                         Runtime.getRuntime().gc()
@@ -247,12 +253,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT
                         )
-                        recyclerView4.setUpWithLinear(detailImgRvAdapter)
-                        detailImgRvAdapter.setOnClick {
-                            if (layTop.visibility == View.VISIBLE)
-                                layTop.visibility = View.GONE
-                            else layTop.visibility = View.VISIBLE
-                        }
                         btnBack.setOnClickListener { dismiss() }
                         setView(view4)
                         show()

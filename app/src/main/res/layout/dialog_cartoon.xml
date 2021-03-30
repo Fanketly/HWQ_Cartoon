@@ -19,13 +19,12 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.05" />
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/layCartoonDialog"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/hui"
         android:alpha="0.7"
-        android:orientation="horizontal"
+        android:background="@color/hui"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,23 +34,20 @@
             android:id="@+id/btnCartoondialogBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center|start"
             android:layout_marginStart="4dp"
             android:background="@drawable/ic_baseline_arrow_back_ios_24"
             android:contentDescription="@string/todo" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tvCartoonNum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/n_m"
+            android:textColor="#D8D8D8" />
 
-    <TextView
-        android:id="@+id/tvCartoonNum"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/n_m"
-        android:textColor="#D8D8D8"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintEnd_toEndOf="@+id/layCartoonDialog"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

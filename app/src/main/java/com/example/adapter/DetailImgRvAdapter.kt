@@ -16,7 +16,7 @@ class DetailImgRvAdapter(list: List<ByteArray>) :
     ViewBindingRvAdapter<ByteArray, CartoonImgRvItemBinding>(list) {
 
     override fun onBind(b: CartoonImgRvItemBinding, d: ByteArray, p: Int) {
-        b.imageView.setOnClickListener { onclick }
+        b.imageView.setOnClickListener { onclick(p) }
         Glide.with(b.imageView).asDrawable().load(d)
             .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(b.imageView)
     }
