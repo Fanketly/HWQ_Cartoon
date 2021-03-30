@@ -71,26 +71,21 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     //2、event.getX（）：    触摸点相对于其所在组件原点的x坐标
                     y = event.rawY
                     tranY = v.translationY
-//                    Log.i(TAG, "DOWM: $y tranY: $tranY")
+                    Log.i(TAG, "DOWM: $y tranY: $tranY")
                 }
                 MotionEvent.ACTION_MOVE -> {
                     y2 = event.rawY
                     if (y2 < (ydpi * 0.39f) || y2 > ydpi - 50)
                         return@setOnTouchListener false
-//                    Log.i(TAG, "onViewCreated: $y2")o
-//                    b.btnDetailAdd.y = y2
-//                    b.rvDetail.y = y2 +50
                     b.rvDetail.translationY = tranY + y2 - y
                     b.btnDetailAdd.translationY = tranY + y2 - y
                 }
                 MotionEvent.ACTION_UP -> {
-                    if (y2 == 0f) {
+                    if (tranY==v.translationY)
                         like()
-                    }
-                    y2 = 0f
                 }
             }
-            return@setOnTouchListener true
+            return@setOnTouchListener false
         }
         CoroutineScope(Dispatchers.Main).launch {
             //跳转所传递的数据

@@ -19,10 +19,6 @@ import com.example.viewModel.SearchViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.youth.banner.indicator.CircleIndicator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
