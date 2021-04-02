@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.base.TAG
 import com.example.hwq_cartoon.R
-import com.example.repository.model.CartoonInfor
+import com.example.repository.model.CartoonInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.RequestUtil
@@ -36,13 +36,13 @@ class SearchViewModel : ViewModel() {
     /**判断是否在searchFragment**/
     var isSearchFragment = false
 
-    val searchList: MutableList<CartoonInfor> by lazy { ArrayList() }
+    val searchList: MutableList<CartoonInfo> by lazy { ArrayList() }
     val searchLiveData by lazy { MutableLiveData<Int>() }
-    val searchList57: MutableList<CartoonInfor> by lazy { ArrayList() }
+    val searchList57: MutableList<CartoonInfo> by lazy { ArrayList() }
     private fun what5(s: String) {//查询
         if (s.isNotEmpty()) {
             val ss = s.split("{").toTypedArray()
-            var cartoonInfor: CartoonInfor
+            var cartoonInfor: CartoonInfo
             if (ss.size > 10) {
                 var ss2: Array<String>
                 var s51: String
@@ -54,8 +54,8 @@ class SearchViewModel : ViewModel() {
                     s51 = ss2[1]
                     s56 = ss2[6]
                     s54 = ss2[4]
-                    cartoonInfor = CartoonInfor(
-                        decode(s51.substring(14, s51.length - 1)),
+                    cartoonInfor = CartoonInfo(
+                        decode(s51.substring(14, s51.length - 1))!!,
                         "https://" + s56.substring(21, s56.length - 1)
                             .replace("\\", ""),
                         s54.substring(9, s54.length - 1).replace("\\", "")
@@ -73,8 +73,8 @@ class SearchViewModel : ViewModel() {
                     s51 = ss2[1]
                     s56 = ss2[6]
                     s54 = ss2[4]
-                    cartoonInfor = CartoonInfor(
-                        decode(s51.substring(14, s51.length - 1)),
+                    cartoonInfor = CartoonInfo(
+                        decode(s51.substring(14, s51.length - 1))!!,
                         "https://" + s56.substring(21, s56.length - 1)
                             .replace("\\", ""),
                         s54.substring(9, s54.length - 1).replace("\\", "")
@@ -102,7 +102,7 @@ class SearchViewModel : ViewModel() {
         requestUtil.loadCartoon(s)
     }
 
-    fun getSearch57(cartoonInfor: CartoonInfor) {
+    fun getSearch57(cartoonInfor: CartoonInfo) {
         if (pgLiveData.value == false) return
         pgLiveData.value = false
         val s = Api.mh57Url + cartoonInfor.href
@@ -150,7 +150,7 @@ class SearchViewModel : ViewModel() {
             if (a.isEmpty())
                 continue
             searchList57.add(
-                CartoonInfor(
+                CartoonInfo(
                     a.attr("title"),
                     a.attr("href"),
                     a.select("img").attr("src")

@@ -19,6 +19,7 @@ import com.example.viewModel.SearchViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.youth.banner.indicator.CircleIndicator
+import com.youth.banner.transformer.ScaleInTransformer
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
@@ -70,6 +71,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 //        viewModel.getBanner()
 //        viewModel.bannerLiveData.observe(viewLifecycleOwner) { list ->
         b.bannerHome.apply {
+            setPageTransformer(ScaleInTransformer())
+            setBannerRound(10f)
             addBannerLifecycleObserver(this@HomeFragment)
             adapter = BannerImageAdapter(viewModel.bannerList)
             indicator = CircleIndicator(context)

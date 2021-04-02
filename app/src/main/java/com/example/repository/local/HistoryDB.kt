@@ -10,15 +10,15 @@ import com.example.repository.model.HistoryInfor
  * Time: 22:16
  */
 class HistoryDB {
-    private val historyInforDao = App.historySession.historyInforDao
+    private val historyInfoDao = App.historySession.historyInforDao
     fun insert(historyInfor: HistoryInfor) {
-        historyInforDao.insert(historyInfor)
+        historyInfoDao.insert(historyInfor)
     }
 
     fun loadAll(): List<HistoryInfor> {
-        return historyInforDao.loadAll()
+        return historyInfoDao.loadAll()
     }
 
-    fun update(historyInfor: HistoryInfor) = historyInforDao.update(historyInfor)
-    fun clear() = historyInforDao.deleteAll()
+    fun update(historyInfor: HistoryInfor) = historyInfoDao.update(historyInfor)
+    fun clear() = historyInfoDao.deleteAll()
 }

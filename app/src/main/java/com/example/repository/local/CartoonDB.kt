@@ -11,23 +11,23 @@ import com.example.repository.model.FavouriteInforDao
  * Time: 22:11
  */
 class CartoonDB {
-    private val favouriteInforDao: FavouriteInforDao = App.favouriteSession.favouriteInforDao
+    private val favouriteInfoDao: FavouriteInforDao = App.favouriteSession.favouriteInforDao
 
 
     fun loadAll(): List<FavouriteInfor> {
-        return favouriteInforDao.loadAll()
+        return favouriteInfoDao.loadAll()
     }
 
     fun insert(favouriteInfor: FavouriteInfor?) {
-        favouriteInforDao.insert(favouriteInfor)
+        favouriteInfoDao.insert(favouriteInfor)
     }
 
 
     fun del(favouriteInfor: FavouriteInfor?) {
-        favouriteInforDao.delete(favouriteInfor)
+        favouriteInfoDao.delete(favouriteInfor)
     }
 
     fun updata(favouriteInfor: FavouriteInfor?) {
-        favouriteInforDao.update(favouriteInfor)
+        favouriteInfoDao.update(favouriteInfor)
     }
 }

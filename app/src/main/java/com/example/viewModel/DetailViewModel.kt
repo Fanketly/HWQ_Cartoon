@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.base.TAG
-import com.example.repository.model.CartoonInfor
+import com.example.repository.model.CartoonInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.RequestUtil
@@ -35,7 +35,7 @@ import kotlin.plus
  */
 class DetailViewModel : ViewModel() {
     //msg3集数
-    val msg3List: MutableList<CartoonInfor> by lazy { RequestUtil.msg3List }
+    val msg3List: MutableList<CartoonInfo> by lazy { RequestUtil.msg3List }
 
     //    val msg3LiveData by lazy { MutableLiveData<Boolean>() }
     private val requestUtil = RequestUtil

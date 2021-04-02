@@ -15,14 +15,14 @@ import com.example.viewModel.FavouriteViewModel
 
 class FavoriteFragment : Fragment() {
     private var favouriteRvAdapter: FavouriteRvAdapter? = null
-    private lateinit var b: FragmentFavoriteBinding
+    private var b: FragmentFavoriteBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         b = FragmentFavoriteBinding.inflate(layoutInflater, container, false)
-        return b.root
+        return b!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,13 +32,13 @@ class FavoriteFragment : Fragment() {
         val list = favouriteViewModel.favouriteList
         favouriteViewModel.likesIsZero()
         favouriteViewModel.likesLiveData.observe(viewLifecycleOwner) {
-            if (it) b.tvFavouriteTip.visibility = View.VISIBLE
-            else b.tvFavouriteTip.visibility = View.GONE
+            if (it) b!!.tvFavouriteTip.visibility = View.VISIBLE
+            else b!!.tvFavouriteTip.visibility = View.GONE
         }
         if (favouriteRvAdapter == null)
             favouriteRvAdapter = FavouriteRvAdapter(list)
-        b.rvFavourite.setUpWithGrid(favouriteRvAdapter, 3)
-        b.rvFavourite.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        b!!.rvFavourite.setUpWithGrid(favouriteRvAdapter, 3)
+        b!!.rvFavourite.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         //漫画点击监听
         favouriteRvAdapter?.setOnClick(onclick = {
             favouriteViewModel.favouriteGet(list[it])
@@ -64,8 +64,9 @@ class FavoriteFragment : Fragment() {
         }
     }
 
-//    override fun viewBinding(container: ViewGroup): FragmentFavoriteBinding {
-//        return FragmentFavoriteBinding.inflate(layoutInflater)
-//    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        b = null
+    }
 
 }

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hwq_cartoon.R
-import com.example.repository.model.CartoonInfor
+import com.example.repository.model.CartoonInfo
 import com.youth.banner.adapter.BannerAdapter
 
 
@@ -15,8 +15,8 @@ import com.youth.banner.adapter.BannerAdapter
  * Date: 2020/12/19
  * Time: 16:43
  */
-class BannerHomeAdapter(val list: List<CartoonInfor>, val context: Context) :
-    BannerAdapter<CartoonInfor, BannerHomeAdapter.BannerViewHolder>(list) {
+class BannerHomeAdapter(val list: List<CartoonInfo>, val context: Context) :
+    BannerAdapter<CartoonInfo, BannerHomeAdapter.BannerViewHolder>(list) {
     class BannerViewHolder(val img: ImageView) : RecyclerView.ViewHolder(img) {
 //        lateinit var img: ImageView
     }
@@ -44,7 +44,7 @@ class BannerHomeAdapter(val list: List<CartoonInfor>, val context: Context) :
 
     override fun onBindView(
         holder: BannerViewHolder,
-        data: CartoonInfor?,
+        data: CartoonInfo?,
         position: Int,
         size: Int
     ) {

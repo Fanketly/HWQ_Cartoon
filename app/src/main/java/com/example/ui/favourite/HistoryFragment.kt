@@ -14,36 +14,37 @@ import com.example.viewModel.FavouriteViewModel
 
 class HistoryFragment : Fragment() {
     private val viewModel: FavouriteViewModel by activityViewModels()
-    private lateinit var b: FragmentHistoryBinding
+    private var b: FragmentHistoryBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         b = FragmentHistoryBinding.inflate(layoutInflater, container, false)
-        return b.root
+        return b!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val adapter = HistoryRvAdapter(viewModel.historyList)
-        with(b.rvHistory) {
+        with(b!!.rvHistory) {
             addItemDecoration(SpacesItemDecoration(30))
             setUpWithLinear(adapter)
         }
         viewModel.historyLivaData.observe(viewLifecycleOwner) {
-            if (it == -2) return@observe
             if (it == -1) {
                 adapter.notifyDataSetChanged()
                 return@observe
             }
             adapter.notifyItemChanged(it)
         }
-        viewModel.historyLivaData.value = -2//只要没发送新的value 就return
         adapter.setOnClick {
             viewModel.historyGet(it)
         }
     }
 
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        b = null
+    }
 }

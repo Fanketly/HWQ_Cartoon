@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.base.ViewBindingRvAdapter
 import com.example.hwq_cartoon.databinding.RvItemHomeRecommendBinding
-import com.example.repository.model.CartoonInfor
+import com.example.repository.model.CartoonInfo
 
 /**
  * Created by Android Studio.
@@ -12,16 +12,16 @@ import com.example.repository.model.CartoonInfor
  * Date: 2021/3/14
  * Time: 20:37
  */
-class HomeRecommendRvAdapter(list: List<CartoonInfor>) :
-    ViewBindingRvAdapter<CartoonInfor, RvItemHomeRecommendBinding>(list) {
-    override fun onBind(b: RvItemHomeRecommendBinding, d: CartoonInfor, p: Int) {
+class HomeRecommendRvAdapter(list: List<CartoonInfo>) :
+    ViewBindingRvAdapter<CartoonInfo, RvItemHomeRecommendBinding>(list) {
+    override fun onBind(b: RvItemHomeRecommendBinding, d: CartoonInfo, p: Int) {
         b.tvCartoonTitle.text = d.title
         b.root.setOnClickListener {
             onclick(
                 p
             )
         }
-        if (d.img != null && d.img.isNotEmpty()) {
+        if (d.img.isNotEmpty()) {
             Glide.with(b.imgCartoon).asDrawable().load(d.img)
                 .skipMemoryCache(true).into(b.imgCartoon)
         }

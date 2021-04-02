@@ -22,7 +22,7 @@ class FavouriteVpFragment : BaseFragment<FragmentVpBinding>() {
             this,
             listOf(FavoriteFragment(), HistoryFragment())
         )
-        b.vpFavourite.offscreenPageLimit = 2
+        b.vpFavourite.offscreenPageLimit = 1
         b.vpFavourite.adapter = favouritevpAdapter
         b.tabFavourite.addTab(b.tabFavourite.newTab().setText("追漫"))
         b.tabFavourite.addTab(b.tabFavourite.newTab().setText("历史"))

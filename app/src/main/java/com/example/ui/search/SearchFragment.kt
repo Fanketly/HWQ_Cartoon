@@ -16,7 +16,7 @@ import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSearchBinding
-import com.example.repository.model.CartoonInfor
+import com.example.repository.model.CartoonInfo
 import com.example.viewModel.SearchViewModel
 
 class SearchFragment : BaseFragment<FragmentSearchBinding>() {
@@ -28,7 +28,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         super.onViewCreated(view, savedInstanceState)
         b.laySearch.setOnClickListener { }
         var homeRvAdapter: HomeRvAdapter? = null
-        var adapter2: DataBindingAdapter<CartoonInfor>? = null
+        var adapter2: DataBindingAdapter<CartoonInfo>? = null
         b.btnSearchBack.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()

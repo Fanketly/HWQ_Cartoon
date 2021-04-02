@@ -50,6 +50,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
     private var tranY: Float = 0f
     private var y: Float = 0f
     private var isLike: Boolean = false
+    private lateinit var historyList: MutableList<HistoryInfor>
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility", "InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,6 +89,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             return@setOnTouchListener false
         }
         CoroutineScope(Dispatchers.Main).launch {
+            historyList = favouriteViewModel.historyList
             //跳转所传递的数据
             val name = arguments?.getString("name")
             val img = arguments?.getString("img")
@@ -96,7 +98,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             withContext(Dispatchers.Default) {
                 //历史部分,修改上次观看时间
                 val time = Date(System.currentTimeMillis())
-                for ((index, info) in favouriteViewModel.historyList.withIndex()) {
+                for ((index, info) in historyList.withIndex()) {
                     if (info.title == name) {
                         info.time = dateformat.format(time)
                         historyInfor = info
@@ -115,9 +117,10 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                         dateformat.format(time)
                     )
                     Log.i(TAG, "onActivityCreated: ${historyInfor?.title}")
-                    favouriteViewModel.historyList.add(historyInfor!!)
-                    historyMark = favouriteViewModel.historyList.size - 1
+                    historyList.add(historyInfor!!)
+                    historyMark = historyList.size - 1
                     favouriteViewModel.historyInsert(historyInfor!!)
+                    favouriteViewModel.historyLivaData.postValue(historyMark)
                 }
                 //判断是否已经追漫
                 for ((index, info) in favouriteViewModel.favouriteList.withIndex()) {
@@ -140,12 +143,10 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             b.tvDetailContent.text = viewModel.content
             b.tvDetailUpdate.text = "最后更新时间:${viewModel.update}"
             b.tvDetailContent.movementMethod = ScrollingMovementMethod()
-//            if (img!!.contains("wuqimh"))
-//            setImg(b.imgDetail, img!!)
-            Glide.with(requireContext()).asDrawable().skipMemoryCache(true).centerCrop().load(img)
-                .into(b.imgDetailBackground)
-//            else
-//                setImg(b.imgDetail, GlideUrl(img, headers))
+            if (!img.isNullOrEmpty())
+                Glide.with(requireContext()).asDrawable().skipMemoryCache(true).centerCrop()
+                    .load(img)
+                    .into(b.imgDetailBackground)
             //集数Rv,判断是否在喜爱中
             favouriteDialogRvAdapter = if (favouriteInfor != null)
                 DetailRvAdapter(
@@ -245,7 +246,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     favouriteInfor =
                         favouriteViewModel.setFavouriteFromHome(
                             historyMark
-//                            favouriteViewModel.historyList[historyMark]
                         )
                 }
             }
@@ -274,8 +274,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
         viewModel.msg3Send(p)
         favouriteDialogRvAdapter.itemChange(p)
         historyInfor?.mark = p//当前页面
+        historyList[historyMark].mark = p//历史list
         with(favouriteViewModel) {
-            historyList[historyMark].mark = p//历史list
             historyUpdate(historyInfor!!)//历史数据库
             historyLivaData.value = historyMark
 //            if (b.btnDetailAdd.text.toString() == "已追漫") {

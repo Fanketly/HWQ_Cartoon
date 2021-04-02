@@ -2,6 +2,7 @@ package com.example.repository.model;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -28,9 +29,9 @@ public class HistoryInfor {
         this.time = time;
     }
 
-    @Generated(hash = 401248005)
+    @Keep
     public HistoryInfor(Long id, String title, String imgUrl, String href, int mark,
-            String time) {
+                        String time) {
         this.id = id;
         this.title = title;
         this.imgUrl = imgUrl;
@@ -38,44 +39,57 @@ public class HistoryInfor {
         this.mark = mark;
         this.time = time;
     }
-    @Generated(hash = 353017533)
+
+    @Keep
     public HistoryInfor() {
     }
+
     public Long getId() {
         return this.id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getTitle() {
         return this.title;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
+
     public String getImgUrl() {
         return this.imgUrl;
     }
+
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
+
     public String getHref() {
         return this.href;
     }
+
     public void setHref(String href) {
         this.href = href;
     }
+
     public int getMark() {
         return this.mark;
     }
+
     public void setMark(int mark) {
         this.mark = mark;
     }
+
     public String getTime() {
         return this.time;
     }
+
     public void setTime(String time) {
         this.time = time;
     }
-    
+
 }

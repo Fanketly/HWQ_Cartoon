@@ -6,8 +6,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.Headers
-import java.util.*
 
 /**
  * Created by Android Studio.
@@ -30,12 +28,12 @@ fun <T> RecyclerView.setUpWithGrid(t: T, num: Int) {
 
 const val TAG = "TAG"
 
- val headers = Headers {
-    val map: MutableMap<String, String> =
-        HashMap()
-    map["Referer"] = "https://manhua.dmzj.com/update_1.shtml"
-    map
-}
+// val headers = Headers {
+//    val map: MutableMap<String, String> =
+//        HashMap()
+//    map["Referer"] = "https://manhua.dmzj.com/update_1.shtml"
+//    map
+//}
 @BindingAdapter("setImg")
 fun setImg(imageView: ImageView, url: Any) {
     Glide.with(imageView).asDrawable().skipMemoryCache(true).load(url).into(imageView)

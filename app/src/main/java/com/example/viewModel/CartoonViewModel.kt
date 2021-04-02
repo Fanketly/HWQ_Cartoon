@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.base.TAG
 import com.example.hwq_cartoon.R
-import com.example.repository.model.CartoonInfor
+import com.example.repository.model.CartoonInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.RequestUtil
@@ -37,13 +37,13 @@ class CartoonViewModel : ViewModel() {
         get() = requestUtil.msg3LiveData
 
     //msg2主页漫画
-    val cartoonInfors: MutableList<CartoonInfor> = ArrayList()
+    val cartoonInfors: MutableList<CartoonInfo> = ArrayList()
     val homeLiveData = MutableLiveData<Boolean>()
     private var pager = 1
 
     //主页57推荐漫画
-    private val homeRecommendList = ArrayList<CartoonInfor>()
-    val homeRecommendLiveData = MutableLiveData<List<CartoonInfor>>()
+    private val homeRecommendList = ArrayList<CartoonInfo>()
+    val homeRecommendLiveData = MutableLiveData<List<CartoonInfo>>()
 
 
     //banner
@@ -105,12 +105,12 @@ class CartoonViewModel : ViewModel() {
                 var element1: Element
                 var element2: Element
                 var element3: Element
-                var cartoonInfor: CartoonInfor
+                var cartoonInfor: CartoonInfo
                 for (e in elements) {
                     element1 = e.select(".picborder a").first() //图片
                     element2 = e.select(".picborder img").first()
                     element3 = e.select(".pictext li")[2]
-                    cartoonInfor = CartoonInfor(
+                    cartoonInfor = CartoonInfo(
                         element1.attr("title"),
                         element1.attr("href"),
                         element2.attr("src"),
@@ -136,7 +136,7 @@ class CartoonViewModel : ViewModel() {
                         var src = img.attr("src")
                         if (src.isEmpty()) src = img.attr("data-src")
                         homeRecommendList.add(
-                            CartoonInfor(
+                            CartoonInfo(
                                 a.attr("title"),
                                 Api.mh57Url + a.attr("href"),
                                 src

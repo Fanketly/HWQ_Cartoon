@@ -6,7 +6,7 @@
 
         <variable
             name="data"
-            type="com.example.repository.model.CartoonInfor" />
+            type="com.example.repository.model.CartoonInfo" />
     </data>
 
     <androidx.cardview.widget.CardView

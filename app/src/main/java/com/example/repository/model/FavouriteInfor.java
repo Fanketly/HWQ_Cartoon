@@ -1,8 +1,9 @@
 package com.example.repository.model;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Android Studio.
@@ -25,7 +26,7 @@ public class FavouriteInfor {
     }
 
 
-    public FavouriteInfor(int mark,  String url, String imgUrl, String title) {
+    public FavouriteInfor(int mark, String url, String imgUrl, String title) {
         this.mark = mark;
         this.url = url;
         this.imgUrl = imgUrl;
@@ -33,18 +34,18 @@ public class FavouriteInfor {
 
     }
 
-    @Generated(hash = 1148601190)
-    public FavouriteInfor() {
-    }
-
-
-    @Generated(hash = 1297766615)
+    @Keep
     public FavouriteInfor(Long id, int mark, String url, String imgUrl, String title) {
         this.id = id;
         this.mark = mark;
         this.url = url;
         this.imgUrl = imgUrl;
         this.title = title;
+    }
+
+
+    @Generated(hash = 1148601190)
+    public FavouriteInfor() {
     }
 
 

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.base.TAG
-import com.example.repository.model.CartoonInfor
+import com.example.repository.model.CartoonInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +23,7 @@ import org.jsoup.Jsoup
 
 object RequestUtil {
     //msg3集数
-    val msg3List: MutableList<CartoonInfor> by lazy { ArrayList() }
+    val msg3List: MutableList<CartoonInfo> by lazy { ArrayList() }
     private val msg3liveData by lazy { MutableLiveData<Boolean>() }
     val msg3LiveData
         get() = msg3liveData
@@ -79,9 +79,12 @@ object RequestUtil {
         }
         content = document.select("#intro-cut").text()
         val elements1 = elements.select("li")
-        var cartoonInfor: CartoonInfor
+        var cartoonInfor: CartoonInfo
         for (e in elements1) {
-            cartoonInfor = CartoonInfor(e.text(), Api.mh57Url + e.selectFirst("a").attr("href"))
+            cartoonInfor = CartoonInfo(
+                e.text(),
+                Api.mh57Url + e.selectFirst("a").attr("href")
+            )
             msg3List.add(cartoonInfor)
         }
         if (msg3List.size > 0) {
@@ -104,9 +107,12 @@ object RequestUtil {
         update = document.getElementsByClass("update2").text() ?: ""
         content = document.select(".line_height_content").text()
         val elements1 = elements.select("a")
-        var cartoonInfor: CartoonInfor
+        var cartoonInfor: CartoonInfo
         for (e in elements1) {
-            cartoonInfor = CartoonInfor(e.text(), e.attr("href"))
+            cartoonInfor = CartoonInfo(
+                e.text(),
+                e.attr("href")
+            )
             msg3List.add(cartoonInfor)
         }
         if (msg3List.size > 0) msg3LiveData.postValue(true)

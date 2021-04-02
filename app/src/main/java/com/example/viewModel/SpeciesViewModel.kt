@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.base.TAG
 import com.example.hwq_cartoon.R
 import com.example.repository.model.FavouriteInfor
-import com.example.repository.model.SpeciesInfor
-import com.example.repository.model.SpeciesInfor2
-import com.example.repository.model.SpeciesInfor2Item
+import com.example.repository.model.SpeciesInfo
+import com.example.repository.model.SpeciesInfo2
+import com.example.repository.model.SpeciesInfo2Item
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.RequestUtil
@@ -27,7 +27,7 @@ import org.jsoup.Jsoup
  */
 class SpeciesViewModel : ViewModel() {
     val speciesList: MutableList<FavouriteInfor> by lazy { ArrayList() }
-    val typeList: MutableList<SpeciesInfor> by lazy { ArrayList() }
+    val typeList: MutableList<SpeciesInfo> by lazy { ArrayList() }
     val speciesLiveData by lazy { MutableLiveData<Boolean>() }
     private val remote = CartoonRemote
     private val pgLiveData = remote.pgLiveData
@@ -104,26 +104,32 @@ class SpeciesViewModel : ViewModel() {
         adapterTopLiveData.postValue(true)
         val str = str2.substring(str2.indexOf("["), str2.lastIndexOf("]") + 1)
         val gson = Gson()
-        val speciesInfor2s: List<SpeciesInfor2Item> =
+        val speciesInfor2s: List<SpeciesInfo2Item> =
             gson.fromJson(
                 str,
-                SpeciesInfor2::class.java
+                SpeciesInfo2::class.java
             )
         Log.i(TAG, ": " + speciesInfor2s[0].comic_cover)
         for ((_, comic_cover, comic_url, _, _, _, _, name) in speciesInfor2s) {
-            speciesList.add(FavouriteInfor(comic_url, "https:$comic_cover", name))
+            speciesList.add(
+                FavouriteInfor(
+                    comic_url,
+                    "https:$comic_cover",
+                    name
+                )
+            )
         }
         speciesLiveData.postValue(true)
     }
 
     //解析分类数据
     private fun what8(s: String) {
-        typeList.add(SpeciesInfor("0", "全部"))
+        typeList.add(SpeciesInfo("0", "全部"))
         val document = Jsoup.parse(s)
         val typeElms = document.getElementsByClass("search_list_m_right")[4]
         for (a in typeElms.select("a")) {
             typeList.add(
-                SpeciesInfor(
+                SpeciesInfo(
                     a.attr("id").substring(5),
                     a.attr("title")
                 )

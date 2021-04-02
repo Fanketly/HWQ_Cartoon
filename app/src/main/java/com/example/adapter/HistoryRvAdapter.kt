@@ -3,9 +3,7 @@ package com.example.adapter
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
 import com.example.base.ViewBindingRvAdapter
-import com.example.base.headers
 import com.example.hwq_cartoon.databinding.RvItemHistoryBinding
 import com.example.repository.model.HistoryInfor
 
@@ -24,7 +22,7 @@ class HistoryRvAdapter(list: List<HistoryInfor>) :
         b.tvHistoryTime.text = d.time
         b.tvHistoryMark.text = "上次看至${d.mark + 1}集"
         if (d.imgUrl.isNullOrBlank()) return
-        Glide.with(b.imgHistory).asDrawable().load(GlideUrl(d.imgUrl, headers))
+        Glide.with(b.imgHistory).asDrawable().load(d.imgUrl)
             .skipMemoryCache(true).into(b.imgHistory)
     }
 

@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import com.example.base.ViewBindingRvAdapter
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.CartoonDialogRvItemBinding
-import com.example.repository.model.CartoonInfor
+import com.example.repository.model.CartoonInfo
 
 /**
  * Created by Android Studio.
@@ -12,10 +12,10 @@ import com.example.repository.model.CartoonInfor
  * Date: 2021/3/15
  * Time: 10:38
  */
-class DetailRvAdapter(list: List<CartoonInfor>, private var mark: Int) :
-    ViewBindingRvAdapter<CartoonInfor, CartoonDialogRvItemBinding>(list) {
+class DetailRvAdapter(list: List<CartoonInfo>, private var mark: Int) :
+    ViewBindingRvAdapter<CartoonInfo, CartoonDialogRvItemBinding>(list) {
 
-    override fun onBind(b: CartoonDialogRvItemBinding, d: CartoonInfor, p: Int) {
+    override fun onBind(b: CartoonDialogRvItemBinding, d: CartoonInfo, p: Int) {
 
         with(b.tvCartoonDialogTitle) {
             if (p == mark) {

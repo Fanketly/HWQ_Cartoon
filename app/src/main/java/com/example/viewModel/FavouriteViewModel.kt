@@ -112,7 +112,11 @@ class FavouriteViewModel : ViewModel() {
         val historyInfor = historyList[historyMark]
         val s = historyInfor.href
         val favouriteInfor: FavouriteInfor = if (s.contains("dmzj")) {
-            FavouriteInfor(s, historyInfor.imgUrl, historyInfor.title)
+            FavouriteInfor(
+                s,
+                historyInfor.imgUrl,
+                historyInfor.title
+            )
         } else {
             FavouriteInfor(
                 historyInfor.mark,

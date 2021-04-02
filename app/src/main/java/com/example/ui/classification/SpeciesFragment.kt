@@ -14,14 +14,14 @@ import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSpeciesBinding
-import com.example.repository.model.SpeciesInfor
+import com.example.repository.model.SpeciesInfo
 import com.example.viewModel.SpeciesViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 
 
 class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
-    private var adapterTop: DataBindingAdapter<SpeciesInfor>? = null
+    private var adapterTop: DataBindingAdapter<SpeciesInfo>? = null
     private val viewModel: SpeciesViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

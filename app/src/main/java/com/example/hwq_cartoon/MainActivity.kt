@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.example.hwq_cartoon.databinding.ActivityMainBinding
+import com.example.repository.model.CartoonInfo
 import com.example.ui.classification.SpeciesFragment
 import com.example.ui.detailed.DetailedFragment
 import com.example.ui.favourite.FavouriteVpFragment

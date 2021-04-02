@@ -1,6 +1,6 @@
 package com.example.repository.model
 
-data class SpeciesInfor2Item(
+data class SpeciesInfo2Item(
     val author: String,
     val comic_cover: String,
     val comic_url: String,
