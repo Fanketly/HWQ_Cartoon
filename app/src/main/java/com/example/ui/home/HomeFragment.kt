@@ -56,12 +56,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         viewModel.getHomeCartoon()
         var homeRvAdapter: HomeRvAdapter? = null
-        //推荐
-        viewModel.get57Recommend()
+        //优酷
+        viewModel.getYouKu()
         viewModel.homeRecommendLiveData.observe(viewLifecycleOwner) {
             val adapter = HomeRecommendRvAdapter(it)
             adapter.setOnClick { p ->
-                viewModel.getHomeRecommendCartoon(p)
+                viewModel.getHomeYouKuCartoon(p)
             }
             b.rvHomeRecommend.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             b.rvHomeRecommend.setUpWithLinearHORIZONTAL(adapter)

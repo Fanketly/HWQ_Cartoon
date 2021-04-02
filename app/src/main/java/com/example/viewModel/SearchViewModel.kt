@@ -38,7 +38,7 @@ class SearchViewModel : ViewModel() {
 
     val searchList: MutableList<CartoonInfo> by lazy { ArrayList() }
     val searchLiveData by lazy { MutableLiveData<Int>() }
-    val searchList57: MutableList<CartoonInfo> by lazy { ArrayList() }
+    val searchListYK: MutableList<CartoonInfo> by lazy { ArrayList() }
     private fun what5(s: String) {//查询
         if (s.isNotEmpty()) {
             val ss = s.split("{").toTypedArray()
@@ -85,6 +85,8 @@ class SearchViewModel : ViewModel() {
             if (searchJob.isActive)
                 searchLiveData.postValue(1)
         } else {
+            if(errorLiveData.value=="优酷漫画查询不到此漫画")
+                pgLiveData.postValue(true)
             errorLiveData.postValue("动漫之家查询不到此漫画")
         }
     }
@@ -102,10 +104,11 @@ class SearchViewModel : ViewModel() {
         requestUtil.loadCartoon(s)
     }
 
-    fun getSearch57(cartoonInfor: CartoonInfo) {
+    fun getSearchYK(cartoonInfor: CartoonInfo) {
         if (pgLiveData.value == false) return
         pgLiveData.value = false
-        val s = Api.mh57Url + cartoonInfor.href
+//        val s = Api.youkuUrl + cartoonInfor.href
+        val s =  cartoonInfor.href
         requestUtil.putBundle(cartoonInfor.title, cartoonInfor.img, s, R.id.searchFragment)
         requestUtil.loadCartoon(s)
     }
@@ -122,8 +125,8 @@ class SearchViewModel : ViewModel() {
                     }
             }
             launch {
-                remote.getData(Api.mh57Url + "/search/q_$name").collect {
-                    mh57Search(it)
+                remote.getData(Api.youkuUrl + "/search/?keywords=$name").collect {
+                    mhYKSearch(it)
                 }
             }
         }
@@ -134,29 +137,42 @@ class SearchViewModel : ViewModel() {
         Log.i(TAG, "clearSearchList: ")
         searchJob.cancel()
         if (searchList.size > 0) searchList.clear()
-        if (searchList57.size > 0) searchList57.clear()
+        if (searchListYK.size > 0) searchListYK.clear()
     }
 
-    private fun mh57Search(string: String) {
+    private fun mhYKSearch(string: String) {
         val jsoup = Jsoup.parse(string)
-        val elements = jsoup.getElementsByClass("cf")
-        if (elements.isEmpty()) {
-            errorLiveData.postValue("57漫画查询不到此漫画")
+        val elements = jsoup.getElementsByClass("list_con_li update_con autoHeight").first()
+        if (elements==null) {
+            if(errorLiveData.value=="动漫之家查询不到此漫画")
+                pgLiveData.postValue(true)
+            errorLiveData.postValue("优酷漫画查询不到此漫画")
             return
         }
-        for (i in 2 until elements.size) {
-            val e = elements[i]
-            val a = e.select(".bcover")
-            if (a.isEmpty())
-                continue
-            searchList57.add(
+        for (element in elements.select("li")) {
+            val a = element.select("a").first()
+            val img = a.select("img").first()
+            searchListYK.add(
                 CartoonInfo(
                     a.attr("title"),
                     a.attr("href"),
-                    a.select("img").attr("src")
+                    img.attr("src")
                 )
             )
         }
+//        for (i in 2 until elements.size) {
+//            val e = elements[i]
+//            val a = e.select(".bcover")
+//            if (a.isEmpty())
+//                continue
+//            searchList57.add(
+//                CartoonInfo(
+//                    a.attr("title"),
+//                    a.attr("href"),
+//                    a.select("img").attr("src")
+//                )
+//            )
+//        }
         if (searchJob.isActive)
             searchLiveData.postValue(2)
     }

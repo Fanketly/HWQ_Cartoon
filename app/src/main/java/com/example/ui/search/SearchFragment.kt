@@ -42,7 +42,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                 b.vpSearch.adapter = SearchVpAdapter(listOf(rv, rv2))
                 b.tabSearch.setupWithViewPager(b.vpSearch)
                 b.tabSearch.getTabAt(0)?.text = "动漫之家"
-                b.tabSearch.getTabAt(1)?.text = "57漫画"
+                b.tabSearch.getTabAt(1)?.text = "优酷漫画"
             }
             when (it) {
                 1 -> if (homeRvAdapter == null) {
@@ -58,13 +58,13 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                 }
                 2 -> if (adapter2 == null) {//57漫画
                     adapter2 = DataBindingAdapter(
-                        viewModel.searchList57,
+                        viewModel.searchListYK,
                         BR.data,
                         R.layout.rv_item_57_cartoon
                     )
                     rv2.setUpWithLinear(adapter2)
                     adapter2?.setOnClick(R.id.layoutCartoon) { _, t ->
-                        viewModel.getSearch57(t)
+                        viewModel.getSearchYK(t)
                     }
                 } else {
                     adapter2?.notifyDataSetChanged()

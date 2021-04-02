@@ -49,11 +49,11 @@ object RequestUtil {
     /***加载漫画,判断漫画源**/
     fun loadCartoon(url: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            if (url.contains("wuqimh")) {
+            if (url.contains("ykmh")) {
                 remote.getData(url) {
                     pgLiveData.postValue(true)
                 }.collect {
-                    what357(it)
+                    what3YK(it)
                 }
                 return@launch
             }
@@ -69,28 +69,27 @@ object RequestUtil {
     }
 
 
-    private suspend fun what357(string: String) {
+    private suspend fun what3YK(string: String) {
         val document = Jsoup.parse(string)
-        val elements = document.getElementsByClass("chapter-list cf mt10")
+        val elements = document.getElementsByClass("list_con_li autoHeight")
         if (elements.text().isEmpty()) {
             pgLiveData.postValue(true)
             errorLiveData.postValue("此漫画无法浏览")
             return
         }
-        content = document.select("#intro-cut").text()
-        val elements1 = elements.select("li")
+        content = document.select(".comic_deCon_d").text()
         var cartoonInfor: CartoonInfo
-        for (e in elements1) {
+        for (e in elements.select("li")) {
             cartoonInfor = CartoonInfo(
-                e.text(),
-                Api.mh57Url + e.selectFirst("a").attr("href")
+                e.selectFirst(".list_con_zj").text(),
+                Api.youkuUrl + e.selectFirst("a").attr("href")
             )
             msg3List.add(cartoonInfor)
         }
-        if (msg3List.size > 0) {
-            msg3List.reverse()
+//        if (msg3List.size > 0) {
+//            msg3List.reverse()
             msg3LiveData.postValue(true)
-        }
+//        }
         delay(300)
         pgLiveData.postValue(true)
     }

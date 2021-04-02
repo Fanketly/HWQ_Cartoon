@@ -122,35 +122,73 @@ class CartoonViewModel : ViewModel() {
             }
         }
 
-
-    //推荐
-    fun get57Recommend() {
+    //优酷漫画
+    fun getYouKu() {
         viewModelScope.launch(Dispatchers.IO) {
-            remote.getData(Api.mh57Url)
+            remote.getData("https://www.ykmh.com/list/post/")
                 .collect {
                     val document = Jsoup.parse(it)
-                    val element: Element = document.select(".update-wrap").first()
-                    for (e in element.select("li")) {
-                        val a = e.select("a").first()
+                    val first = document.getElementsByClass("list_con_li clearfix").first()
+                    Log.i(TAG, "getYouKu: $first")
+                    for (element in first.select("li")) {
+                        val a = element.select("a").first()
                         val img = a.select("img").first()
-                        var src = img.attr("src")
-                        if (src.isEmpty()) src = img.attr("data-src")
                         homeRecommendList.add(
                             CartoonInfo(
-                                a.attr("title"),
-                                Api.mh57Url + a.attr("href"),
-                                src
+                                img.attr("alt"),
+                                a.attr("href"),
+                                img.attr("src")
                             )
                         )
                     }
                     homeRecommendLiveData.postValue(homeRecommendList)
-                    Log.i(TAG, "get57Recommend: $element")
+
                 }
         }
     }
 
+    //推荐
+//    fun get57Recommend() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            remote.getData(Api.mh57Url)
+//                .collect {
+//                    val document = Jsoup.parse(it)
+//                    val element: Element = document.select(".update-wrap").first()
+//                    for (e in element.select("li")) {
+//                        val a = e.select("a").first()
+//                        val img = a.select("img").first()
+//                        var src = img.attr("src")
+//                        if (src.isEmpty()) src = img.attr("data-src")
+//                        homeRecommendList.add(
+//                            CartoonInfo(
+//                                a.attr("title"),
+//                                Api.mh57Url + a.attr("href"),
+//                                src
+//                            )
+//                        )
+//                    }
+//                    homeRecommendLiveData.postValue(homeRecommendList)
+//                    Log.i(TAG, "get57Recommend: $element")
+//                }
+//        }
+//    }
+
     //获取推荐漫画详细
-    fun getHomeRecommendCartoon(position: Int) {
+//    fun getHomeRecommendCartoon(position: Int) {
+//        if (pgLiveData.value == false) return
+//        pgLiveData.value = false
+//        val info = homeRecommendList[position]
+//        val s = info.href
+//        Log.i(TAG, "getHomeRecommendCartoon: ${s + info.img}")
+//        requestUtil.putBundle(info.title, info.img, s, R.id.homeFragment)
+//        if (s.isEmpty()) {
+//            pgLiveData.value = true
+//            return
+//        }
+//        requestUtil.loadCartoon(s)
+//    }
+    //获取优酷漫画详细
+    fun getHomeYouKuCartoon(position: Int) {
         if (pgLiveData.value == false) return
         pgLiveData.value = false
         val info = homeRecommendList[position]
