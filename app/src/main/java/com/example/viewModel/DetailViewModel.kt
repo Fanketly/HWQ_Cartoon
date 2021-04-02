@@ -445,24 +445,38 @@ class DetailViewModel : ViewModel() {
             return
         }
         val s = elements[5].data()
+        var isManhuaku = false
         Log.i(TAG, "what157: ${elements[5]}")
         msg4List.addAll(s.substring(s.lastIndexOf(",'") + 2, s.indexOf("'.split")).split("|"))
+        msg4List.forEach { a ->
+            if (a == "ManHuaKu") {
+                isManhuaku = true
+                return@forEach
+            }
+        }
         val strings = s.substring(s.indexOf(":[") + 2, s.indexOf("],")).split(",").toTypedArray()
         var startUrl: String? = null
+        var mark = false//判断是否有 ://
         for (str in strings) {
             if (!job!!.isActive) return
-            val string2 =
+            var string2 =
                 str.substring(str.indexOf("\\'/") + 3, str.lastIndexOf("\\'"))
             Log.i(TAG, "what157: $string2")
             val stringBuilder = StringBuilder()
+
             if (startUrl == null) {
-                startUrl = if (string2.contains("://"))
+                startUrl = if (string2.contains("://")) {
+                    mark = true
                     getStringList(conversion(string2[0])) + ":/"
+                } else if (isManhuaku)
+                    "http://images.tingliu.cc/"
                 else
-                    Api.img57Url
+                    "http://images.720rs.com"
             }
             stringBuilder.append(startUrl)
-            for (s2 in string2.substring(4).split("/")) {
+            if (mark) string2 = string2.substring(4)
+//            val split = string2.substring(4).split("/")
+            for (s2 in string2.split("/")) {
                 when {
                     s2.contains("-") -> {
                         stringBuilder.append("/")
