@@ -9,6 +9,7 @@ import com.example.hwq_cartoon.R
 import com.example.repository.model.CartoonInfor
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
+import com.example.util.RequestUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -25,10 +26,15 @@ import org.jsoup.nodes.Element
 class CartoonViewModel : ViewModel() {
     init {
         Log.i(TAG, "CREATE: ")
+
     }
 
-    lateinit var detailViewModel: DetailViewModel
-
+    //request
+    private val requestUtil = RequestUtil
+    val bundle
+        get() = requestUtil.bundle
+    val msg3LiveData
+        get() = requestUtil.msg3LiveData
 
     //msg2主页漫画
     val cartoonInfors: MutableList<CartoonInfor> = ArrayList()
@@ -49,12 +55,9 @@ class CartoonViewModel : ViewModel() {
     private val remote = CartoonRemote
     val errorLiveData = remote.error
 
-    //监听是否隐藏bottom false为显示
-    val bottomLiveData = remote.bottomLiveData
-
     //加载监听
     val pgLiveData = remote.pgLiveData
-
+    val bottomLiveData = remote.bottomLiveData
     //
 //    val bottomAlphaLiveData = MutableLiveData<Float>()
 
@@ -82,12 +85,12 @@ class CartoonViewModel : ViewModel() {
         pgLiveData.value = false
         val info = cartoonInfors[position]
         val s = info.href
-        detailViewModel.putBundle(info.title, info.img, s, R.id.homeFragment)
+        requestUtil.putBundle(info.title, info.img, s, R.id.homeFragment)
         if (s.isEmpty()) {
             pgLiveData.value = true
             return
         }
-        detailViewModel.loadCartoon(s)
+        requestUtil.loadCartoon(s)
     }
 
     //获取漫画页面
@@ -153,12 +156,12 @@ class CartoonViewModel : ViewModel() {
         val info = homeRecommendList[position]
         val s = info.href
         Log.i(TAG, "getHomeRecommendCartoon: ${s + info.img}")
-        detailViewModel.putBundle(info.title, info.img, s, R.id.homeFragment)
+        requestUtil.putBundle(info.title, info.img, s, R.id.homeFragment)
         if (s.isEmpty()) {
             pgLiveData.value = true
             return
         }
-        detailViewModel.loadCartoon(s)
+        requestUtil.loadCartoon(s)
     }
 
     fun nextPager() { //下一页

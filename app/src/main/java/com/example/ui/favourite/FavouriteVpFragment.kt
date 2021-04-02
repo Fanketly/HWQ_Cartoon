@@ -10,17 +10,14 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.base.BaseFragment
 import com.example.base.TAG
 import com.example.hwq_cartoon.databinding.FragmentVpBinding
-import com.example.viewModel.DetailViewModel
 import com.example.viewModel.FavouriteViewModel
 import com.google.android.material.tabs.TabLayout
 
 class FavouriteVpFragment : BaseFragment<FragmentVpBinding>() {
     private val viewModel: FavouriteViewModel by activityViewModels()
-    private val detailViewModel: DetailViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.detailViewModel = detailViewModel
         val favouritevpAdapter = FavouriteVpAdapter(
             this,
             listOf(FavoriteFragment(), HistoryFragment())

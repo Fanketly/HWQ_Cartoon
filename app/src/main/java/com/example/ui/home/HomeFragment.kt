@@ -74,7 +74,26 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             adapter = BannerImageAdapter(viewModel.bannerList)
             indicator = CircleIndicator(context)
         }
+        //共享动画
+//        viewModel.detailViewModel.msg3LiveData.observe(viewLifecycleOwner) {
+//            val bundle = viewModel.detailViewModel.bundle
+//            if (bundle.getInt("mark") != R.id.homeFragment) return@observe
+//            val detailedFragment = DetailedFragment()
+//            detailedFragment.arguments = bundle
+//            with(detailedFragment) {
+//                sharedElementEnterTransition = DetailTransition()
+//                enterTransition = Fade().setDuration(1000)
+//                exitTransition = Fade()
+//                sharedElementReturnTransition = DetailTransition()
+//
+//            }
+//            requireActivity().supportFragmentManager.commit {
+//                addSharedElement(homeRvAdapter!!.img, getString(R.string.tran1))
+//                replace(R.id.layMain2, detailedFragment, "detail")
+//            }
 //        }
+
+
         //搜索栏
         b.searchHome.apply {
             isSubmitButtonEnabled = true

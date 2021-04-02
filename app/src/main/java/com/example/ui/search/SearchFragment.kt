@@ -73,7 +73,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         }
         //search
         b.searchSearch.apply {
-            val id: Int = this.context.resources
+            val id: Int = context.resources
                 .getIdentifier("android:id/search_src_text", null, null)
             val tv = findViewById<TextView>(id)
             tv.setTextColor(Color.WHITE)
@@ -104,6 +104,6 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     }
 
     override fun viewBinding(container: ViewGroup): FragmentSearchBinding {
-       return FragmentSearchBinding.inflate(layoutInflater,container,false)
+        return FragmentSearchBinding.inflate(layoutInflater, container, false)
     }
 }

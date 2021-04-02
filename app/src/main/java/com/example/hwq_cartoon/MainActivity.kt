@@ -18,14 +18,12 @@ import com.example.ui.home.HomeFragment
 import com.example.ui.me.MeFragment
 import com.example.ui.search.SearchFragment
 import com.example.viewModel.CartoonViewModel
-import com.example.viewModel.DetailViewModel
 import com.example.viewModel.SearchViewModel
 
 
 class MainActivity : AppCompatActivity() {
     //viewModel
     private val viewModel: CartoonViewModel by viewModels()
-    private val detailViewModel: DetailViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
 
     //fragment
@@ -40,16 +38,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val b: ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
-        //viewModel
-        viewModel.detailViewModel = detailViewModel
-        searchViewModel.detailViewModel = detailViewModel
         //切换界面
         fragmentManager = supportFragmentManager
         fragmentManager.beginTransaction()
             .setCustomAnimations(R.anim.right_in, R.anim.right_out)
             .add(R.id.layMain2, homeFragment).commit()
         lastFragment = homeFragment
-//        b.lifecycleOwner = this
         b.bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.homeFragment -> {
@@ -66,19 +60,6 @@ class MainActivity : AppCompatActivity() {
             }
             return@setOnNavigationItemSelectedListener true
         }
-        //
-//        CoroutineScope(Dispatchers.Main).launch {
-//            delay(500)
-//            for (i in 1 until 27) {
-//                delay(50)
-//                b.layMain.scaleX = b.layMain.scaleX - 0.05F
-//                b.layMain.scaleY = b.layMain.scaleY - 0.05F
-//            }
-//            Log.i(TAG, "onViewCreated: ${b.layMain.scaleX}")
-//        }
-//        viewModel.bottomAlphaLiveData.observe(this) {
-//            b.bottomNav.alpha = it
-//        }
         //pg监听
         viewModel.pgLiveData.observe(this) {
             b.pgMain.visibility = if (it) View.GONE else View.VISIBLE
@@ -88,9 +69,11 @@ class MainActivity : AppCompatActivity() {
             b.bottomNav.visibility = if (it) View.GONE else View.VISIBLE
         }
         //集数Detail监听
-        detailViewModel.msg3LiveData.observe(this) {
+        viewModel.msg3LiveData.observe(this) {
             b.bottomNav.visibility = View.GONE
-            beginTransaction(detailViewModel.bundle, DetailedFragment::class.java)
+            val bundle = viewModel.bundle
+//            if (bundle.getInt("mark") == R.id.homeFragment) return@observe
+            addWithBundle(bundle, DetailedFragment::class.java)
         }
         //Search监听
         searchViewModel.searchLiveData.observe(this) {
@@ -98,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                 when (it) {
                     1 -> {
                         b.bottomNav.visibility = View.GONE
-                        beginTransaction(null, SearchFragment::class.java)
+                        addWithBundle(null, SearchFragment::class.java)
                         searchViewModel.isSearchFragment = true
                     }
                 }
@@ -109,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun beginTransaction(bundle: Bundle?, clazz: Class<out Fragment>) =
+    private fun addWithBundle(bundle: Bundle?, clazz: Class<out Fragment>) =
         fragmentManager.commit {
             setCustomAnimations(R.anim.right_in, R.anim.right_out)
             add(R.id.layMain2, clazz, bundle, "detail")

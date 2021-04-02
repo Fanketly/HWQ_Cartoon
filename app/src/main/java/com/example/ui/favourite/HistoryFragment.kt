@@ -41,7 +41,7 @@ class HistoryFragment : Fragment() {
         }
         viewModel.historyLivaData.value = -2//只要没发送新的value 就return
         adapter.setOnClick {
-            viewModel.historyGet(viewModel.historyList[it])
+            viewModel.historyGet(it)
         }
     }
 

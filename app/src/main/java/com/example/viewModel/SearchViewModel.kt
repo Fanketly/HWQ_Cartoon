@@ -8,6 +8,7 @@ import com.example.hwq_cartoon.R
 import com.example.repository.model.CartoonInfor
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
+import com.example.util.RequestUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,16 +26,16 @@ class SearchViewModel : ViewModel() {
     //remote
     private val remote = CartoonRemote
     private val errorLiveData = remote.error
+    val bottomLiveData
+        get() = remote.bottomLiveData
+    val pgLiveData = remote.pgLiveData//加载监听
 
-    //监听是否隐藏bottom false为显示
-    val bottomLiveData = remote.bottomLiveData
+    //request
+    private val requestUtil = RequestUtil
 
     /**判断是否在searchFragment**/
     var isSearchFragment = false
 
-    //加载监听
-    val pgLiveData = remote.pgLiveData
-    lateinit var detailViewModel: DetailViewModel
     val searchList: MutableList<CartoonInfor> by lazy { ArrayList() }
     val searchLiveData by lazy { MutableLiveData<Int>() }
     val searchList57: MutableList<CartoonInfor> by lazy { ArrayList() }
@@ -88,6 +89,7 @@ class SearchViewModel : ViewModel() {
         }
     }
 
+
     /**
      * search
      */
@@ -96,16 +98,16 @@ class SearchViewModel : ViewModel() {
         pgLiveData.value = false
         val cartoonInfor = searchList[position]
         val s = cartoonInfor.href
-        detailViewModel.putBundle(cartoonInfor.title, cartoonInfor.img, s, R.id.searchFragment)
-        detailViewModel.loadCartoon(s)
+        requestUtil.putBundle(cartoonInfor.title, cartoonInfor.img, s, R.id.searchFragment)
+        requestUtil.loadCartoon(s)
     }
 
     fun getSearch57(cartoonInfor: CartoonInfor) {
         if (pgLiveData.value == false) return
         pgLiveData.value = false
         val s = Api.mh57Url + cartoonInfor.href
-        detailViewModel.putBundle(cartoonInfor.title, cartoonInfor.img, s, R.id.searchFragment)
-        detailViewModel.loadCartoon(s)
+        requestUtil.putBundle(cartoonInfor.title, cartoonInfor.img, s, R.id.searchFragment)
+        requestUtil.loadCartoon(s)
     }
 
     private lateinit var searchJob: Job

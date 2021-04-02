@@ -54,6 +54,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility", "InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//        b.imgDetailBackground.transitionName=getString(R.string.tran1)
         b.frameLayout.setOnClickListener { }//避免点击到下一层的视图
         //返回
         b.btnDetailBack.setOnClickListener {
@@ -80,7 +81,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     b.btnDetailAdd.translationY = tranY + y2 - y
                 }
                 MotionEvent.ACTION_UP -> {
-                    if (tranY==v.translationY)
+                    if (tranY == v.translationY)
                         like()
                 }
             }
@@ -160,38 +161,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             favouriteDialogRvAdapter.setOnClick { p: Int ->
                 update(p)
             }
-            //添加到喜爱,从喜爱中删除 添加到数据库,添加到list，添加到livedata
-//            b.btnDetailAdd.setOnClickListener {
-//                if (b.btnDetailAdd.text.toString() == "追漫") {
-//                if (!isLike) {
-//                    when (mark) {
-//                        R.id.favoriteFragment -> {
-//                            favouriteViewModel.setFavourite(favouriteInfor)
-//                        }
-//                        else -> {
-//                            favouriteInfor =
-//                                favouriteViewModel.setFavouriteFromHome(
-//                                    favouriteViewModel.historyList[historyMark]
-//                                )
-//                        }
-//                    }
-//                    favouriteMark = favouriteViewModel.favouriteListAdd(favouriteInfor!!)
-//                    Log.i(TAG, "onActivityCreated: $favouriteMark")
-////                    b.btnDetailAdd.text = "已追漫"
-//                    isLike = true
-//                    b.btnDetailAdd.setBackgroundResource(R.drawable.ic_baseline_star_24)
-//                    shortToast("追漫成功")
-//                } else {
-//                    Log.i(TAG, "onActivityCreated: $favouriteMark")
-//                    favouriteViewModel.favouriteDel(favouriteMark)
-////                    b.btnDetailAdd.text = "追漫"
-//                    isLike = false
-//                    b.btnDetailAdd.setBackgroundResource(R.drawable.ic_baseline_unstar_24)
-//                    shortToast("已取消追漫")
-//                }
-//                //判断现存追漫数
-//                favouriteViewModel.likesIsZero()
-//            }
             //显示漫画
             viewModel.msg4LiveData.observe(viewLifecycleOwner, { msg4: List<ByteArray> ->
                 if (msg4.size == 1) {
@@ -200,7 +169,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
 //                    val constraintLayout = b.root.findViewById<ConstraintLayout>(R.id.linearLayout3)
                     val view4 =
                         LayoutInflater.from(context)
-                            .inflate(R.layout.dialog_cartoon,null,false)
+                            .inflate(R.layout.dialog_cartoon, null, false)
                     val recyclerView4: RecyclerView = view4.findViewById(R.id.rvCartoon)
                     val btnBack = view4.findViewById<ImageButton>(R.id.btnCartoondialogBack)
                     val layTop = view4.findViewById<FrameLayout>(R.id.layCartoonDialog)
@@ -265,6 +234,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
         }
     }
 
+    //添加到喜爱,从喜爱中删除 添加到数据库,添加到list，添加到livedata
     private fun like() {
         if (!isLike) {
             when (mark) {
@@ -274,7 +244,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                 else -> {
                     favouriteInfor =
                         favouriteViewModel.setFavouriteFromHome(
-                            favouriteViewModel.historyList[historyMark]
+                            historyMark
+//                            favouriteViewModel.historyList[historyMark]
                         )
                 }
             }

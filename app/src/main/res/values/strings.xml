@@ -15,4 +15,6 @@
         <item>动漫之家</item>
         <item>拷贝漫画</item>
     </string-array>
+
+    <string name="tran1">mark</string>
 </resources>

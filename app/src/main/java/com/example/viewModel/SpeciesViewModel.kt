@@ -12,6 +12,7 @@ import com.example.repository.model.SpeciesInfor2
 import com.example.repository.model.SpeciesInfor2Item
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
+import com.example.util.RequestUtil
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -25,14 +26,15 @@ import org.jsoup.Jsoup
  * Time: 17:04
  */
 class SpeciesViewModel : ViewModel() {
-    lateinit var detailViewModel: DetailViewModel
-    private val errorLiveData = CartoonRemote.error
     val speciesList: MutableList<FavouriteInfor> by lazy { ArrayList() }
     val typeList: MutableList<SpeciesInfor> by lazy { ArrayList() }
     val speciesLiveData by lazy { MutableLiveData<Boolean>() }
     private val remote = CartoonRemote
     private val pgLiveData = remote.pgLiveData
+    private val errorLiveData = remote.error
 
+    //request
+    private val requestUtil = RequestUtil
     //加载分类
     fun getSpeciesType() {
         if (typeList.size > 0) {//判断是否有加载过分类，有就加载现有数据
@@ -84,12 +86,12 @@ class SpeciesViewModel : ViewModel() {
         pgLiveData.value = false
         val info = speciesList[position]
         val s = info.url
-        detailViewModel.putBundle(info.title, info.imgUrl, s, R.id.speciesFragment)
+        requestUtil.putBundle(info.title, info.imgUrl, s, R.id.speciesFragment)
         if (s.isEmpty()) {
             pgLiveData.value = true
             return
         }
-        detailViewModel.loadCartoon(s)
+        requestUtil.loadCartoon(s)
     }
 
     //解析数据

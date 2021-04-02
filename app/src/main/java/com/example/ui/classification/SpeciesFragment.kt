@@ -15,7 +15,6 @@ import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSpeciesBinding
 import com.example.repository.model.SpeciesInfor
-import com.example.viewModel.DetailViewModel
 import com.example.viewModel.SpeciesViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
@@ -24,10 +23,8 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
     private var adapterTop: DataBindingAdapter<SpeciesInfor>? = null
     private val viewModel: SpeciesViewModel by activityViewModels()
-    private val detailViewModel: DetailViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.detailViewModel = detailViewModel
         //标记分类
         var mark = 0
         var pp = 0
@@ -72,7 +69,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
                 }
                 adapter = FavouriteRvAdapter(viewModel.speciesList)
                 b.rvSpecies.setUpWithGrid(adapter, 3)
-                adapter?.setOnClick(onclick = { viewModel.getSpeciesCartoon(it) }) {}
+                adapter?.setOnClick(onclick = { viewModel.getSpeciesCartoon(it) })
             } else {
                 b.refreshCartoon.closeHeaderOrFooter()
                 adapter?.notifyDataSetChanged()
@@ -86,7 +83,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
     }
 
     override fun viewBinding(container: ViewGroup): FragmentSpeciesBinding {
-        return FragmentSpeciesBinding.inflate(layoutInflater,container,false)
+        return FragmentSpeciesBinding.inflate(layoutInflater, container, false)
     }
 
 }

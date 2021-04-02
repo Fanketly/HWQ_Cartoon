@@ -14,12 +14,17 @@ import com.example.repository.model.CartoonInfor
  */
 class HomeRvAdapter(list: List<CartoonInfor>) :
     ViewBindingRvAdapter<CartoonInfor, CartoonRvItemBinding>(list) {
+    //    lateinit var img: ImageView
     override fun onBind(b: CartoonRvItemBinding, d: CartoonInfor, p: Int) {
         b.tvCartoonTitle.text = d.title
         b.root.setOnClickListener {
             onclick(
                 p
             )
+//            if (p == 0) {
+//                b.imgCartoon.transitionName = "mark"
+//                img = b.imgCartoon
+//            }
         }
         if (d.img != null && d.img.isNotEmpty()) {
             Glide.with(b.imgCartoon).asDrawable().load(d.img)
@@ -29,7 +34,7 @@ class HomeRvAdapter(list: List<CartoonInfor>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH<CartoonRvItemBinding> {
-        return viewBinding(parent,false)
+        return viewBinding(parent, false)
     }
 
 

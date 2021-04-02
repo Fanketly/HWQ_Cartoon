@@ -11,6 +11,7 @@ import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.HistoryInfor
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
+import com.example.util.RequestUtil
 
 /**
  * Created by Android Studio.
@@ -25,20 +26,17 @@ class FavouriteViewModel : ViewModel() {
     val historyList: MutableList<HistoryInfor> = mutableListOf()
     val favouriteList: MutableList<FavouriteInfor> = mutableListOf()
     val likesLiveData = MutableLiveData<Boolean>()
-    lateinit var detailViewModel: DetailViewModel
 
     /**判断是删除还是添加，方便rv刷新**/
     var delOrIns = true
     val historyLivaData = MutableLiveData<Int>()
     val favouriteLivaData = MutableLiveData<Int>()
 
-    //remote
-    private val remote = CartoonRemote
-
-    //监听是否隐藏bottom false为显示
-
     //加载监听
-    private val pgLiveData = remote.pgLiveData
+    private val pgLiveData = CartoonRemote.pgLiveData
+
+    //request
+    private val requestUtil = RequestUtil
 
     init {
         historyList.addAll(historyDB.loadAll())
@@ -55,32 +53,33 @@ class FavouriteViewModel : ViewModel() {
         pgLiveData.value = false
         val url = favouriteInfor.url
         Log.i(TAG, "favouriteGet: $url")
-        detailViewModel.putBundle(
+        requestUtil.putBundle(
             favouriteInfor.title,
             favouriteInfor.imgUrl,
             url,
             R.id.favoriteFragment
         )
-        detailViewModel.loadCartoon(url)
+        requestUtil.loadCartoon(url)
 
     }
 
     /**
      *historyFragment
      * */
-    fun historyGet(historyInfor: HistoryInfor) {
+    fun historyGet(it: Int) {
+        val historyInfor = historyList[it]
         if (pgLiveData.value == false) return
         pgLiveData.value = false
         val url = historyInfor.href
         Log.i(TAG, "historyGet: $url")
-        detailViewModel.putBundle(
+        requestUtil.putBundle(
             historyInfor.title,
             historyInfor.imgUrl,
             url,
             R.id.historyFragment
         )
 
-        detailViewModel.loadCartoon(url)
+        requestUtil.loadCartoon(url)
 
     }
 
@@ -109,7 +108,8 @@ class FavouriteViewModel : ViewModel() {
     }
 
     //homeFragment
-    fun setFavouriteFromHome(historyInfor: HistoryInfor): FavouriteInfor {
+    fun setFavouriteFromHome(historyMark: Int): FavouriteInfor {
+        val historyInfor = historyList[historyMark]
         val s = historyInfor.href
         val favouriteInfor: FavouriteInfor = if (s.contains("dmzj")) {
             FavouriteInfor(s, historyInfor.imgUrl, historyInfor.title)
