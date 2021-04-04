@@ -111,7 +111,7 @@ class FavouriteViewModel : ViewModel() {
     fun setFavouriteFromHome(historyMark: Int): FavouriteInfor {
         val historyInfor = historyList[historyMark]
         val s = historyInfor.href
-        val favouriteInfor: FavouriteInfor = if (s.contains("dmzj")) {
+        val favouriteInfor: FavouriteInfor = if (s.contains("http")) {
             FavouriteInfor(
                 s,
                 historyInfor.imgUrl,

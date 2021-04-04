@@ -95,6 +95,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             val img = arguments?.getString("img")
             mark = arguments?.getInt("mark")//判断fragment
             val href = arguments?.getString("href")
+            Log.i(TAG, "onViewCreated: $href")
             withContext(Dispatchers.Default) {
                 //历史部分,修改上次观看时间
                 val time = Date(System.currentTimeMillis())
