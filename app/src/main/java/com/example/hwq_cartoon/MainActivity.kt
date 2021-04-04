@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
     private fun add(fragment: Fragment) {
         if (fragment == lastFragment) return
         fragmentManager.commit {
-            setCustomAnimations(R.anim.right_in, R.anim.right_out)
+            setCustomAnimations(R.anim.right_in,0)
             if (fragment.isAdded)
                 show(fragment)
             else

@@ -41,8 +41,8 @@ object CartoonRemote {
         doAny()
     }
 
-    @WorkerThread
-    suspend fun getImg(url: String) = flow { emit(NetworkUtils.send(url)) }
-        .catch { error.postValue(it.message) }
+//    @WorkerThread
+//    suspend fun getImg(url: String) = flow { emit(NetworkUtils.send(url)) }
+//        .catch { error.postValue(it.message) }
 
 }

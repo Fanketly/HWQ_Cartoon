@@ -3,6 +3,7 @@ package com.example.adapter
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.base.ViewBindingRvAdapter
+import com.example.hwq_cartoon.databinding.CartoonRvItemBinding
 import com.example.hwq_cartoon.databinding.RvItemFavouriteBinding
 import com.example.repository.model.FavouriteInfor
 
@@ -29,7 +30,7 @@ class FavouriteRvAdapter(list: List<FavouriteInfor>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH<RvItemFavouriteBinding> {
-        return viewBinding(parent, false)
+        return viewBinding(parent)
     }
 
     private lateinit var longOnclick: (p: Int) -> Unit

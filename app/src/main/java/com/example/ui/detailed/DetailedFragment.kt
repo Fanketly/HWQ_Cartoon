@@ -37,7 +37,7 @@ import java.util.*
 class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
 
     private lateinit var detailImgRvAdapter: DetailImgRvAdapter
-    private val dateformat = SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.CHINA)
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.CHINA)
     private var favouriteInfor: FavouriteInfor? = null
     private var historyInfor: HistoryInfor? = null
     private var historyMark = 0//记录在list位置
@@ -100,7 +100,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                 val time = Date(System.currentTimeMillis())
                 for ((index, info) in historyList.withIndex()) {
                     if (info.title == name) {
-                        info.time = dateformat.format(time)
+                        info.time = dateFormat.format(time)
                         historyInfor = info
                         favouriteViewModel.historyUpdate(info)
                         historyMark = index
@@ -114,7 +114,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                         img,
                         href,
                         0,
-                        dateformat.format(time)
+                        dateFormat.format(time)
                     )
                     Log.i(TAG, "onActivityCreated: ${historyInfor?.title}")
                     historyList.add(historyInfor!!)
@@ -163,8 +163,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                 update(p)
             }
             //显示漫画
-            viewModel.msg4LiveData.observe(viewLifecycleOwner, { msg4: List<ByteArray> ->
-                if (msg4.size == 1) {
+            viewModel.msg4LiveData.observe(viewLifecycleOwner, { msg4: List<String> ->
+                if (msg4.isNotEmpty()) {
                     val builder = AlertDialog.Builder(requireContext())
                     val alertDialog = builder.create()
 //                    val constraintLayout = b.root.findViewById<ConstraintLayout>(R.id.linearLayout3)
@@ -175,7 +175,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     val btnBack = view4.findViewById<ImageButton>(R.id.btnCartoondialogBack)
                     val layTop = view4.findViewById<FrameLayout>(R.id.layCartoonDialog)
                     val tvNum = view4.findViewById<TextView>(R.id.tvCartoonNum)
-                    val num = viewModel.imgUrlList.size
+                    val num = viewModel.imgUrlSize
                     var lastPosition = -1//记录上一个itemview
                     //判断能否加载下一话
                     recyclerView4.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -230,7 +230,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     viewModel.pgLiveData.value = true
                     return@observe
                 }
-                if (msg4.isNotEmpty()) detailImgRvAdapter.notifyItemChanged(msg4.size - 1)
+//                if (msg4.isNotEmpty()) detailImgRvAdapter.notifyItemChanged(msg4.size - 1)
             })
         }
     }

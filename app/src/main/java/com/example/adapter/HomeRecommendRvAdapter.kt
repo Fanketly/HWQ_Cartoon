@@ -31,7 +31,7 @@ class HomeRecommendRvAdapter(list: List<CartoonInfo>) :
         parent: ViewGroup,
         viewType: Int
     ): VH<RvItemHomeRecommendBinding> {
-        return viewBinding(parent,false)
+        return viewBinding(parent)
     }
 
 

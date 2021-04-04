@@ -34,7 +34,7 @@ class HomeRvAdapter(list: List<CartoonInfo>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH<CartoonRvItemBinding> {
-        return viewBinding(parent, false)
+        return viewBinding(parent)
     }
 
 

@@ -41,6 +41,6 @@ class DetailRvAdapter(list: List<CartoonInfo>, private var mark: Int) :
             parent: ViewGroup,
             viewType: Int
         ): VH<CartoonDialogRvItemBinding> {
-            return viewBinding(parent, false)
+            return viewBinding(parent)
         }
     }

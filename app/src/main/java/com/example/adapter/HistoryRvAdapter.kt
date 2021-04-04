@@ -19,7 +19,7 @@ class HistoryRvAdapter(list: List<HistoryInfor>) :
     override fun onBind(b: RvItemHistoryBinding, d: HistoryInfor, p: Int) {
         b.btnHistoryCarryOn.setOnClickListener { onclick(p) }
         b.tvHistoryTitle.text = d.title
-        b.tvHistoryTime.text = d.time
+        b.tvHistoryTime.text = "上次观看时间：${d.time}"
         b.tvHistoryMark.text = "上次看至${d.mark + 1}集"
         if (d.imgUrl.isNullOrBlank()) return
         Glide.with(b.imgHistory).asDrawable().load(d.imgUrl)
@@ -27,7 +27,7 @@ class HistoryRvAdapter(list: List<HistoryInfor>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH<RvItemHistoryBinding> {
-        return viewBinding(parent, false)
+        return viewBinding(parent)
     }
 
 }

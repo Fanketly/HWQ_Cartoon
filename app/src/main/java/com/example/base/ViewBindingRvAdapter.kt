@@ -13,9 +13,8 @@ import androidx.viewbinding.ViewBinding
  */
 abstract class ViewBindingRvAdapter<D, T : ViewBinding>(private val list: List<D>) :
     RecyclerView.Adapter<ViewBindingRvAdapter.VH<T>>() {
-    inline fun <reified VB : T> viewBinding(
-        viewGroup: ViewGroup,
-        attachToParent: Boolean
+    protected inline fun <reified VB : T> viewBinding(
+        viewGroup: ViewGroup
     ): VH<VB> {
         return VH(
             VB::class.java.getMethod(
@@ -24,12 +23,9 @@ abstract class ViewBindingRvAdapter<D, T : ViewBinding>(private val list: List<D
                 ViewGroup::class.java,
                 Boolean::class.java
             )
-                .invoke(null, LayoutInflater.from(viewGroup.context), viewGroup, attachToParent) as VB
+                .invoke(null, LayoutInflater.from(viewGroup.context), viewGroup, false) as VB
         )
     }
-
-
-
 
     override fun onBindViewHolder(holder: VH<T>, position: Int) =
         onBind(holder.b, list[position], position)
@@ -38,9 +34,9 @@ abstract class ViewBindingRvAdapter<D, T : ViewBinding>(private val list: List<D
 
     class VH<T : ViewBinding>(val b: T) : RecyclerView.ViewHolder(b.root)
 
-    abstract fun onBind(b: T, d: D, p: Int)
+    protected abstract fun onBind(b: T, d: D, p: Int)
 
-    lateinit var onclick: (p: Int) -> Unit
+    protected lateinit var onclick: (p: Int) -> Unit
 
     fun setOnClick(onclick: (p: Int) -> Unit) {
         this.onclick = onclick

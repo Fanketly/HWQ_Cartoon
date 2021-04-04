@@ -16,15 +16,7 @@ import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.Array
-import kotlin.ByteArray
-import kotlin.Char
-import kotlin.Int
-import kotlin.String
-import kotlin.apply
 import kotlin.collections.ArrayList
-import kotlin.getValue
-import kotlin.lazy
 import kotlin.plus
 
 /**
@@ -50,8 +42,13 @@ class DetailViewModel : ViewModel() {
 
     //msg4显示漫画
     val msg4List: MutableList<String> by lazy { ArrayList() }
-    private val imgList: MutableList<ByteArray> by lazy { ArrayList() }
-    val msg4LiveData by lazy { MutableLiveData<List<ByteArray>>() }
+    private var job: Job? = null
+    private val imgUrlList = mutableListOf<String>()
+    val imgUrlSize
+        get() = imgUrlList.size
+
+    //    private val imgList: MutableList<ByteArray> by lazy { ArrayList() }
+    val msg4LiveData by lazy { MutableLiveData<List<String>>() }
 //    //跳转传递数据
 //     val bundle by lazy { Bundle() }
 //     fun putBundle(name: String, img: String, href: String, mark: Int) {
@@ -157,26 +154,26 @@ class DetailViewModel : ViewModel() {
         }
     }
 
-    private var job: Job? = null
-    val imgUrlList = mutableListOf<String>()
-    private suspend fun loadImg() {
-        for (url in imgUrlList) {
-            if (!job!!.isActive) break
-            remote.getImg(url).collect {
-                if (job!!.isActive)
-                    imgList.add(it!!)
-                if (job!!.isActive)
-                    msg4LiveData.postValue(imgList)
-            }
-        }
-    }
+
+//    private suspend fun loadImg() {
+//        for (url in imgUrlList) {
+//            if (!job!!.isActive) break
+//            remote.getImg(url).collect {
+//                if (job!!.isActive)
+//                    imgList.add(it!!)
+//                if (job!!.isActive)
+//    msg4LiveData.postValue(imgUrlList)
+//                Log.i(TAG, "loadImg: ")
+//            }
+//        }
+//    }
 
     private fun send(url: String) {//what4
         imgUrlList.add(url)
     }
 
     //老代码不想优化
-    private suspend fun what1(string: String) {//图片
+    private fun what1(string: String) {//图片
         val document = Jsoup.parse(string)
         val elements = document.getElementsByTag("script")
         if (elements.size != 0) {
@@ -429,14 +426,15 @@ class DetailViewModel : ViewModel() {
                 }
                 i++
             }
-            loadImg()
+//            loadImg()
+            msg4LiveData.postValue(imgUrlList)
         } else {
             pgLiveData.postValue(true)
             errorLiveData.postValue("所选漫画消失")
         }
     }
 
-    private suspend fun what1YK(string: String) {
+    private fun what1YK(string: String) {
         val document = Jsoup.parse(string).body()
         val elements = document.getElementsByTag("script")
         if (elements.isEmpty()) {
@@ -449,7 +447,8 @@ class DetailViewModel : ViewModel() {
         for (str in ss) {
             send(Api.imgYKUrl + str.replace("\\", "").replace("\"", ""))
         }
-        loadImg()
+//        loadImg()
+        msg4LiveData.postValue(imgUrlList)
 //        Log.i(TAG, "what1YK: ${ss}")
     }
 //    private suspend fun what1YK(string: String) {
@@ -522,7 +521,7 @@ class DetailViewModel : ViewModel() {
             if (job!!.isActive) {
                 job!!.cancel()
                 pgLiveData.postValue(true)
-                if (imgList.size > 0) imgList.clear()
+//                if (imgList.size > 0) imgList.clear()
             }
         Log.i("TAG", "onDismiss3: ")
     }
@@ -530,7 +529,7 @@ class DetailViewModel : ViewModel() {
     fun onMsg4Dismiss() {
         job?.cancel()
         if (imgUrlList.size > 0) imgUrlList.clear()
-        if (imgList.size > 0) imgList.clear()
+//        if (imgList.size > 0) imgList.clear()
     }
 
     /**
