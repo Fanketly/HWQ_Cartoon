@@ -1,9 +1,9 @@
 package com.example.repository.model;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Keep;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Android Studio.

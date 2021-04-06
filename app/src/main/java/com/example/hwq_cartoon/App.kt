@@ -1,8 +1,11 @@
 package com.example.hwq_cartoon
 
 import android.app.Application
+import com.example.base.AUTO
+import com.example.base.dataStore
 import com.example.repository.model.DaoMaster
 import com.example.repository.model.DaoSession
+import kotlinx.coroutines.flow.map
 
 /**
  * Created by Android Studio.
@@ -10,16 +13,22 @@ import com.example.repository.model.DaoSession
  * Date: 2020/12/13
  * Time: 22:36
  */
+
+
 class App : Application() {
     companion object {
         lateinit var favouriteSession: DaoSession
         lateinit var historySession: DaoSession
+        var autoSetting: Int = 200
     }
 
     override fun onCreate() {
         super.onCreate()
         historySession = daomaster("history.db")
         favouriteSession = daomaster("favourite.db")
+        applicationContext.dataStore.data.map {
+            autoSetting = it[AUTO] ?: 200
+        }
     }
 
     private fun daomaster(string: String): DaoSession {

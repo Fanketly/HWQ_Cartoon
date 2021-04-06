@@ -41,12 +41,24 @@
 
         <TextView
             android:id="@+id/tvCartoonNum"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/n_m"
             android:textColor="#D8D8D8" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAuto"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center"
+            android:layout_marginEnd="10dp"
+            android:text="自动滚动"
+            app:checkedIconTint="@color/white"
+            android:textColor="@color/white" />
+
 
     </FrameLayout>
 

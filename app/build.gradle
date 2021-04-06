@@ -80,6 +80,8 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     //banner
     implementation 'com.youth.banner:banner:2.1.0'
+    //Jetpack DataStore
+    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha07"
     //binding https://github.com/hi-dhl/Binding/blob/main/doc/README_CN.md 简化viewbinding和databinding
 //    implementation 'com.hi-dhl:binding:1.0.1'
     //hilt

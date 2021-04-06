@@ -521,7 +521,6 @@ class DetailViewModel : ViewModel() {
             if (job!!.isActive) {
                 job!!.cancel()
                 pgLiveData.postValue(true)
-//                if (imgList.size > 0) imgList.clear()
             }
         Log.i("TAG", "onDismiss3: ")
     }
@@ -529,7 +528,6 @@ class DetailViewModel : ViewModel() {
     fun onMsg4Dismiss() {
         job?.cancel()
         if (imgUrlList.size > 0) imgUrlList.clear()
-//        if (imgList.size > 0) imgList.clear()
     }
 
     /**

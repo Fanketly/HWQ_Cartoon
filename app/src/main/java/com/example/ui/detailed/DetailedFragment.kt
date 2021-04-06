@@ -18,12 +18,14 @@ import com.bumptech.glide.Glide
 import com.example.adapter.DetailImgRvAdapter
 import com.example.adapter.DetailRvAdapter
 import com.example.base.*
+import com.example.hwq_cartoon.App
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentDetailedBinding
 import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.HistoryInfor
 import com.example.viewModel.DetailViewModel
 import com.example.viewModel.FavouriteViewModel
+import com.google.android.material.chip.Chip
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,6 +36,8 @@ import java.util.*
  * 逻辑 从数据库读取漫画名字并判断是否已经追漫
  *     对点击的漫画保存到历史数据库，追漫的保存到追漫数据库
  * **/
+
+
 class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
 
     private lateinit var detailImgRvAdapter: DetailImgRvAdapter
@@ -95,7 +99,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             val img = arguments?.getString("img")
             mark = arguments?.getInt("mark")//判断fragment
             val href = arguments?.getString("href")
-            Log.i(TAG, "onViewCreated: $href")
             withContext(Dispatchers.Default) {
                 //历史部分,修改上次观看时间
                 val time = Date(System.currentTimeMillis())
@@ -176,8 +179,30 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     val btnBack = view4.findViewById<ImageButton>(R.id.btnCartoondialogBack)
                     val layTop = view4.findViewById<FrameLayout>(R.id.layCartoonDialog)
                     val tvNum = view4.findViewById<TextView>(R.id.tvCartoonNum)
+                    val chipAuto = view4.findViewById<Chip>(R.id.chipAuto)
                     val num = viewModel.imgUrlSize
                     var lastPosition = -1//记录上一个itemview
+                    var job: Job? = null
+                    //自动滚动
+                    chipAuto.setOnCheckedChangeListener { _, isChecked ->
+                        val autoSetting = App.autoSetting
+                        if (isChecked) {
+                            Log.i(TAG, "autoScroll: ")
+                            job = CoroutineScope(Dispatchers.Main).launch {
+                                while (true) {
+                                    if (!job!!.isActive) break
+                                    delay(1000)
+                                    recyclerView4.smoothScrollBy(
+                                        0,
+                                        recyclerView4.scrollY + autoSetting
+                                    )
+                                }
+                            }
+                        } else {
+                            Log.i(TAG, "autoCancel: ")
+                            job!!.cancel()
+                        }
+                    }
                     //判断能否加载下一话
                     recyclerView4.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -188,6 +213,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             lastPosition = position
                             tvNum.text = "${position + 1}/$num"
                             if (position + 1 == num && viewModel.msg3List.size - 1 > historyInfor!!.mark) {
+                                chipAuto.isChecked = false//取消滚动
                                 AlertDialog.Builder(requireContext()).setMessage("是否加载下一话")
                                     .setNegativeButton("否") { d, _ ->
                                         d.dismiss()
@@ -224,7 +250,10 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT
                         )
-                        btnBack.setOnClickListener { dismiss() }
+                        btnBack.setOnClickListener {
+                            chipAuto.isChecked = false//取消滚动
+                            dismiss()
+                        }
                         setView(view4)
                         show()
                     }

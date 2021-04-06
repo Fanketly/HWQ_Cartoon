@@ -147,46 +147,7 @@ class CartoonViewModel : ViewModel() {
         }
     }
 
-    //推荐
-//    fun get57Recommend() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            remote.getData(Api.mh57Url)
-//                .collect {
-//                    val document = Jsoup.parse(it)
-//                    val element: Element = document.select(".update-wrap").first()
-//                    for (e in element.select("li")) {
-//                        val a = e.select("a").first()
-//                        val img = a.select("img").first()
-//                        var src = img.attr("src")
-//                        if (src.isEmpty()) src = img.attr("data-src")
-//                        homeRecommendList.add(
-//                            CartoonInfo(
-//                                a.attr("title"),
-//                                Api.mh57Url + a.attr("href"),
-//                                src
-//                            )
-//                        )
-//                    }
-//                    homeRecommendLiveData.postValue(homeRecommendList)
-//                    Log.i(TAG, "get57Recommend: $element")
-//                }
-//        }
-//    }
 
-    //获取推荐漫画详细
-//    fun getHomeRecommendCartoon(position: Int) {
-//        if (pgLiveData.value == false) return
-//        pgLiveData.value = false
-//        val info = homeRecommendList[position]
-//        val s = info.href
-//        Log.i(TAG, "getHomeRecommendCartoon: ${s + info.img}")
-//        requestUtil.putBundle(info.title, info.img, s, R.id.homeFragment)
-//        if (s.isEmpty()) {
-//            pgLiveData.value = true
-//            return
-//        }
-//        requestUtil.loadCartoon(s)
-//    }
     //获取优酷漫画详细
     fun getHomeYouKuCartoon(position: Int) {
         if (pgLiveData.value == false) return

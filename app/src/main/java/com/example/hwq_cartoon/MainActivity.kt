@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import com.example.hwq_cartoon.databinding.ActivityMainBinding
-import com.example.repository.model.CartoonInfo
 import com.example.ui.classification.SpeciesFragment
 import com.example.ui.detailed.DetailedFragment
 import com.example.ui.favourite.FavouriteVpFragment
@@ -68,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         //底部监听
         viewModel.bottomLiveData.observe(this) {
             b.bottomNav.visibility = if (it) View.GONE else View.VISIBLE
+
         }
         //集数Detail监听
         viewModel.msg3LiveData.observe(this) {
@@ -95,14 +95,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun addWithBundle(bundle: Bundle?, clazz: Class<out Fragment>) =
         fragmentManager.commit {
-            setCustomAnimations(R.anim.right_in, R.anim.right_out)
+            setCustomAnimations(R.anim.right_in, R.anim.left_out)
             add(R.id.layMain2, clazz, bundle, "detail")
         }
 
     private fun add(fragment: Fragment) {
         if (fragment == lastFragment) return
         fragmentManager.commit {
-            setCustomAnimations(R.anim.right_in,0)
+            setCustomAnimations(R.anim.right_in, R.anim.left_out)
             if (fragment.isAdded)
                 show(fragment)
             else
@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         val detailedFragment = fragmentManager.findFragmentByTag("detail")
         if (detailedFragment != null) {
             fragmentManager.commit {
-                setCustomAnimations(R.anim.right_in, R.anim.right_out)
+                setCustomAnimations(0, R.anim.right_out)
                 remove(detailedFragment)
             }
             Log.i("TAG", "onBackPressed: ")

@@ -23,7 +23,6 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:alpha="1"
-        android:background="@color/ic_launcher_background"
         android:visibility="visible"
         app:itemIconTint="@color/bottom_nav"
         app:itemTextColor="@color/bottom_text"

@@ -88,7 +88,7 @@ object RequestUtil {
         }
 //        if (msg3List.size > 0) {
 //            msg3List.reverse()
-            msg3LiveData.postValue(true)
+        msg3LiveData.postValue(true)
 //        }
         delay(300)
         pgLiveData.postValue(true)

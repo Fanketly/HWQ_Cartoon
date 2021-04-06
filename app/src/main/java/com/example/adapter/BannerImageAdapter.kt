@@ -21,13 +21,6 @@ class BannerImageAdapter(val list: List<Int>) : BannerAdapter<Int, BannerImageAd
     }
 
     override fun onCreateHolder(parent: ViewGroup?, viewType: Int): VH {
-//        val imageView = ImageView(parent?.context)
-//        imageView.scaleType = ImageView.ScaleType.FIT_XY
-//        imageView.layoutParams = ViewGroup.LayoutParams(
-//            ViewGroup.LayoutParams.MATCH_PARENT,
-//            ViewGroup.LayoutParams.MATCH_PARENT
-//        )
-//        return VH(imageView)
         return VH(
             LayoutInflater.from(parent?.context).inflate(R.layout.rv_item_banner, parent, false)
         )
@@ -39,7 +32,7 @@ class BannerImageAdapter(val list: List<Int>) : BannerAdapter<Int, BannerImageAd
         position: Int,
         size: Int
     ) {
-        Glide.with(holder.imageView).asDrawable().skipMemoryCache(true).load(list[position])
+        Glide.with(holder.imageView).asDrawable().skipMemoryCache(true).load(data)
             .centerCrop()
             .into(holder.imageView)
     }
