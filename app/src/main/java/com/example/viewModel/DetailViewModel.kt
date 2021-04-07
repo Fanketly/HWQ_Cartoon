@@ -44,8 +44,8 @@ class DetailViewModel : ViewModel() {
     val msg4List: MutableList<String> by lazy { ArrayList() }
     private var job: Job? = null
     private val imgUrlList = mutableListOf<String>()
-    val imgUrlSize
-        get() = imgUrlList.size
+//    val imgUrlSize
+//        get() = imgUrlList.size
 
     //    private val imgList: MutableList<ByteArray> by lazy { ArrayList() }
     val msg4LiveData by lazy { MutableLiveData<List<String>>() }

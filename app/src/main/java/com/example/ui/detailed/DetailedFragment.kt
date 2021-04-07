@@ -141,7 +141,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     }
                 }
             }
-
             //漫画名与图片
             b.tvDetailName.text = name
             b.tvDetailContent.text = viewModel.content
@@ -159,7 +158,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                 )
             else
                 DetailRvAdapter(viewModel.msg3List, historyInfor?.mark ?: 0)
-
             b.rvDetail.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             b.rvDetail.setUpWithGrid(favouriteDialogRvAdapter, 4)
             //点击集数
@@ -180,7 +178,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     val layTop = view4.findViewById<FrameLayout>(R.id.layCartoonDialog)
                     val tvNum = view4.findViewById<TextView>(R.id.tvCartoonNum)
                     val chipAuto = view4.findViewById<Chip>(R.id.chipAuto)
-                    val num = viewModel.imgUrlSize
+                    val num = msg4.size
                     var lastPosition = -1//记录上一个itemview
                     var job: Job? = null
                     //自动滚动

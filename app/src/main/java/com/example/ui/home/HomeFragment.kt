@@ -9,6 +9,7 @@ import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.*
 import com.example.base.*
@@ -20,6 +21,7 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.youth.banner.indicator.CircleIndicator
 import com.youth.banner.transformer.ScaleInTransformer
+import kotlinx.coroutines.launch
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
@@ -124,24 +126,27 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         //加载主页 如果true加载数据 点击导航栏false上拉刷新
         viewModel.homeLiveData.observe(viewLifecycleOwner, {
             Log.i("TAG", "homeLiveData:$it ")
-            if (it) if (homeRvAdapter == null) {
-                homeRvAdapter = HomeRvAdapter(viewModel.cartoonInfors)
-                homeRvAdapter?.apply {
-                    with(b.rvHome) {
-                        addItemDecoration(SpacesItemDecoration(20))
-                        setUpWithGrid(this@apply, 2)
+            if (it) {
+                if (homeRvAdapter == null) {
+                    homeRvAdapter = HomeRvAdapter(viewModel.cartoonInfors)
+                    homeRvAdapter?.apply {
+                        with(b.rvHome) {
+                            addItemDecoration(SpacesItemDecoration(20))
+                            setUpWithGrid(this@apply, 2)
+                        }
+                        setOnClick { p ->
+                            viewModel.getHomeCartoon(p)
+                        }
                     }
-                    setOnClick { p ->
-                        viewModel.getHomeCartoon(p)
-                    }
+                } else {
+                    homeRvAdapter?.notifyDataSetChanged()
+                    b.refreshCartoon.closeHeaderOrFooter()
                 }
             } else {
-                homeRvAdapter?.notifyDataSetChanged()
-                b.refreshCartoon.closeHeaderOrFooter()
-            }
-            else {
-                b.rvHome.smoothScrollToPosition(0)
-                b.refreshCartoon.autoRefresh()
+                lifecycleScope.launch {
+                    b.rvHome.scrollToPosition(0)
+                    b.refreshCartoon.autoRefresh()
+                }
             }
         })
 

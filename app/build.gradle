@@ -75,7 +75,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     //trans
-    implementation "com.github.skydoves:transformationlayout:1.0.6"
+//    implementation "com.github.skydoves:transformationlayout:1.0.6"
     //photoview
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     //banner
