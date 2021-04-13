@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
     //viewModel
     private val viewModel: CartoonViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
-
     //fragment
     private lateinit var fragmentManager: FragmentManager
     private val homeFragment: HomeFragment by lazy { HomeFragment() }
