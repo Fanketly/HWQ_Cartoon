@@ -7,9 +7,9 @@ import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * Created by Android Studio.
- * User: HuangWeiQiang
- * Date: 2020/12/13
- * Time: 22:27
+ * @author: HuangWeiQiang
+ * @date:  2020/12/13
+ * @time:  22:27
  */
 @Entity
 public class HistoryInfor {

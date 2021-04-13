@@ -20,7 +20,6 @@ object NetworkUtils {
 //        okHttpClient.newBuilder().readTimeout(4,TimeUnit.SECONDS)
 //        okHttpClient.newBuilder().readTimeout(4,TimeUnit.SECONDS)
 //    }
-
     fun okhttpGet(url: String): String {
         val request: Request = Request.Builder().get().url(url).build()
         val call = okHttpClient.newCall(request)

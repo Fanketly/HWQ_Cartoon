@@ -7,16 +7,17 @@ import org.greenrobot.greendao.annotation.Keep;
 
 /**
  * Created by Android Studio.
- * User: HuangWeiQiang
- * Date: 2020/8/31
- * Time: 14:29
+ * @author : HuangWeiQiang
+ * @date: 2020/8/31
+ * @time: 14:29
  */
 @Entity
 public class FavouriteInfor {
 
     @Id(autoincrement = true)
     private Long id;
-    private int mark;//mark为上次看的集数
+    //mark为上次看的集数
+    private int mark;
     private String url, imgUrl, title;
 
     public FavouriteInfor(String url, String imgUrl, String title) {

@@ -174,7 +174,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.i(TAG, "HOmeonDestroy: ")
+        Log.i(TAG, "HomeOnDestroy: ")
     }
 
     override fun viewBinding(container: ViewGroup): FragmentHomeBinding {

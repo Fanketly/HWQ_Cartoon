@@ -142,7 +142,6 @@ class CartoonViewModel : ViewModel() {
                         )
                     }
                     homeRecommendLiveData.postValue(homeRecommendList)
-
                 }
         }
     }
