@@ -3,7 +3,6 @@ package com.example.adapter
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.base.ViewBindingRvAdapter
-import com.example.hwq_cartoon.databinding.CartoonRvItemBinding
 import com.example.hwq_cartoon.databinding.RvItemFavouriteBinding
 import com.example.repository.model.FavouriteInfor
 

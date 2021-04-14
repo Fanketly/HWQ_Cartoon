@@ -85,7 +85,7 @@ class SearchViewModel : ViewModel() {
             if (searchJob.isActive)
                 searchLiveData.postValue(1)
         } else {
-            if(errorLiveData.value=="优酷漫画查询不到此漫画")
+            if (errorLiveData.value == "优酷漫画查询不到此漫画")
                 pgLiveData.postValue(true)
             errorLiveData.postValue("动漫之家查询不到此漫画")
         }
@@ -104,12 +104,11 @@ class SearchViewModel : ViewModel() {
         requestUtil.loadCartoon(s)
     }
 
-    fun getSearchYK(cartoonInfor: CartoonInfo) {
+    fun getSearchYK(cartoonInfo: CartoonInfo) {
         if (pgLiveData.value == false) return
         pgLiveData.value = false
-//        val s = Api.youkuUrl + cartoonInfor.href
-        val s =  cartoonInfor.href
-        requestUtil.putBundle(cartoonInfor.title, cartoonInfor.img, s, R.id.searchFragment)
+        val s = cartoonInfo.href
+        requestUtil.putBundle(cartoonInfo.title, cartoonInfo.img, s, R.id.searchFragment)
         requestUtil.loadCartoon(s)
     }
 
@@ -133,6 +132,7 @@ class SearchViewModel : ViewModel() {
     }
 
 
+
     fun clearSearchList() {
         Log.i(TAG, "clearSearchList: ")
         searchJob.cancel()
@@ -143,8 +143,8 @@ class SearchViewModel : ViewModel() {
     private fun mhYKSearch(string: String) {
         val jsoup = Jsoup.parse(string)
         val elements = jsoup.getElementsByClass("list_con_li update_con autoHeight").first()
-        if (elements==null) {
-            if(errorLiveData.value=="动漫之家查询不到此漫画")
+        if (elements == null) {
+            if (errorLiveData.value == "动漫之家查询不到此漫画")
                 pgLiveData.postValue(true)
             errorLiveData.postValue("优酷漫画查询不到此漫画")
             return
@@ -160,19 +160,6 @@ class SearchViewModel : ViewModel() {
                 )
             )
         }
-//        for (i in 2 until elements.size) {
-//            val e = elements[i]
-//            val a = e.select(".bcover")
-//            if (a.isEmpty())
-//                continue
-//            searchList57.add(
-//                CartoonInfo(
-//                    a.attr("title"),
-//                    a.attr("href"),
-//                    a.select("img").attr("src")
-//                )
-//            )
-//        }
         if (searchJob.isActive)
             searchLiveData.postValue(2)
     }

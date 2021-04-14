@@ -26,15 +26,14 @@ import kotlin.plus
  * Time: 21:16
  */
 class DetailViewModel : ViewModel() {
-    //msg3集数
-    val msg3List: MutableList<CartoonInfo> by lazy { RequestUtil.msg3List }
 
-    //    val msg3LiveData by lazy { MutableLiveData<Boolean>() }
     private val requestUtil = RequestUtil
     val content: String?
         get() = requestUtil.content
     val update: String?
         get() = requestUtil.update
+    //msg3集数
+    val msg3List: MutableList<CartoonInfo> by lazy { requestUtil.msg3List }
     private val remote = CartoonRemote
     val pgLiveData = remote.pgLiveData
     private val errorLiveData = remote.error
@@ -44,90 +43,8 @@ class DetailViewModel : ViewModel() {
     val msg4List: MutableList<String> by lazy { ArrayList() }
     private var job: Job? = null
     private val imgUrlList = mutableListOf<String>()
-//    val imgUrlSize
-//        get() = imgUrlList.size
-
-    //    private val imgList: MutableList<ByteArray> by lazy { ArrayList() }
     val msg4LiveData by lazy { MutableLiveData<List<String>>() }
-//    //跳转传递数据
-//     val bundle by lazy { Bundle() }
-//     fun putBundle(name: String, img: String, href: String, mark: Int) {
-//        if (bundle.size() > 0)
-//            bundle.clear()
-//        bundle.putString("name", name)
-//        bundle.putString("img", img)
-//        bundle.putString("href", href)
-//        bundle.putInt("mark", mark)
-//    }
 
-
-//    /***加载漫画,判断漫画源**/
-//    fun loadCartoon(url: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            if (url.contains("wuqimh")) {
-//                remote.getData(url) {
-//                    pgLiveData.postValue(true)
-//                }.collect {
-//                    what357(it)
-//                }
-//                return@launch
-//            }
-//            var s = url
-//            if (!s.contains("dmzj"))
-//                s = Api.url2 + "/" + s//需要加"/"
-//            remote.getData(s) { pgLiveData.postValue(true) }
-//                .collect {
-//                    Log.i(TAG, "getHomeCartoon: $s")
-//                    what3(it)
-//                }
-//        }
-//    }
-
-//    private suspend fun what357(string: String) {
-//        val document = Jsoup.parse(string)
-//        val elements = document.getElementsByClass("chapter-list cf mt10")
-//        if (elements.text().isEmpty()) {
-//            pgLiveData.postValue(true)
-//            errorLiveData.postValue("此漫画无法浏览")
-//            return
-//        }
-//        content = document.select("#intro-cut").text()
-//        val elements1 = elements.select("li")
-//        var cartoonInfor: CartoonInfor
-//        for (e in elements1) {
-//            cartoonInfor = CartoonInfor(e.text(), Api.mh57Url + e.selectFirst("a").attr("href"))
-//            msg3List.add(cartoonInfor)
-//        }
-//        if (msg3List.size > 0) {
-//            msg3List.reverse()
-//            msg3LiveData.postValue(true)
-//        }
-//        delay(300)
-//        pgLiveData.postValue(true)
-//    }
-
-//    private suspend fun what3(string: String) {//集数
-//        val document = Jsoup.parse(string)
-//        val elements = document.getElementsByClass("cartoon_online_border")
-////        Log.i(TAG, "what3: ${document}")
-//        if (elements.text().isEmpty()) {
-//            pgLiveData.postValue(true)
-//            errorLiveData.postValue("此漫画无法浏览")
-//            return
-//        }
-//        update = document.getElementsByClass("update2").text() ?: ""
-//        content = document.select(".line_height_content").text()
-//        val elements1 = elements.select("a")
-//        var cartoonInfor: CartoonInfor
-//        for (e in elements1) {
-//            cartoonInfor = CartoonInfor(e.text(), e.attr("href"))
-//            msg3List.add(cartoonInfor)
-//        }
-//        if (msg3List.size > 0) msg3LiveData.postValue(true)
-//        delay(300)
-//        pgLiveData.postValue(true)
-////        return
-//    }
 
     /**
      * 加载图片部分
@@ -138,35 +55,19 @@ class DetailViewModel : ViewModel() {
         Log.i(TAG, "msg3Send: $url")
         job = CoroutineScope(Dispatchers.IO).launch {
             if (url.contains("ykmh")) {
-                remote.getData(url) {
-                    pgLiveData.postValue(true)
-                }.collect {
-                    what1YK(it)
-                }
+                remote.getData(url)
+                    .collect {
+                        what1YK(it)
+                    }
             } else {
                 remote.getData(Api.url2 + url)
-                {
-                    pgLiveData.postValue(true)
-                }.collect {
-                    what1(it)
-                }
+                    .collect {
+                        what1(it)
+                    }
             }
         }
     }
 
-
-//    private suspend fun loadImg() {
-//        for (url in imgUrlList) {
-//            if (!job!!.isActive) break
-//            remote.getImg(url).collect {
-//                if (job!!.isActive)
-//                    imgList.add(it!!)
-//                if (job!!.isActive)
-//    msg4LiveData.postValue(imgUrlList)
-//                Log.i(TAG, "loadImg: ")
-//            }
-//        }
-//    }
 
     private fun send(url: String) {//what4
         imgUrlList.add(url)
@@ -426,7 +327,6 @@ class DetailViewModel : ViewModel() {
                 }
                 i++
             }
-//            loadImg()
             msg4LiveData.postValue(imgUrlList)
         } else {
             pgLiveData.postValue(true)
@@ -447,73 +347,8 @@ class DetailViewModel : ViewModel() {
         for (str in ss) {
             send(Api.imgYKUrl + str.replace("\\", "").replace("\"", ""))
         }
-//        loadImg()
         msg4LiveData.postValue(imgUrlList)
-//        Log.i(TAG, "what1YK: ${ss}")
     }
-//    private suspend fun what1YK(string: String) {
-//        val document = Jsoup.parse(string).body()
-//        val elements = document.getElementsByTag("script")
-//        if (elements.isEmpty()) {
-//            pgLiveData.postValue(true)
-//            errorLiveData.postValue("所选漫画消失")
-//            return
-//        }
-//        val s = elements[5].data()
-//        var isManhuaku = false
-//        Log.i(TAG, "what157: ${elements[5]}")
-//        msg4List.addAll(s.substring(s.lastIndexOf(",'") + 2, s.indexOf("'.split")).split("|"))
-//        msg4List.forEach { a ->
-//            if (a == "ManHuaKu") {
-//                isManhuaku = true
-//                return@forEach
-//            }
-//        }
-//        val strings = s.substring(s.indexOf(":[") + 2, s.indexOf("],")).split(",").toTypedArray()
-//        var startUrl: String? = null
-//        var mark = false//判断是否有 ://
-//        for (str in strings) {
-//            if (!job!!.isActive) return
-//            var string2 =
-//                str.substring(str.indexOf("\\'/") + 3, str.lastIndexOf("\\'"))
-//            Log.i(TAG, "what157: $string2")
-//            val stringBuilder = StringBuilder()
-//
-//            if (startUrl == null) {
-//                startUrl = if (string2.contains("://")) {
-//                    mark = true
-//                    getStringList(conversion(string2[0])) + ":/"
-//                } else if (isManhuaku)
-//                    "http://images.tingliu.cc/"
-//                else
-//                    "http://images.720rs.com"
-//            }
-//            stringBuilder.append(startUrl)
-//            if (mark) string2 = string2.substring(4)
-////            val split = string2.substring(4).split("/")
-//            for (s2 in string2.split("/")) {
-//                when {
-//                    s2.contains("-") -> {
-//                        stringBuilder.append("/")
-//                        split(s2, stringBuilder, "-")
-//                    }
-//                    s2.contains(".") -> {
-//                        stringBuilder.append("/")
-//                        split(s2, stringBuilder, ".")
-//                    }
-//                    s2.contains("~") -> {
-//                        stringBuilder.append("/")
-//                        split(s2, stringBuilder, "~")
-//                    }
-//                    else -> {
-//                        stringBuilder.append("/").append(getStringList(conversion(s2[0])))
-//                    }
-//                }
-//            }
-//            send(stringBuilder.toString())
-//        }
-//        loadImg()
-//    }
 
     fun onMsg3Dismiss() { //清除集数
         msg3List.clear()
@@ -533,7 +368,6 @@ class DetailViewModel : ViewModel() {
     /**
      * 逻辑处理部分
      */
-
     private fun getStringList(num: Int): String { //有就有，没有就返回原数值
         return if (msg4List[num].isEmpty()) {
 //            Log.i(TAG, "getStringList: $num")

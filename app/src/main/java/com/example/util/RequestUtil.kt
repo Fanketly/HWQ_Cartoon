@@ -50,17 +50,16 @@ object RequestUtil {
     fun loadCartoon(url: String) {
         CoroutineScope(Dispatchers.IO).launch {
             if (url.contains("ykmh")) {
-                remote.getData(url) {
-                    pgLiveData.postValue(true)
-                }.collect {
-                    what3YK(it)
-                }
+                remote.getData(url)
+                    .collect {
+                        what3YK(it)
+                    }
                 return@launch
             }
             var s = url
             if (!s.contains("dmzj"))
                 s = Api.url2 + "/" + s//需要加"/"
-            remote.getData(s) { pgLiveData.postValue(true) }
+            remote.getData(s)
                 .collect {
                     Log.i(TAG, "getHomeCartoon: $s")
                     what3(it)

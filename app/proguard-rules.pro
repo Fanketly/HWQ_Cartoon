@@ -20,4 +20,20 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+#-keep class com.example.repository.model.SpeciesInfo2Item{
+#  private java.lang.String author;
+#  private java.lang.String comic_cover;
+#  private java.lang.String comic_url;
+#  private java.lang.String id;
+#  private java.lang.String last_chapter;
+#  private java.lang.String last_chapter_url;
+#  private java.lang.String last_update_date;
+#  private java.lang.String name;
+#  private java.lang.String short_name;
+#  private java.lang.String status;
+#  private java.lang.String type;
+#}
+#-keep class com.example.util.NetworkUtils{
+#public static java.util.concurrent.Flow getData(java.lang.String url);
+#}
 

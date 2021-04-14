@@ -3,8 +3,10 @@ package com.example.repository.remote
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.MutableLiveData
 import com.example.util.NetworkUtils
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
 
 /**
  * Created by Android Studio.
@@ -25,21 +27,47 @@ object CartoonRemote {
         get() = pg
     val error
         get() = errorLiveData
-//只是为了练flow使用，建议多个数据再使用flow
-    @WorkerThread
-    suspend fun getData(url: String) =  flow{
-        emit(NetworkUtils.okhttpGet(url))
-    }.catch {
-        error.postValue(it.message)
-    }
-    //只是为了练flow使用，建议多个数据再使用flow
+
+    //建议多个数据使用flow,这个不是正确用法
     //挂起函数可以异步的返回单个值，但是该如何异步返回多个计算好的值呢？这正是Kotlin流（Flow）的⽤武之地
     @WorkerThread
-    suspend fun getData(url: String, doAny: () -> Unit) = flow {
+    suspend fun getData(url: String) = flow {
         emit(NetworkUtils.okhttpGet(url))
     }.catch {
         error.postValue(it.message)
-        doAny()
+        pg.postValue(true)
+    }
+
+    /**
+     * flow用法
+     * @param success 当成功时做的一些事情
+     * @param data 发射的数据
+     * **/
+    @WorkerThread
+    suspend fun <T> getData(
+        url: String,
+        data: suspend (data: String, flow: FlowCollector<T>) -> Unit,
+        success: () -> Unit
+    ) = flow {
+        data(NetworkUtils.okhttpGet(url), this)
+    }.onCompletion { cause -> if (cause == null) success() }
+        .catch {
+            error.postValue(it.message)
+            pg.postValue(true)
+        }
+
+
+
+    /**
+     * @param fail 当错误时做的一些事情
+     * **/
+    @WorkerThread
+    suspend fun getData(url: String, fail: () -> Unit) = flow {
+        emit(NetworkUtils.okhttpGet(url))
+    }.catch {
+        error.postValue(it.message)
+        pg.postValue(true)
+        fail()
     }
 
 }

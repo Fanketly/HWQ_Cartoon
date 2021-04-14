@@ -143,10 +143,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                     b.refreshCartoon.closeHeaderOrFooter()
                 }
             } else {
-                lifecycleScope.launch {
-                    b.rvHome.scrollToPosition(0)
-                    b.refreshCartoon.autoRefresh()
-                }
+                b.rvHome.scrollToPosition(0)
+                b.refreshCartoon.autoRefresh()
             }
         })
 

@@ -35,6 +35,7 @@ class SpeciesViewModel : ViewModel() {
 
     //request
     private val requestUtil = RequestUtil
+
     //加载分类
     fun getSpeciesType() {
         if (typeList.size > 0) {//判断是否有加载过分类，有就加载现有数据
