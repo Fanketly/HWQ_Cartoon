@@ -37,6 +37,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
         b.refreshCartoon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 viewModel.getSpeciesData(species, 1)
+                viewModel.getSpeciesType()
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {

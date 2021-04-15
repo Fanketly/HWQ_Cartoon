@@ -10,10 +10,10 @@ import com.example.repository.model.CartoonInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.RequestUtil
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
+import java.lang.AssertionError
 
 /**
  * Created by Android Studio.
@@ -64,6 +64,22 @@ class CartoonViewModel : ViewModel() {
 
     //获取漫画详细
     fun getHomeCartoon(position: Int) {
+//        val handler =
+//            CoroutineExceptionHandler { _, exception -> println("CoroutineExceptionHandler got $exception") }
+//        CoroutineScope(Dispatchers.Default).launch {
+//            supervisorScope {
+//                launch(handler) {
+//                    delay(1000)
+//                    throw AssertionError()
+//                }
+//                launch {
+//                    for (i in 1..20) {
+//                        Log.i(TAG, "getHomeCartoon:$i ")
+//                        delay(100)
+//                    }
+//                }
+//            }
+//        }
         if (pgLiveData.value == false) return
         pgLiveData.value = false
         val info = cartoonInfors[position]
@@ -79,7 +95,6 @@ class CartoonViewModel : ViewModel() {
     //获取漫画页面
 //    private fun pager() =
 //        viewModelScope.launch(Dispatchers.IO) {
-//            Log.i(TAG, "pagerStart: ")
 //            remote.getData(Api.url2 + "/update_$pager.shtml")
 //                .collect {
 //                    val document = Jsoup.parse(it)
@@ -102,15 +117,11 @@ class CartoonViewModel : ViewModel() {
 //                        cartoonInfors.add(cartoonInfor)
 //                    }
 //                    homeLiveData.postValue(true)
-//                    Log.i(TAG, "pagerEnd: ")
 //                }
 //        }
     //获取漫画页面
-    //onCompletion 的主要优点是其 lambda 表达式的可空参数 Throwable 可以⽤于确定流收集是正常完成还是有异 常发⽣
-    //onCompletion 操作符与 catch 不同，它不处理异常。我们可以看到前⾯的⽰例代码，异常仍然流向下游。它将被提供 给后⾯的 onCompletion 操作符，并可以由 catch 操作符处理。
     private fun pager() =
         viewModelScope.launch(Dispatchers.IO) {
-            Log.i(TAG, "pager2Start: ")
             remote.getData<CartoonInfo>(Api.url2 + "/update_$pager.shtml",
                 data = { data, flow ->
                     for (it in Jsoup.parse(data)
@@ -128,7 +139,6 @@ class CartoonViewModel : ViewModel() {
                 },
                 success = {
                     homeLiveData.postValue(true)
-                    Log.i(TAG, "pager2End: ")
                 }).collect {
                 cartoonInfors.add(it)
             }
@@ -138,6 +148,7 @@ class CartoonViewModel : ViewModel() {
     //优酷漫画
     fun getYouKu() {
         viewModelScope.launch(Dispatchers.IO) {
+            if (homeRecommendList.size > 0) homeRecommendList.clear()
             remote.getData("https://www.ykmh.com/list/post/")
                 .collect {
                     val document = Jsoup.parse(it)

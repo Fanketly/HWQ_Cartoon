@@ -61,12 +61,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         //优酷
         viewModel.getYouKu()
         viewModel.homeRecommendLiveData.observe(viewLifecycleOwner) {
-            val adapter = HomeRecommendRvAdapter(it)
-            adapter.setOnClick { p ->
-                viewModel.getHomeYouKuCartoon(p)
+            var adapter: HomeRecommendRvAdapter? = null
+            if (adapter == null) {
+                adapter = HomeRecommendRvAdapter(it)
+                adapter.setOnClick { p ->
+                    viewModel.getHomeYouKuCartoon(p)
+                }
+                b.rvHomeRecommend.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+                b.rvHomeRecommend.setUpWithLinearHORIZONTAL(adapter)
+            } else {
+                adapter.notifyDataSetChanged()
             }
-            b.rvHomeRecommend.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-            b.rvHomeRecommend.setUpWithLinearHORIZONTAL(adapter)
         }
         //轮播图
 //        if (viewModel.bannerList.size == 0)
@@ -152,6 +157,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         b.refreshCartoon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 viewModel.refreshPager()
+                viewModel.getYouKu()
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {

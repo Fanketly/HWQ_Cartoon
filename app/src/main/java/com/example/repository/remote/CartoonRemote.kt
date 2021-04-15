@@ -37,7 +37,8 @@ object CartoonRemote {
         error.postValue(it.message)
         pg.postValue(true)
     }
-
+    //onCompletion 的主要优点是其 lambda 表达式的可空参数 Throwable 可以⽤于确定流收集是正常完成还是有异 常发⽣
+    //onCompletion 操作符与 catch 不同，它不处理异常。我们可以看到前⾯的⽰例代码，异常仍然流向下游。它将被提供 给后⾯的 onCompletion 操作符，并可以由 catch 操作符处理。
     /**
      * flow用法
      * @param success 当成功时做的一些事情
@@ -55,7 +56,6 @@ object CartoonRemote {
             error.postValue(it.message)
             pg.postValue(true)
         }
-
 
 
     /**
