@@ -9,7 +9,6 @@ import android.widget.SearchView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.*
 import com.example.base.*
@@ -21,7 +20,6 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.youth.banner.indicator.CircleIndicator
 import com.youth.banner.transformer.ScaleInTransformer
-import kotlinx.coroutines.launch
 
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
@@ -73,6 +71,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 adapter.notifyDataSetChanged()
             }
         }
+
         //轮播图
 //        if (viewModel.bannerList.size == 0)
 //        viewModel.getBanner()

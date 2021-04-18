@@ -8,9 +8,6 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.*
-import android.widget.FrameLayout
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,12 +17,12 @@ import com.example.adapter.DetailRvAdapter
 import com.example.base.*
 import com.example.hwq_cartoon.App
 import com.example.hwq_cartoon.R
+import com.example.hwq_cartoon.databinding.DialogCartoonBinding
 import com.example.hwq_cartoon.databinding.FragmentDetailedBinding
 import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.HistoryInfor
 import com.example.viewModel.DetailViewModel
 import com.example.viewModel.FavouriteViewModel
-import com.google.android.material.chip.Chip
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -170,29 +167,32 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     val builder = AlertDialog.Builder(requireContext())
                     val alertDialog = builder.create()
 //                    val constraintLayout = b.root.findViewById<ConstraintLayout>(R.id.linearLayout3)
-                    val view4 =
-                        LayoutInflater.from(context)
-                            .inflate(R.layout.dialog_cartoon, null, false)
-                    val recyclerView4: RecyclerView = view4.findViewById(R.id.rvCartoon)
-                    val btnBack = view4.findViewById<ImageButton>(R.id.btnCartoondialogBack)
-                    val layTop = view4.findViewById<FrameLayout>(R.id.layCartoonDialog)
-                    val tvNum = view4.findViewById<TextView>(R.id.tvCartoonNum)
-                    val chipAuto = view4.findViewById<Chip>(R.id.chipAuto)
+                    val view4 = DialogCartoonBinding.inflate(layoutInflater, b.root, false)
+//                    val view4 =
+//                        LayoutInflater.from(context)
+//                            .inflate(R.layout.dialog_cartoon, b.root, false)
+//                    val recyclerView4: RecyclerView = view4.findViewById(R.id.rvCartoon)
+//                    val btnBack = view4.findViewById<ImageButton>(R.id.btnCartoondialogBack)
+//                    val layTop = view4.findViewById<FrameLayout>(R.id.layCartoonDialog)
+//                    val tvNum = view4.findViewById<TextView>(R.id.tvCartoonNum)
+//                    val chipAuto = view4.findViewById<Chip>(R.id.chipAuto)
+                    //图片数量
                     val num = msg4.size
+                    view4.tvCartoonNum.text = "1/$num"
                     var lastPosition = -1//记录上一个itemview
                     var job: Job? = null
                     //自动滚动
-                    chipAuto.setOnCheckedChangeListener { _, isChecked ->
-                        val autoSetting = App.autoSetting
+                    view4.chipAuto.setOnCheckedChangeListener { _, isChecked ->
                         if (isChecked) {
                             Log.i(TAG, "autoScroll: ")
+                            val autoSetting = App.autoSetting
                             job = CoroutineScope(Dispatchers.Main).launch {
                                 while (true) {
                                     if (!job!!.isActive) break
                                     delay(1000)
-                                    recyclerView4.smoothScrollBy(
+                                    view4.rvCartoon.smoothScrollBy(
                                         0,
-                                        recyclerView4.scrollY + autoSetting
+                                        view4.rvCartoon.scrollY + autoSetting
                                     )
                                 }
                             }
@@ -202,25 +202,27 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                         }
                     }
                     //判断能否加载下一话
-                    recyclerView4.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    view4.rvCartoon.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                             super.onScrolled(recyclerView, dx, dy)
                             val position =
                                 (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                             if (lastPosition == position) return
                             lastPosition = position
-                            tvNum.text = "${position + 1}/$num"
+                            view4.tvCartoonNum.text = "${position + 1}/$num"
+                            //第一部分判断是否为最后一张图片 第二部分判断集数是否为最后一集
                             if (position + 1 == num && viewModel.msg3List.size - 1 > historyInfor!!.mark) {
-                                chipAuto.isChecked = false//取消滚动
+                                view4.chipAuto.isChecked = false//取消滚动
                                 AlertDialog.Builder(requireContext()).setMessage("是否加载下一话")
                                     .setNegativeButton("否") { d, _ ->
                                         d.dismiss()
                                     }.setPositiveButton("是") { d, _ ->
-                                        alertDialog.setOnDismissListener { }
-                                        viewModel.onMsg4Dismiss()
-                                        alertDialog.dismiss()
                                         shortToast("正在加载下一页")
                                         d.dismiss()
+                                        alertDialog.setOnDismissListener(null)
+                                        alertDialog.dismiss()
+//                                        alertDialog.setOnDismissListener { }
+                                        viewModel.onMsg4Dismiss()
                                         update(historyInfor!!.mark + 1)
                                     }.show()
                             }
@@ -231,28 +233,32 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                         DetailImgRvAdapter(msg4)
                     detailImgRvAdapter.setOnClick {
                         Log.i(TAG, "onViewCreated: ")
-                        if (layTop.visibility == View.VISIBLE)
-                            layTop.visibility = View.GONE
-                        else layTop.visibility = View.VISIBLE
+                        if (view4.layCartoonDialog.visibility == View.VISIBLE)
+                            view4.layCartoonDialog.visibility = View.GONE
+                        else view4.layCartoonDialog.visibility = View.VISIBLE
                     }
-                    recyclerView4.setUpWithLinear(detailImgRvAdapter)
+                    view4.rvCartoon.setUpWithLinear(detailImgRvAdapter)
                     alertDialog.setOnDismissListener {
+                        Log.i(TAG, "Dialog4Dismiss: ")
                         viewModel.onMsg4Dismiss()
                         Runtime.getRuntime().gc()
                     }
                     with(alertDialog) {
-                        //设置window背景，默认的背景会有Padding值，不能全屏。当然不一定要是透明，你可以设置其他背景，替换默认的背景即可。
-                        window!!.setBackgroundDrawable(ColorDrawable(Color.BLACK))
-//                        一定要在setContentView之后调用，否则无效
-                        window!!.setLayout(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT
-                        )
-                        btnBack.setOnClickListener {
-                            chipAuto.isChecked = false//取消滚动
+                        setCanceledOnTouchOutside(false)
+                        with(window!!) {
+                            decorView.setPadding(0, 0, 0, 0)
+                            //设置window背景，默认的背景会有Padding值，不能全屏。当然不一定要是透明，你可以设置其他背景，替换默认的背景即可。
+                            setBackgroundDrawable(ColorDrawable(Color.BLACK))
+                            setLayout(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT
+                            )
+                        }
+                        view4.btnCartoondialogBack.setOnClickListener {
+                            view4.chipAuto.isChecked = false//取消滚动
                             dismiss()
                         }
-                        setView(view4)
+                        setView(view4.root)
                         show()
                     }
                     viewModel.pgLiveData.value = true
