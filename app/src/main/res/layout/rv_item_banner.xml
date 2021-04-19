@@ -5,7 +5,7 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:src="@drawable/guangao"
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

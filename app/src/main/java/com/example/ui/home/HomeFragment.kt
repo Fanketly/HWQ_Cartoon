@@ -72,11 +72,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 adapter.notifyDataSetChanged()
             }
         }
-
         //轮播图
-//        if (viewModel.bannerList.size == 0)
-//        viewModel.getBanner()
-//        viewModel.bannerLiveData.observe(viewLifecycleOwner) { list ->
         b.bannerHome.apply {
             setPageTransformer(ScaleInTransformer())
             setBannerRound(10f)

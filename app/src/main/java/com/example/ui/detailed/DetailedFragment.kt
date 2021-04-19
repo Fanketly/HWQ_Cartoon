@@ -11,7 +11,7 @@ import android.view.*
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
 import com.example.adapter.DetailImgRvAdapter
 import com.example.adapter.DetailRvAdapter
 import com.example.base.*
@@ -145,9 +145,10 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             b.tvDetailUpdate.text = "最后更新时间:${viewModel.update}"
             b.tvDetailContent.movementMethod = ScrollingMovementMethod()
             if (!img.isNullOrEmpty())
-                Glide.with(requireContext()).asDrawable().skipMemoryCache(true).centerCrop()
-                    .load(img)
-                    .into(b.imgDetailBackground)
+                b.imgDetailBackground.load(img)
+//                Glide.with(requireContext()).asDrawable().skipMemoryCache(true).centerCrop()
+//                    .load(img)
+//                    .into(b.imgDetailBackground)
             //集数Rv,判断是否在喜爱中
             favouriteDialogRvAdapter = if (favouriteInfor != null)
                 DetailRvAdapter(

@@ -1,7 +1,7 @@
 package com.example.adapter
 
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
+import coil.load
 import com.example.base.ViewBindingRvAdapter
 import com.example.hwq_cartoon.databinding.CartoonRvItemBinding
 import com.example.repository.model.CartoonInfo
@@ -26,11 +26,13 @@ class HomeRvAdapter(list: List<CartoonInfo>) :
 //                img = b.imgCartoon
 //            }
         }
-        if (d.img.isNotEmpty()) {
-            Glide.with(b.imgCartoon).asDrawable().load(d.img)
-                .skipMemoryCache(true).into(b.imgCartoon)
-        }
         b.tvCartoonType.text = d.type
+        if (d.img.isEmpty()) {
+            return
+//            Glide.with(b.imgCartoon).asDrawable().load(d.img)
+//                .skipMemoryCache(true).into(b.imgCartoon)
+        }
+        b.imgCartoon.load(d.img)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH<CartoonRvItemBinding> {

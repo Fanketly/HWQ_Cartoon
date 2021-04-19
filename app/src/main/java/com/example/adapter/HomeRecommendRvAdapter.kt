@@ -1,7 +1,7 @@
 package com.example.adapter
 
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
+import coil.load
 import com.example.base.ViewBindingRvAdapter
 import com.example.hwq_cartoon.databinding.RvItemHomeRecommendBinding
 import com.example.repository.model.CartoonInfo
@@ -21,10 +21,11 @@ class HomeRecommendRvAdapter(list: List<CartoonInfo>) :
                 p
             )
         }
-        if (d.img.isNotEmpty()) {
-            Glide.with(b.imgCartoon).asDrawable().load(d.img)
-                .skipMemoryCache(true).into(b.imgCartoon)
-        }
+        if (d.img.isEmpty()) return
+        b.imgCartoon.load(d.img)
+//            Glide.with(b.imgCartoon).asDrawable().load(d.img)
+//                .skipMemoryCache(true).into(b.imgCartoon)
+
     }
 
     override fun onCreateViewHolder(

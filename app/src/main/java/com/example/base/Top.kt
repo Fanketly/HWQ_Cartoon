@@ -10,7 +10,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import coil.load
 
 /**
  * Created by Android Studio.
@@ -43,7 +43,8 @@ val AUTO = intPreferencesKey("auto")
 //    map
 //}
 @BindingAdapter("setImg")
-fun setImg(imageView: ImageView, url: Any) {
-    Glide.with(imageView).asDrawable().skipMemoryCache(true).load(url).into(imageView)
+fun setImg(imageView: ImageView, url: String) {
+    imageView.load(url)
+//    Glide.with(imageView).asDrawable().skipMemoryCache(true).load(url).into(imageView)
 }
 

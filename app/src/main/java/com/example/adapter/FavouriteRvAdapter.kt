@@ -1,7 +1,7 @@
 package com.example.adapter
 
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
+import coil.load
 import com.example.base.ViewBindingRvAdapter
 import com.example.hwq_cartoon.databinding.RvItemFavouriteBinding
 import com.example.repository.model.FavouriteInfor
@@ -24,8 +24,9 @@ class FavouriteRvAdapter(list: List<FavouriteInfor>) :
             }
         }
         if (d.imgUrl.isNullOrEmpty()) return
-        Glide.with(b.imgCartoon).asDrawable().load(d.imgUrl).skipMemoryCache(true)
-            .into(b.imgCartoon)
+        b.imgCartoon.load(d.imgUrl)
+//        Glide.with(b.imgCartoon).asDrawable().load(d.imgUrl).skipMemoryCache(true)
+//            .into(b.imgCartoon)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH<RvItemFavouriteBinding> {

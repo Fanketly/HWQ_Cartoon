@@ -73,9 +73,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     //jsoup
     implementation 'org.jsoup:jsoup:1.13.1'
-    //glide
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+    //Coil
+    implementation("io.coil-kt:coil:1.2.0")
     //refresh
     implementation 'com.scwang.smart:refresh-layout-kernel:2.0.1'      //核心必须依赖
     implementation 'com.scwang.smart:refresh-header-radar:2.0.1'       //雷达刷新头
@@ -93,6 +92,8 @@ dependencies {
 //    implementation "com.github.skydoves:transformationlayout:1.0.6"
     //binding https://github.com/hi-dhl/Binding/blob/main/doc/README_CN.md 简化viewbinding和databinding
 //    implementation 'com.hi-dhl:binding:1.0.1'
-
+    //glide
+//    implementation 'com.github.bumptech.glide:glide:4.12.0'
+//    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 }
 
