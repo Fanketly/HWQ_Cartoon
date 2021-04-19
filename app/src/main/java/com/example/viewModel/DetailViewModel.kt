@@ -1,6 +1,7 @@
 package com.example.viewModel
 
 import android.util.Log
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.base.TAG
@@ -25,16 +26,21 @@ import kotlin.plus
  * Date: 2021/3/23
  * Time: 21:16
  */
-class DetailViewModel : ViewModel() {
+class DetailViewModel @ViewModelInject constructor(
+    private val requestUtil: RequestUtil,
+    private val remote: CartoonRemote
+) : ViewModel() {
 
-    private val requestUtil = RequestUtil
+    //    private val requestUtil = RequestUtil
     val content: String?
         get() = requestUtil.content
     val update: String?
         get() = requestUtil.update
+
     //msg3集数
     val msg3List: MutableList<CartoonInfo> by lazy { requestUtil.msg3List }
-    private val remote = CartoonRemote
+
+    //    private val remote = CartoonRemote
     val pgLiveData = remote.pgLiveData
     private val errorLiveData = remote.error
     val bottomLiveData = remote.bottomLiveData

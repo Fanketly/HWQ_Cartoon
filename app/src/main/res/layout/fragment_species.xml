@@ -1,8 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     tools:context="com.example.ui.classification.SpeciesFragment">
 
@@ -19,20 +19,18 @@
         android:id="@+id/rvSpeciesTop"
         android:layout_width="50dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:overScrollMode="ifContentScrolls"
-        android:scrollbars="vertical" />
+         />
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/refreshCartoon"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:srlAccentColor="@color/header_background"
-        app:srlHeaderTriggerRate="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="60dp">
+        android:layout_marginStart="60dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:srlAccentColor="@color/header_background"
+        app:srlHeaderTriggerRate="1">
 
         <com.scwang.smart.refresh.header.BezierRadarHeader
             android:layout_width="match_parent"

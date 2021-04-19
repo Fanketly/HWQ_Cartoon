@@ -18,7 +18,9 @@ import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSearchBinding
 import com.example.repository.model.CartoonInfo
 import com.example.viewModel.SearchViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     private val viewModel: SearchViewModel by activityViewModels()
     private var name = ""

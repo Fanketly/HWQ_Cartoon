@@ -1,6 +1,7 @@
 package com.example.viewModel
 
 import android.util.Log
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,16 +26,20 @@ import org.jsoup.Jsoup
  * Date: 2021/3/5
  * Time: 17:04
  */
-class SpeciesViewModel : ViewModel() {
+class SpeciesViewModel @ViewModelInject constructor(
+    private val requestUtil: RequestUtil,
+    private val remote: CartoonRemote
+) : ViewModel() {
     val speciesList: MutableList<FavouriteInfor> by lazy { ArrayList() }
     val typeList: MutableList<SpeciesInfo> by lazy { ArrayList() }
     val speciesLiveData by lazy { MutableLiveData<Boolean>() }
-    private val remote = CartoonRemote
+
+    //    private val remote = CartoonRemote
     private val pgLiveData = remote.pgLiveData
     private val errorLiveData = remote.error
 
     //request
-    private val requestUtil = RequestUtil
+//    private val requestUtil = RequestUtil
 
     //加载分类
     fun getSpeciesType() {

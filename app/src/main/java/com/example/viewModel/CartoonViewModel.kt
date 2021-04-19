@@ -1,6 +1,7 @@
 package com.example.viewModel
 
 import android.util.Log
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,10 +11,10 @@ import com.example.repository.model.CartoonInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.RequestUtil
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
-import java.lang.AssertionError
 
 /**
  * Created by Android Studio.
@@ -22,16 +23,16 @@ import java.lang.AssertionError
  * Time: 20:35
  */
 
-class CartoonViewModel : ViewModel() {
+class CartoonViewModel @ViewModelInject constructor(
+    private val requestUtil:RequestUtil,
+    private val remote:CartoonRemote
+) : ViewModel() {
     init {
-        Log.i(TAG, "CREATE: ")
-
+        Log.i("CREATE","CartoonViewModel_: ")
     }
 
     //request
-    private val requestUtil = RequestUtil
-    val bundle
-        get() = requestUtil.bundle
+//    private val requestUtil = RequestUtil
     val msg3LiveData
         get() = requestUtil.msg3LiveData
 
@@ -50,7 +51,7 @@ class CartoonViewModel : ViewModel() {
     val bannerList by lazy { arrayListOf(R.drawable.lzsm1, R.drawable.lzsy2, R.drawable.am3) }
 
     //remote
-    private val remote = CartoonRemote
+//    private val remote = CartoonRemote
     val errorLiveData = remote.error
 
     //加载监听
@@ -92,33 +93,7 @@ class CartoonViewModel : ViewModel() {
         requestUtil.loadCartoon(s)
     }
 
-    //获取漫画页面
-//    private fun pager() =
-//        viewModelScope.launch(Dispatchers.IO) {
-//            remote.getData(Api.url2 + "/update_$pager.shtml")
-//                .collect {
-//                    val document = Jsoup.parse(it)
-//                    val element = document.getElementsByClass("newpic_content")
-//                    val elements = element[0].getElementsByClass("boxdiv1")
-//                    var element1: Element
-//                    var element2: Element
-//                    var element3: Element
-//                    var cartoonInfor: CartoonInfo
-//                    for (e in elements) {
-//                        element1 = e.select(".picborder a").first() //图片
-//                        element2 = e.select(".picborder img").first()
-//                        element3 = e.select(".pictext li")[2]
-//                        cartoonInfor = CartoonInfo(
-//                            element1.attr("title"),
-//                            element1.attr("href"),
-//                            element2.attr("src"),
-//                            element3.text()
-//                        )
-//                        cartoonInfors.add(cartoonInfor)
-//                    }
-//                    homeLiveData.postValue(true)
-//                }
-//        }
+
     //获取漫画页面
     private fun pager() =
         viewModelScope.launch(Dispatchers.IO) {

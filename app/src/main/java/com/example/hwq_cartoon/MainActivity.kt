@@ -19,12 +19,14 @@ import com.example.ui.me.MeFragment
 import com.example.ui.search.SearchFragment
 import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.SearchViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     //viewModel
     private val viewModel: CartoonViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
+
     //fragment
     private lateinit var fragmentManager: FragmentManager
     private val homeFragment: HomeFragment by lazy { HomeFragment() }
@@ -71,9 +73,9 @@ class MainActivity : AppCompatActivity() {
         //集数Detail监听
         viewModel.msg3LiveData.observe(this) {
             b.bottomNav.visibility = View.GONE
-            val bundle = viewModel.bundle
+//            val bundle = viewModel.bundle
 //            if (bundle.getInt("mark") == R.id.homeFragment) return@observe
-            addWithBundle(bundle, DetailedFragment::class.java)
+            addWithBundle(it, DetailedFragment::class.java)
         }
         //Search监听
         searchViewModel.searchLiveData.observe(this) {

@@ -18,8 +18,9 @@ import com.example.repository.model.SpeciesInfo
 import com.example.viewModel.SpeciesViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
     private var adapterTop: DataBindingAdapter<SpeciesInfo>? = null
     private val viewModel: SpeciesViewModel by activityViewModels()

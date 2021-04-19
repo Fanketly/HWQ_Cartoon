@@ -22,13 +22,4 @@ object NetworkUtils {
         return call.execute().body?.string() ?: return ""
     }
 
-
-//    fun send(url: String): ByteArray? {
-//        Log.i("TAG", "send: $url")
-//        val request: Request = Request.Builder()
-//            .url(url)
-//            .build()
-//        val call = okHttpClient.newCall(request)
-//        return call.execute().body?.bytes()
-//    }
 }

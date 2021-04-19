@@ -1,6 +1,7 @@
 package com.example.viewModel
 
 import android.util.Log
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.base.TAG
@@ -20,9 +21,13 @@ import com.example.util.RequestUtil
  * Time: 20:32
  * 历史和喜爱数据库
  */
-class FavouriteViewModel : ViewModel() {
-    private val historyDB = HistoryDB()
-    private val favouriteDB = CartoonDB()
+class FavouriteViewModel @ViewModelInject constructor(
+    private val requestUtil: RequestUtil,
+    private val remote: CartoonRemote,
+    private val historyDB: HistoryDB,
+    private val favouriteDB: CartoonDB
+) : ViewModel() {
+
     val historyList: MutableList<HistoryInfor> = mutableListOf()
     val favouriteList: MutableList<FavouriteInfor> = mutableListOf()
     val likesLiveData = MutableLiveData<Boolean>()
@@ -33,10 +38,10 @@ class FavouriteViewModel : ViewModel() {
     val favouriteLivaData = MutableLiveData<Int>()
 
     //加载监听
-    private val pgLiveData = CartoonRemote.pgLiveData
+    private val pgLiveData = remote.pgLiveData
 
     //request
-    private val requestUtil = RequestUtil
+//    private val requestUtil = RequestUtil
 
     init {
         historyList.addAll(historyDB.loadAll())

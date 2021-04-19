@@ -3,6 +3,8 @@ package com.example.repository.local
 import com.example.hwq_cartoon.App
 import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.FavouriteInforDao
+import dagger.hilt.android.scopes.ActivityScoped
+import javax.inject.Inject
 
 /**
  * Created by Android Studio.
@@ -10,7 +12,8 @@ import com.example.repository.model.FavouriteInforDao
  * Date: 2021/2/10
  * Time: 22:11
  */
-class CartoonDB {
+@ActivityScoped
+class CartoonDB @Inject constructor(){
     private val favouriteInfoDao: FavouriteInforDao = App.favouriteSession.favouriteInforDao
 
 

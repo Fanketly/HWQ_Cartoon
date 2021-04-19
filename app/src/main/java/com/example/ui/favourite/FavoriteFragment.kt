@@ -12,7 +12,9 @@ import com.example.adapter.FavouriteRvAdapter
 import com.example.base.setUpWithGrid
 import com.example.hwq_cartoon.databinding.FragmentFavoriteBinding
 import com.example.viewModel.FavouriteViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FavoriteFragment : Fragment() {
     private var favouriteRvAdapter: FavouriteRvAdapter? = null
     private var b: FragmentFavoriteBinding? = null

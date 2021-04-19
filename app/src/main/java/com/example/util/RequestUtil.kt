@@ -7,9 +7,11 @@ import com.example.base.TAG
 import com.example.repository.model.CartoonInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import org.jsoup.Jsoup
+import javax.inject.Inject
 
 /**
  * Created by Android Studio.
@@ -17,23 +19,23 @@ import org.jsoup.Jsoup
  * Date: 2021/4/1
  * Time: 21:16
  */
-
-object RequestUtil {
+@ActivityScoped
+class RequestUtil @Inject constructor(val remote: CartoonRemote) {
     //msg3集数
     val msg3List: MutableList<CartoonInfo> by lazy { ArrayList() }
-    private val msg3liveData by lazy { MutableLiveData<Boolean>() }
+    private val msg3liveData by lazy { MutableLiveData<Bundle>() }
     val msg3LiveData
         get() = msg3liveData
     var content: String? = null
     var update: String? = null
 
     //remote
-    private val remote = CartoonRemote
+//    private val remote = CartoonRemote
     private val errorLiveData = remote.error
     private val pgLiveData = remote.pgLiveData//加载监听
 
     //跳转传递数据
-    val bundle by lazy { Bundle() }
+    private val bundle by lazy { Bundle() }
     fun putBundle(name: String, img: String, href: String, mark: Int) {
         if (bundle.size() > 0)
             bundle.clear()
@@ -84,7 +86,7 @@ object RequestUtil {
         }
 //        if (msg3List.size > 0) {
 //            msg3List.reverse()
-        msg3LiveData.postValue(true)
+        msg3liveData.postValue(bundle)
 //        }
         delay(300)
         pgLiveData.postValue(true)
@@ -110,7 +112,7 @@ object RequestUtil {
             )
             msg3List.add(cartoonInfor)
         }
-        if (msg3List.size > 0) msg3LiveData.postValue(true)
+        if (msg3List.size > 0) msg3liveData.postValue(bundle)
         delay(300)
         pgLiveData.postValue(true)
     }

@@ -11,7 +11,9 @@ import com.example.adapter.SpacesItemDecoration
 import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.databinding.FragmentHistoryBinding
 import com.example.viewModel.FavouriteViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HistoryFragment : Fragment() {
     private val viewModel: FavouriteViewModel by activityViewModels()
     private var b: FragmentHistoryBinding? = null

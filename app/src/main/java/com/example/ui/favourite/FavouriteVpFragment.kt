@@ -12,18 +12,20 @@ import com.example.base.TAG
 import com.example.hwq_cartoon.databinding.FragmentVpBinding
 import com.example.viewModel.FavouriteViewModel
 import com.google.android.material.tabs.TabLayout
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FavouriteVpFragment : BaseFragment<FragmentVpBinding>() {
     private val viewModel: FavouriteViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val favouritevpAdapter = FavouriteVpAdapter(
+        val favouriteVpAdapter = FavouriteVpAdapter(
             this,
             listOf(FavoriteFragment(), HistoryFragment())
         )
         b.vpFavourite.offscreenPageLimit = 1
-        b.vpFavourite.adapter = favouritevpAdapter
+        b.vpFavourite.adapter = favouriteVpAdapter
         b.tabFavourite.addTab(b.tabFavourite.newTab().setText("追漫"))
         b.tabFavourite.addTab(b.tabFavourite.newTab().setText("历史"))
         b.tvVpFavouriteClear.setOnClickListener {

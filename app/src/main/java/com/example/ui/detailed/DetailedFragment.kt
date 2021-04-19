@@ -23,6 +23,7 @@ import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.HistoryInfor
 import com.example.viewModel.DetailViewModel
 import com.example.viewModel.FavouriteViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,7 +35,7 @@ import java.util.*
  *     对点击的漫画保存到历史数据库，追漫的保存到追漫数据库
  * **/
 
-
+@AndroidEntryPoint
 class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
 
     private lateinit var detailImgRvAdapter: DetailImgRvAdapter

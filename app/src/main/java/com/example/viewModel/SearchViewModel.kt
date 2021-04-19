@@ -1,6 +1,7 @@
 package com.example.viewModel
 
 import android.util.Log
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.base.TAG
@@ -22,16 +23,19 @@ import org.jsoup.Jsoup
  * Date: 2021/3/5
  * Time: 19:58
  */
-class SearchViewModel : ViewModel() {
+class SearchViewModel @ViewModelInject constructor(
+    private val requestUtil:RequestUtil,
+    private val remote:CartoonRemote
+): ViewModel() {
     //remote
-    private val remote = CartoonRemote
+//    private val remote = CartoonRemote
     private val errorLiveData = remote.error
     val bottomLiveData
         get() = remote.bottomLiveData
     val pgLiveData = remote.pgLiveData//加载监听
 
     //request
-    private val requestUtil = RequestUtil
+//    private val requestUtil = RequestUtil
 
     /**判断是否在searchFragment**/
     var isSearchFragment = false

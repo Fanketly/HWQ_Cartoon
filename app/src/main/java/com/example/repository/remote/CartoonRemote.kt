@@ -1,12 +1,15 @@
 package com.example.repository.remote
 
+import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.MutableLiveData
 import com.example.util.NetworkUtils
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
+import javax.inject.Inject
 
 /**
  * Created by Android Studio.
@@ -15,8 +18,8 @@ import kotlinx.coroutines.flow.onCompletion
  * Time: 19:18
  */
 
-
-object CartoonRemote {
+@ActivityScoped
+class CartoonRemote @Inject constructor() {
     private val errorLiveData = MutableLiveData<String>()
     private val pg = MutableLiveData<Boolean>()
     private val bottom = MutableLiveData<Boolean>()
