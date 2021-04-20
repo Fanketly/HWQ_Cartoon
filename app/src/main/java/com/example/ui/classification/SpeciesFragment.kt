@@ -50,7 +50,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
         viewModel.speciesLiveData.observe(viewLifecycleOwner) {
             if (adapter == null) {
                 adapterTop = DataBindingAdapter(
-                    viewModel.typeList,
+                    viewModel.typesList,
                     BR.type,
                     R.layout.rv_item_species_top
                 )
@@ -69,9 +69,9 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
                     }
                     b.rvSpeciesTop.setUpWithLinear(this)
                 }
-                adapter = FavouriteRvAdapter(viewModel.speciesList)
+                adapter = FavouriteRvAdapter(it)
                 b.rvSpecies.setUpWithGrid(adapter, 3)
-                adapter?.setOnClick(onclick = { viewModel.getSpeciesCartoon(it) })
+                adapter?.setOnClick(onclick = { p -> viewModel.getSpeciesCartoon(p) })
             } else {
                 b.refreshCartoon.closeHeaderOrFooter()
                 adapter?.notifyDataSetChanged()

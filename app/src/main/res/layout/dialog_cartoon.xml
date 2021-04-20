@@ -46,18 +46,31 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/n_m"
-            android:textColor="#D8D8D8" />
+            android:textColor="@color/detail_tv_white" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipAuto"
-            style="@style/Widget.MaterialComponents.Chip.Filter"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
             android:layout_marginEnd="10dp"
-            android:text="自动滚动"
-            app:checkedIconTint="@color/white"
-            android:textColor="@color/white" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/detail_auto"
+                android:layout_marginEnd="5dp"
+                android:textColor="@color/detail_tv_white" />
+
+            <com.bitvale.switcher.SwitcherX
+                android:id="@+id/chipAuto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:checked="false"
+                app:switcher_off_color="@color/species_hui" />
+        </LinearLayout>
 
 
     </FrameLayout>

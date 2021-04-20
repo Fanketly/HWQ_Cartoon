@@ -30,9 +30,11 @@ class SpeciesViewModel @ViewModelInject constructor(
     private val requestUtil: RequestUtil,
     private val remote: CartoonRemote
 ) : ViewModel() {
-    val speciesList: MutableList<FavouriteInfor> by lazy { ArrayList() }
-    val typeList: MutableList<SpeciesInfo> by lazy { ArrayList() }
-    val speciesLiveData by lazy { MutableLiveData<Boolean>() }
+    private val speciesList: MutableList<FavouriteInfor> by lazy { ArrayList() }
+    private val typeList: MutableList<SpeciesInfo> by lazy { ArrayList() }
+    val typesList
+        get() = typeList
+    val speciesLiveData by lazy { MutableLiveData<List<FavouriteInfor>>() }
 
     //    private val remote = CartoonRemote
     private val pgLiveData = remote.pgLiveData
@@ -44,7 +46,6 @@ class SpeciesViewModel @ViewModelInject constructor(
     //加载分类
     fun getSpeciesType() {
         if (typeList.size > 0) {//判断是否有加载过分类，有就加载现有数据
-            speciesLiveData.value = true
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
@@ -125,7 +126,7 @@ class SpeciesViewModel @ViewModelInject constructor(
                 )
             )
         }
-        speciesLiveData.postValue(true)
+        speciesLiveData.postValue(speciesList)
     }
 
     //解析分类数据

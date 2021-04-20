@@ -57,25 +57,25 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         viewModel.getHomeCartoon()
         var homeRvAdapter: HomeRvAdapter? = null
+        var homeRecommendRvAdapter: HomeRecommendRvAdapter? = null
         //优酷
         viewModel.getYouKu()
         viewModel.homeRecommendLiveData.observe(viewLifecycleOwner) {
-            var adapter: HomeRecommendRvAdapter? = null
-            if (adapter == null) {
-                adapter = HomeRecommendRvAdapter(it)
-                adapter.setOnClick { p ->
+            if (homeRecommendRvAdapter == null) {
+                homeRecommendRvAdapter = HomeRecommendRvAdapter(it)
+                homeRecommendRvAdapter?.setOnClick { p ->
                     viewModel.getHomeYouKuCartoon(p)
                 }
                 b.rvHomeRecommend.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-                b.rvHomeRecommend.setUpWithLinearHORIZONTAL(adapter)
+                b.rvHomeRecommend.setUpWithLinearHORIZONTAL(homeRecommendRvAdapter)
             } else {
-                adapter.notifyDataSetChanged()
+                homeRecommendRvAdapter?.notifyDataSetChanged()
             }
         }
         //轮播图
         b.bannerHome.apply {
             setPageTransformer(ScaleInTransformer())
-            setBannerRound(10f)
+            setBannerRound(20f)
             addBannerLifecycleObserver(this@HomeFragment)
             adapter = BannerImageAdapter(viewModel.bannerList)
             indicator = CircleIndicator(context)
@@ -145,6 +145,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 }
             } else {
                 b.rvHome.scrollToPosition(0)
+//                viewModel.refreshPager()
+//                viewModel.getYouKu()
                 b.refreshCartoon.autoRefresh()
             }
         })

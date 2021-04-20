@@ -17,4 +17,7 @@
     </string-array>
 
     <string name="tran1">mark</string>
+    <string name="detail_auto">自动滚动</string>
+    <string name="home_update">最近更新</string>
+    <string name="home_yk_recommended">优酷漫画推荐</string>
 </resources>

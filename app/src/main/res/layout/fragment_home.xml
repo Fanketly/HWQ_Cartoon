@@ -5,15 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <SearchView
-        android:id="@+id/searchHome"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/theme_blue"
-        android:closeIcon="@drawable/ic_baseline_close_24"
-        android:goIcon="@drawable/ic_baseline_chevron_right_24"
-        android:queryHint="请输入漫画名"
-        android:searchIcon="@drawable/ic_baseline_search_24" />
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/refreshCartoon"
@@ -36,7 +27,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/barHome"
                 android:layout_width="match_parent"
@@ -55,6 +45,21 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            app:cardCornerRadius="10dp">
+
+
+                            <SearchView
+                                android:id="@+id/searchHome"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:searchIcon="@drawable/ic_baseline_search_24" />
+                        </androidx.cardview.widget.CardView>
 
                         <com.youth.banner.Banner
                             android:id="@+id/bannerHome"
@@ -65,10 +70,11 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="27dp"
+                            android:layout_marginTop="10dp"
                             android:background="@color/white"
                             android:drawablePadding="6dp"
                             android:paddingStart="10dp"
-                            android:text="优酷漫画推荐"
+                            android:text="@string/home_yk_recommended"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             app:drawableStartCompat="@drawable/recommend" />
@@ -87,11 +93,12 @@
                             android:paddingStart="10dp"
                             android:paddingTop="5dp"
                             android:paddingBottom="6dp"
-                            android:text="最近更新"
+                            android:text="@string/home_update"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             app:drawableStartCompat="@drawable/update" />
                     </LinearLayout>
+
 
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>

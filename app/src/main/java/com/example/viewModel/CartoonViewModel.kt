@@ -24,11 +24,11 @@ import org.jsoup.Jsoup
  */
 
 class CartoonViewModel @ViewModelInject constructor(
-    private val requestUtil:RequestUtil,
-    private val remote:CartoonRemote
+    private val requestUtil: RequestUtil,
+    private val remote: CartoonRemote
 ) : ViewModel() {
     init {
-        Log.i("CREATE","CartoonViewModel_: ")
+        Log.i("CREATE", "CartoonViewModel_: ")
     }
 
     //request
@@ -92,7 +92,6 @@ class CartoonViewModel @ViewModelInject constructor(
         }
         requestUtil.loadCartoon(s)
     }
-
 
     //获取漫画页面
     private fun pager() =

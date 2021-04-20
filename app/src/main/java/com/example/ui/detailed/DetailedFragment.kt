@@ -184,8 +184,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     var lastPosition = -1//记录上一个itemview
                     var job: Job? = null
                     //自动滚动
-                    view4.chipAuto.setOnCheckedChangeListener { _, isChecked ->
-                        if (isChecked) {
+                    view4.chipAuto.setOnCheckedChangeListener {
+                        if (it) {
                             Log.i(TAG, "autoScroll: ")
                             val autoSetting = App.autoSetting
                             job = CoroutineScope(Dispatchers.Main).launch {
@@ -203,6 +203,25 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             job!!.cancel()
                         }
                     }
+//                    view4.chipAuto.setOnCheckedChangeListener { _, isChecked ->
+//                        if (isChecked) {
+//                            Log.i(TAG, "autoScroll: ")
+//                            val autoSetting = App.autoSetting
+//                            job = CoroutineScope(Dispatchers.Main).launch {
+//                                while (true) {
+//                                    if (!job!!.isActive) break
+//                                    delay(1000)
+//                                    view4.rvCartoon.smoothScrollBy(
+//                                        0,
+//                                        view4.rvCartoon.scrollY + autoSetting
+//                                    )
+//                                }
+//                            }
+//                        } else {
+//                            Log.i(TAG, "autoCancel: ")
+//                            job!!.cancel()
+//                        }
+//                    }
                     //判断能否加载下一话
                     view4.rvCartoon.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -214,7 +233,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             view4.tvCartoonNum.text = "${position + 1}/$num"
                             //第一部分判断是否为最后一张图片 第二部分判断集数是否为最后一集
                             if (position + 1 == num && viewModel.msg3List.size - 1 > historyInfor!!.mark) {
-                                view4.chipAuto.isChecked = false//取消滚动
+//                                view4.chipAuto.isChecked = false//取消滚动
+                                view4.chipAuto.setChecked(false)
                                 AlertDialog.Builder(requireContext()).setMessage("是否加载下一话")
                                     .setNegativeButton("否") { d, _ ->
                                         d.dismiss()
@@ -257,7 +277,8 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             )
                         }
                         view4.btnCartoondialogBack.setOnClickListener {
-                            view4.chipAuto.isChecked = false//取消滚动
+//                            view4.chipAuto.isChecked = false//取消滚动
+                            view4.chipAuto.setChecked(false)
                             dismiss()
                         }
                         setView(view4.root)
