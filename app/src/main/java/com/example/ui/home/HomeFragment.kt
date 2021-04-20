@@ -103,11 +103,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         //搜索栏
         b.searchHome.apply {
             isSubmitButtonEnabled = true
-            val id: Int = this.context.resources
-                .getIdentifier("android:id/search_src_text", null, null)
-            val tv = findViewById<TextView>(id)
-            tv.setTextColor(Color.WHITE)
-            tv.setHintTextColor(ContextCompat.getColor(context, R.color.home_background))
+//            val id: Int = this.context.resources
+//                .getIdentifier("android:id/search_src_text", null, null)
+//            val tv = findViewById<TextView>(id)
+//            tv.setTextColor(Color.WHITE)
+//            tv.setHintTextColor(ContextCompat.getColor(context, R.color.home_background))
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
                     isIconified = true

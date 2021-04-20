@@ -1,11 +1,11 @@
 package com.example.ui.search
 
-import android.graphics.Color
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
-import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.DataBindingAdapter
@@ -73,16 +73,22 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                 }
             }
         }
+        val inputMethodManager: InputMethodManager =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         //search
         b.searchSearch.apply {
-            val id: Int = context.resources
-                .getIdentifier("android:id/search_src_text", null, null)
-            val tv = findViewById<TextView>(id)
-            tv.setTextColor(Color.WHITE)
+//            val id: Int = context.resources
+//                .getIdentifier("android:id/search_src_text", null, null)
+//            val tv = findViewById<TextView>(id)
+//            tv.setTextColor(Color.WHITE)
             isSubmitButtonEnabled = true
 //            isIconifiedByDefault = false
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
+                    inputMethodManager.hideSoftInputFromWindow(
+                        windowToken,
+                        InputMethodManager.HIDE_NOT_ALWAYS
+                    )
                     if (name != p0) {
                         name = p0!!
                         viewModel.clearSearchList()
