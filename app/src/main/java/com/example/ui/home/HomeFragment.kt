@@ -1,18 +1,14 @@
 package com.example.ui.home
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.*
 import com.example.base.*
-import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentHomeBinding
 import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.SearchViewModel
@@ -22,6 +18,7 @@ import com.youth.banner.indicator.CircleIndicator
 import com.youth.banner.transformer.ScaleInTransformer
 import dagger.hilt.android.AndroidEntryPoint
 
+//dmzj漫画完整地址在RequestUtil的loadCartoon
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private val viewModel: CartoonViewModel by activityViewModels()
@@ -103,11 +100,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         //搜索栏
         b.searchHome.apply {
             isSubmitButtonEnabled = true
-//            val id: Int = this.context.resources
-//                .getIdentifier("android:id/search_src_text", null, null)
-//            val tv = findViewById<TextView>(id)
-//            tv.setTextColor(Color.WHITE)
-//            tv.setHintTextColor(ContextCompat.getColor(context, R.color.home_background))
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(p0: String?): Boolean {
                     isIconified = true

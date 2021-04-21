@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.adapter.HistoryRvAdapter
 import com.example.adapter.SpacesItemDecoration
 import com.example.base.setUpWithLinear
@@ -33,12 +34,16 @@ class HistoryFragment : Fragment() {
             addItemDecoration(SpacesItemDecoration(30))
             setUpWithLinear(adapter)
         }
+        //-1 为全部刷新 -2为添加 其他为局部刷新
         viewModel.historyLivaData.observe(viewLifecycleOwner) {
-            if (it == -1) {
-                adapter.notifyDataSetChanged()
-                return@observe
+            when (it) {
+                -1 -> {
+                    adapter.notifyDataSetChanged()
+                }
+                else -> {
+                    adapter.notifyItemChanged(it)
+                }
             }
-            adapter.notifyItemChanged(it)
         }
         adapter.setOnClick {
             viewModel.historyGet(it)

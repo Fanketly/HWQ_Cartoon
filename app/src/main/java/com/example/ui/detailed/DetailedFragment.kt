@@ -43,10 +43,10 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
     private var favouriteInfor: FavouriteInfor? = null
     private var historyInfor: HistoryInfor? = null
     private var historyMark = 0//记录在list位置
-    private var favouriteMark = 0
+    private var favouriteMark = 0//标记第几个喜爱
     private val viewModel: DetailViewModel by activityViewModels()
     private val favouriteViewModel: FavouriteViewModel by activityViewModels()
-    private var mark: Int? = null
+    private var fragmentMark: Int? = null
     private lateinit var favouriteDialogRvAdapter: DetailRvAdapter
     private var y2: Float = 0f
     private var tranY: Float = 0f
@@ -57,7 +57,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility", "InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        b.imgDetailBackground.transitionName=getString(R.string.tran1)
         b.frameLayout.setOnClickListener { }//避免点击到下一层的视图
         //返回
         b.btnDetailBack.setOnClickListener {
@@ -66,7 +65,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
         }
         val displayMetrics = resources.displayMetrics
         val ydpi = displayMetrics.heightPixels
-//        Log.i(TAG, "onViewCreated: $ydpi")
         b.btnDetailAdd.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -95,7 +93,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             //跳转所传递的数据
             val name = arguments?.getString("name")
             val img = arguments?.getString("img")
-            mark = arguments?.getInt("mark")//判断fragment
+            fragmentMark = arguments?.getInt("mark")//判断fragment
             val href = arguments?.getString("href")
             withContext(Dispatchers.Default) {
                 //历史部分,修改上次观看时间
@@ -109,27 +107,10 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                         break
                     }
                 }
-                //如果历史数据库里没有就添加
-                if (historyInfor == null) {
-                    historyInfor = HistoryInfor(
-                        name,
-                        img,
-                        href,
-                        0,
-                        dateFormat.format(time)
-                    )
-                    Log.i(TAG, "onActivityCreated: ${historyInfor?.title}")
-                    historyList.add(historyInfor!!)
-                    historyMark = historyList.size - 1
-                    favouriteViewModel.historyInsert(historyInfor!!)
-                    favouriteViewModel.historyLivaData.postValue(historyMark)
-                }
                 //判断是否已经追漫
                 for ((index, info) in favouriteViewModel.favouriteList.withIndex()) {
                     if (info.title == name) {
                         withContext(Dispatchers.Main) {
-//                            b.btnLike.setBackgroundResource(R.drawable.ic_baseline_star_24)
-//                            b.btnDetailAdd.text = "已追漫"
                             isLike = true
                             b.btnDetailAdd.setBackgroundResource(R.drawable.like_blue)
                         }
@@ -138,6 +119,27 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                         break
                     }
                 }
+                //如果历史数据库里没有就添加
+                if (historyInfor == null) {
+                    //判断喜爱数据库是否有
+                    historyInfor = if (favouriteInfor != null) HistoryInfor(
+                        name,
+                        img,
+                        href,
+                        favouriteInfor!!.mark,
+                        dateFormat.format(time)
+                    ) else HistoryInfor(
+                        name,
+                        img,
+                        href,
+                        0,
+                        dateFormat.format(time)
+                    )
+                    historyList.add(0, historyInfor!!)
+                    favouriteViewModel.historyInsert(historyInfor!!)
+                    favouriteViewModel.historyLivaData.postValue(-1)
+                }
+
             }
             //漫画名与图片
             b.tvDetailName.text = name
@@ -146,9 +148,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             b.tvDetailContent.movementMethod = ScrollingMovementMethod()
             if (!img.isNullOrEmpty())
                 b.imgDetailBackground.load(img)
-//                Glide.with(requireContext()).asDrawable().skipMemoryCache(true).centerCrop()
-//                    .load(img)
-//                    .into(b.imgDetailBackground)
             //集数Rv,判断是否在喜爱中
             favouriteDialogRvAdapter = if (favouriteInfor != null)
                 DetailRvAdapter(
@@ -168,16 +167,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                 if (msg4.isNotEmpty()) {
                     val builder = AlertDialog.Builder(requireContext())
                     val alertDialog = builder.create()
-//                    val constraintLayout = b.root.findViewById<ConstraintLayout>(R.id.linearLayout3)
                     val view4 = DialogCartoonBinding.inflate(layoutInflater, b.root, false)
-//                    val view4 =
-//                        LayoutInflater.from(context)
-//                            .inflate(R.layout.dialog_cartoon, b.root, false)
-//                    val recyclerView4: RecyclerView = view4.findViewById(R.id.rvCartoon)
-//                    val btnBack = view4.findViewById<ImageButton>(R.id.btnCartoondialogBack)
-//                    val layTop = view4.findViewById<FrameLayout>(R.id.layCartoonDialog)
-//                    val tvNum = view4.findViewById<TextView>(R.id.tvCartoonNum)
-//                    val chipAuto = view4.findViewById<Chip>(R.id.chipAuto)
                     //图片数量
                     val num = msg4.size
                     view4.tvCartoonNum.text = "1/$num"
@@ -203,25 +193,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             job!!.cancel()
                         }
                     }
-//                    view4.chipAuto.setOnCheckedChangeListener { _, isChecked ->
-//                        if (isChecked) {
-//                            Log.i(TAG, "autoScroll: ")
-//                            val autoSetting = App.autoSetting
-//                            job = CoroutineScope(Dispatchers.Main).launch {
-//                                while (true) {
-//                                    if (!job!!.isActive) break
-//                                    delay(1000)
-//                                    view4.rvCartoon.smoothScrollBy(
-//                                        0,
-//                                        view4.rvCartoon.scrollY + autoSetting
-//                                    )
-//                                }
-//                            }
-//                        } else {
-//                            Log.i(TAG, "autoCancel: ")
-//                            job!!.cancel()
-//                        }
-//                    }
                     //判断能否加载下一话
                     view4.rvCartoon.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -233,7 +204,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             view4.tvCartoonNum.text = "${position + 1}/$num"
                             //第一部分判断是否为最后一张图片 第二部分判断集数是否为最后一集
                             if (position + 1 == num && viewModel.msg3List.size - 1 > historyInfor!!.mark) {
-//                                view4.chipAuto.isChecked = false//取消滚动
+                                //取消滚动
                                 view4.chipAuto.setChecked(false)
                                 AlertDialog.Builder(requireContext()).setMessage("是否加载下一话")
                                     .setNegativeButton("否") { d, _ ->
@@ -243,7 +214,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                                         d.dismiss()
                                         alertDialog.setOnDismissListener(null)
                                         alertDialog.dismiss()
-//                                        alertDialog.setOnDismissListener { }
                                         viewModel.onMsg4Dismiss()
                                         update(historyInfor!!.mark + 1)
                                     }.show()
@@ -254,7 +224,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     detailImgRvAdapter =
                         DetailImgRvAdapter(msg4)
                     detailImgRvAdapter.setOnClick {
-                        Log.i(TAG, "onViewCreated: ")
                         if (view4.layCartoonDialog.visibility == View.VISIBLE)
                             view4.layCartoonDialog.visibility = View.GONE
                         else view4.layCartoonDialog.visibility = View.VISIBLE
@@ -277,7 +246,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             )
                         }
                         view4.btnCartoondialogBack.setOnClickListener {
-//                            view4.chipAuto.isChecked = false//取消滚动
+                            //取消滚动
                             view4.chipAuto.setChecked(false)
                             dismiss()
                         }
@@ -287,35 +256,44 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     viewModel.pgLiveData.value = true
                     return@observe
                 }
-//                if (msg4.isNotEmpty()) detailImgRvAdapter.notifyItemChanged(msg4.size - 1)
             })
         }
     }
 
-    //添加到喜爱,从喜爱中删除 添加到数据库,添加到list，添加到livedata
+    //判断是否为喜爱；如果当前页面为添加过喜爱的用原数据，否则就从历史List加载数据
     private fun like() {
         if (!isLike) {
-            when (mark) {
-                R.id.favoriteFragment -> {
-                    favouriteViewModel.setFavourite(favouriteInfor)
-                }
-                else -> {
-                    favouriteInfor =
-                        favouriteViewModel.setFavouriteFromHome(
-                            historyMark
-                        )
-                }
+            //添加到数据库
+            if (favouriteInfor != null) {
+                favouriteViewModel.setFavourite(favouriteInfor)
+            } else {
+                favouriteInfor =
+                    favouriteViewModel.setFavouriteFromHome(
+                        historyMark
+                    )
             }
+//            when (fragmentMark) {
+//                R.id.favoriteFragment -> {
+//                    favouriteViewModel.setFavourite(favouriteInfor)
+//                }
+//                else -> {
+//                    Log.i("TAG", "DetailedFragment_like: ")
+//                    favouriteInfor =
+//                        favouriteViewModel.setFavouriteFromHome(
+//                            historyMark
+//                        )
+//                }
+//            }
+//            fragmentMark = R.id.favoriteFragment
+            //添加到List
             favouriteMark = favouriteViewModel.favouriteListAdd(favouriteInfor!!)
-            Log.i(TAG, "onActivityCreated: $favouriteMark")
-//                    b.btnDetailAdd.text = "已追漫"
             isLike = true
             b.btnDetailAdd.setBackgroundResource(R.drawable.like_blue)
+            Log.i("TAG", "DetailedFragment_like:$favouriteMark ")
             shortToast("追漫成功")
         } else {
-            Log.i(TAG, "onActivityCreated: $favouriteMark")
+            Log.i("TAG", "DetailedFragment_Unlike:$favouriteMark ")
             favouriteViewModel.favouriteDel(favouriteMark)
-//                    b.btnDetailAdd.text = "追漫"
             isLike = false
             b.btnDetailAdd.setBackgroundResource(R.drawable.unlike)
             shortToast("已取消追漫")
@@ -335,10 +313,9 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
         with(favouriteViewModel) {
             historyUpdate(historyInfor!!)//历史数据库
             historyLivaData.value = historyMark
-//            if (b.btnDetailAdd.text.toString() == "已追漫") {
             if (isLike) {
                 favouriteInfor?.mark = p//当前页面
-                updateFavourite(favouriteInfor)//喜爱数据库
+                favouriteUpdate(favouriteInfor)//喜爱数据库
             }
         }
     }
@@ -346,7 +323,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.onMsg3Dismiss()
-        if (mark != R.id.searchFragment)
+        if (fragmentMark != R.id.searchFragment)
             viewModel.bottomLiveData.value = false
 
     }

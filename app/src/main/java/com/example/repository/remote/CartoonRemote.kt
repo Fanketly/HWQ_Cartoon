@@ -51,13 +51,15 @@ class CartoonRemote @Inject constructor() {
     suspend fun <T> getData(
         url: String,
         data: suspend (data: String, flow: FlowCollector<T>) -> Unit,
-        success: () -> Unit
+        success: () -> Unit,
+        fail: () -> Unit = {}
     ) = flow {
         data(NetworkUtils.okhttpGet(url), this)
     }.onCompletion { cause -> if (cause == null) success() }
         .catch {
             error.postValue(it.message)
             pg.postValue(true)
+            fail()
         }
 
 

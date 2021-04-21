@@ -57,34 +57,15 @@ class CartoonViewModel @ViewModelInject constructor(
     //加载监听
     val pgLiveData = remote.pgLiveData
     val bottomLiveData = remote.bottomLiveData
-    //val bottomAlphaLiveData = MutableLiveData<Float>()
-    /**
-     * 主页
-     * homeFragment
-     */
 
+    //val bottomAlphaLiveData = MutableLiveData<Float>()
     //获取漫画详细
     fun getHomeCartoon(position: Int) {
-//        val handler =
-//            CoroutineExceptionHandler { _, exception -> println("CoroutineExceptionHandler got $exception") }
-//        CoroutineScope(Dispatchers.Default).launch {
-//            supervisorScope {
-//                launch(handler) {
-//                    delay(1000)
-//                    throw AssertionError()
-//                }
-//                launch {
-//                    for (i in 1..20) {
-//                        Log.i(TAG, "getHomeCartoon:$i ")
-//                        delay(100)
-//                    }
-//                }
-//            }
-//        }
         if (pgLiveData.value == false) return
         pgLiveData.value = false
         val info = cartoonInfors[position]
         val s = info.href
+        Log.i("TAG", "CartoonViewModel_getHomeCartoon 存进去的地址:$s ")
         requestUtil.putBundle(info.title, info.img, s, R.id.homeFragment)
         if (s.isEmpty()) {
             pgLiveData.value = true
@@ -113,7 +94,11 @@ class CartoonViewModel @ViewModelInject constructor(
                 },
                 success = {
                     homeLiveData.postValue(true)
-                }).collect {
+                },
+                fail = {
+                    homeLiveData.postValue(true)
+                }
+            ).collect {
                 cartoonInfors.add(it)
             }
         }
@@ -151,7 +136,6 @@ class CartoonViewModel @ViewModelInject constructor(
         pgLiveData.value = false
         val info = homeRecommendList[position]
         val s = info.href
-        Log.i(TAG, "getHomeRecommendCartoon: ${s + info.img}")
         requestUtil.putBundle(info.title, info.img, s, R.id.homeFragment)
         if (s.isEmpty()) {
             pgLiveData.value = true

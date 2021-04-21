@@ -10,7 +10,6 @@ import com.example.repository.local.CartoonDB
 import com.example.repository.local.HistoryDB
 import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.HistoryInfor
-import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.RequestUtil
 
@@ -23,7 +22,7 @@ import com.example.util.RequestUtil
  */
 class FavouriteViewModel @ViewModelInject constructor(
     private val requestUtil: RequestUtil,
-    private val remote: CartoonRemote,
+    remote: CartoonRemote,
     private val historyDB: HistoryDB,
     private val favouriteDB: CartoonDB
 ) : ViewModel() {
@@ -44,7 +43,7 @@ class FavouriteViewModel @ViewModelInject constructor(
 //    private val requestUtil = RequestUtil
 
     init {
-        historyList.addAll(historyDB.loadAll())
+        historyList.addAll(historyDB.loadAll().reversed())
         favouriteList.addAll(favouriteDB.loadAll())
     }
 
@@ -114,24 +113,23 @@ class FavouriteViewModel @ViewModelInject constructor(
 
     //homeFragment
     fun setFavouriteFromHome(historyMark: Int): FavouriteInfor {
-        val historyInfor = historyList[historyMark]
-        val s = historyInfor.href
-        val favouriteInfor: FavouriteInfor = if (s.contains("http")) {
+        val historyInfo = historyList[historyMark]
+        val s = historyInfo.href
+        Log.i("TAG","FavouriteViewModel_setFavouriteFromHome 即将添加进喜爱的地址:$s ")
+        val favouriteInfo =
             FavouriteInfor(
+                historyInfo.mark,
                 s,
-                historyInfor.imgUrl,
-                historyInfor.title
+                historyInfo.imgUrl,
+                historyInfo.title
             )
-        } else {
-            FavouriteInfor(
-                historyInfor.mark,
-                Api.url2 + "/" + s,
-                historyInfor.imgUrl,
-                historyInfor.title
-            )
-        }
-        favouriteDB.insert(favouriteInfor)
-        return favouriteInfor
+//            FavouriteInfor(
+//                historyInfor.mark,
+//                Api.url2 + "/" + s,
+//                historyInfor.imgUrl,
+//                historyInfor.title
+        favouriteDB.insert(favouriteInfo)
+        return favouriteInfo
     }
 
     //favouriteFragment
@@ -141,11 +139,11 @@ class FavouriteViewModel @ViewModelInject constructor(
 
     fun favouriteDel(favouriteMark: Int) {
         delOrIns = true
-        favouriteLivaData.value = favouriteMark
         favouriteDB.del(favouriteList.removeAt(favouriteMark))
+        favouriteLivaData.value = favouriteMark
     }
 
-    fun updateFavourite(favouriteInfor: FavouriteInfor?) {
+    fun favouriteUpdate(favouriteInfor: FavouriteInfor?) {
         favouriteDB.updata(favouriteInfor)
     }
 

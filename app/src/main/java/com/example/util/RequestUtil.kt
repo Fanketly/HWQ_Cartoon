@@ -49,6 +49,7 @@ class RequestUtil @Inject constructor(val remote: CartoonRemote) {
     fun loadCartoon(url: String) {
         CoroutineScope(Dispatchers.IO).launch {
             if (url.contains("ykmh")) {
+                Log.i("TAG","RequestUtil_loadYkCartoon:$url ")
                 remote.getData(url)
                     .collect {
                         what3YK(it)
@@ -58,9 +59,9 @@ class RequestUtil @Inject constructor(val remote: CartoonRemote) {
             var s = url
             if (!s.contains("dmzj"))
                 s = Api.url2 + "/" + s//需要加"/"
+            Log.i("TAG","RequestUtil_loadCartoon:$s ")
             remote.getData(s)
                 .collect {
-                    Log.i(TAG, "getHomeCartoon: $s")
                     what3(it)
                 }
         }
