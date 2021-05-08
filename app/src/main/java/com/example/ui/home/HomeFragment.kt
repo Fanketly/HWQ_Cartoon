@@ -77,6 +77,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             adapter = BannerImageAdapter(viewModel.bannerList)
             indicator = CircleIndicator(context)
         }
+        viewModel.lbtLiveData.observe(viewLifecycleOwner){
+            if (it)
+                b.bannerHome.stop()
+            else
+                b.bannerHome.start()
+        }
+
         //共享动画
 //        viewModel.detailViewModel.msg3LiveData.observe(viewLifecycleOwner) {
 //            val bundle = viewModel.detailViewModel.bundle
@@ -158,20 +165,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (hidden)
-            b.bannerHome.stop()
-        else
-            b.bannerHome.start()
-    }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.i(TAG, "HomeOnDestroy: ")
     }
 
-    override fun viewBinding(container: ViewGroup): FragmentHomeBinding {
+    override fun viewBinding(container: ViewGroup?): FragmentHomeBinding {
         return FragmentHomeBinding.inflate(layoutInflater, container, false)
     }
 }

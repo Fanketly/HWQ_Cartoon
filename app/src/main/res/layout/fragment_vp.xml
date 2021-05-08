@@ -7,11 +7,16 @@
     tools:context="com.example.ui.favourite.FavouriteVpFragment">
 
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vpFavourite"
+    <com.example.ui.view.NestedScrollableHost
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp" />
+        android:layout_marginTop="60dp">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vpFavourite"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.example.ui.view.NestedScrollableHost>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabFavourite"

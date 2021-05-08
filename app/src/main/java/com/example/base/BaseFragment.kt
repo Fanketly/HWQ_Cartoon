@@ -26,11 +26,11 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _b = viewBinding(container!!)
+        _b = viewBinding(container)
         return _b?.root
     }
 
-    protected abstract fun viewBinding(container: ViewGroup): T
+    protected abstract fun viewBinding(container: ViewGroup?): T
 
     private var toast: Toast? = null
     fun shortToast(string: String) {

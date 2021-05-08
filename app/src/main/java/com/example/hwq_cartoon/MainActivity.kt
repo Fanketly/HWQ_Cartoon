@@ -7,9 +7,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
+import androidx.viewpager2.widget.ViewPager2
+import com.example.adapter.MainVpAdapter
 import com.example.hwq_cartoon.databinding.ActivityMainBinding
 import com.example.ui.classification.SpeciesFragment
 import com.example.ui.detailed.DetailedFragment
@@ -18,6 +21,7 @@ import com.example.ui.home.HomeFragment
 import com.example.ui.me.MeFragment
 import com.example.ui.search.SearchFragment
 import com.example.viewModel.CartoonViewModel
+import com.example.viewModel.FavouriteViewModel
 import com.example.viewModel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,41 +30,78 @@ class MainActivity : AppCompatActivity() {
     //viewModel
     private val viewModel: CartoonViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
+    private val favouriteViewModel: FavouriteViewModel by viewModels()
 
     //fragment
     private lateinit var fragmentManager: FragmentManager
-    private val homeFragment: HomeFragment by lazy { HomeFragment() }
-    private val favouriteVpFragment: FavouriteVpFragment by lazy { FavouriteVpFragment() }
-    private val speciesFragment: SpeciesFragment by lazy { SpeciesFragment() }
-    private lateinit var lastFragment: Fragment
-    private val meFragment by lazy { MeFragment() }
+    private var mark = 0
+    private lateinit var menuItem: MenuItem
 
+    //    private val homeFragment: HomeFragment by lazy { HomeFragment() }
+//    private val favouriteVpFragment: FavouriteVpFragment by lazy { FavouriteVpFragment() }
+//    private val speciesFragment: SpeciesFragment by lazy { SpeciesFragment() }
+//    private val meFragment by lazy { MeFragment() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val b: ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
-        //切换界面
+
+//        //切换界面
         fragmentManager = supportFragmentManager
-        fragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.right_in, R.anim.right_out)
-            .add(R.id.layMain2, homeFragment).commit()
-        lastFragment = homeFragment
+//        fragmentManager.beginTransaction()
+//            .setCustomAnimations(R.anim.right_in, R.anim.right_out)
+//            .add(R.id.layMain2, homeFragment).commit()
+//        lastFragment = homeFragment
+        val menu = b.bottomNav.menu
+        menuItem = menu.getItem(0)
         b.bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.homeFragment -> {
-                    if (lastFragment == homeFragment) {
+                    if (mark == 0) {
                         viewModel.homeLiveData.postValue(false)
-                    } else
-                        add(homeFragment)
+                    } else {
+                        b.vpMain.setCurrentItem(0, false)
+                    }
                 }
-                R.id.favoriteVpFragment ->
-                    add(favouriteVpFragment)
-                R.id.speciesFragment ->
-                    add(speciesFragment)
-                R.id.meFragment -> add(meFragment)
+                R.id.speciesFragment -> b.vpMain.setCurrentItem(1, false)
+                R.id.favoriteVpFragment -> b.vpMain.setCurrentItem(2, false)
+                R.id.meFragment -> b.vpMain.setCurrentItem(3, false)
             }
             return@setOnNavigationItemSelectedListener true
         }
+//        vp
+        val mainVpAdapter = MainVpAdapter(
+            fragmentManager,
+            lifecycle,
+            listOf(HomeFragment(), SpeciesFragment(), FavouriteVpFragment(), MeFragment())
+        )
+        b.vpMain.offscreenPageLimit = 3
+        b.vpMain.adapter = mainVpAdapter
+
+        b.vpMain.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                mark = position
+                menuItem.isChecked = false
+                menuItem = menu[position]
+                menuItem.isChecked = true
+                when (position) {
+                    0 -> {
+                        viewModel.lbtLiveData.postValue(false)
+                    }
+                    1 -> {
+                        viewModel.lbtLiveData.postValue(true)
+                    }
+                    2 -> {
+                        favouriteViewModel.likesIsZero()
+                        viewModel.lbtLiveData.postValue(true)
+                    }
+                    3 -> {
+                        viewModel.lbtLiveData.postValue(true)
+                    }
+                }
+            }
+        })
         //pg监听
         viewModel.pgLiveData.observe(this) {
             b.pgMain.visibility = if (it) View.GONE else View.VISIBLE
@@ -73,8 +114,6 @@ class MainActivity : AppCompatActivity() {
         //集数Detail监听
         viewModel.msg3LiveData.observe(this) {
             b.bottomNav.visibility = View.GONE
-//            val bundle = viewModel.bundle
-//            if (bundle.getInt("mark") == R.id.homeFragment) return@observe
             addWithBundle(it, DetailedFragment::class.java)
         }
         //Search监听
@@ -97,21 +136,21 @@ class MainActivity : AppCompatActivity() {
     private fun addWithBundle(bundle: Bundle?, clazz: Class<out Fragment>) =
         fragmentManager.commit {
             setCustomAnimations(R.anim.right_in, R.anim.left_out)
-            add(R.id.layMain2, clazz, bundle, "detail")
+            add(R.id.layMain, clazz, bundle, "detail")
         }
 
-    private fun add(fragment: Fragment) {
-        if (fragment == lastFragment) return
-        fragmentManager.commit {
-            setCustomAnimations(R.anim.right_in, R.anim.left_out)
-            if (fragment.isAdded)
-                show(fragment)
-            else
-                add(R.id.layMain2, fragment)
-            hide(lastFragment)
-            lastFragment = fragment
-        }
-    }
+//    private fun add(fragment: Fragment) {
+//        if (fragment == lastFragment) return
+//        fragmentManager.commit {
+//            setCustomAnimations(R.anim.right_in, R.anim.left_out)
+//            if (fragment.isAdded)
+//                show(fragment)
+//            else
+//                add(R.id.layMain2, fragment)
+//            hide(lastFragment)
+//            lastFragment = fragment
+//        }
+//    }
 
     override fun onBackPressed() {
         val detailedFragment = fragmentManager.findFragmentByTag("detail")

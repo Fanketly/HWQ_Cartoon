@@ -56,6 +56,8 @@ class DetailViewModel @ViewModelInject constructor(
      * 加载图片部分
      */
     fun msg3Send(position: Int) {
+        //判断解析数据是否清除
+        if (msg4List.size > 0) msg4List.clear()
         pgLiveData.value = false
         val url = msg3List[position].href
         Log.i(TAG, "msg3Send: $url")
@@ -368,6 +370,8 @@ class DetailViewModel @ViewModelInject constructor(
 
     fun onMsg4Dismiss() {
         job?.cancel()
+        //清除解析数据
+        msg4List.clear()
         if (imgUrlList.size > 0) imgUrlList.clear()
     }
 

@@ -64,6 +64,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
         }
         val displayMetrics = resources.displayMetrics
+
         val ydpi = displayMetrics.heightPixels
         b.btnDetailAdd.setOnTouchListener { v, event ->
             when (event.action) {
@@ -220,7 +221,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             }
                         }
                     })
-                    viewModel.msg4List.clear()
+
                     detailImgRvAdapter =
                         DetailImgRvAdapter(msg4)
                     detailImgRvAdapter.setOnClick {
@@ -272,19 +273,6 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                         historyMark
                     )
             }
-//            when (fragmentMark) {
-//                R.id.favoriteFragment -> {
-//                    favouriteViewModel.setFavourite(favouriteInfor)
-//                }
-//                else -> {
-//                    Log.i("TAG", "DetailedFragment_like: ")
-//                    favouriteInfor =
-//                        favouriteViewModel.setFavouriteFromHome(
-//                            historyMark
-//                        )
-//                }
-//            }
-//            fragmentMark = R.id.favoriteFragment
             //添加到List
             favouriteMark = favouriteViewModel.favouriteListAdd(favouriteInfor!!)
             isLike = true
@@ -328,7 +316,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
 
     }
 
-    override fun viewBinding(container: ViewGroup): FragmentDetailedBinding {
+    override fun viewBinding(container: ViewGroup?): FragmentDetailedBinding {
         return FragmentDetailedBinding.inflate(layoutInflater, container, false)
     }
 }

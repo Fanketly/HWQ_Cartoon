@@ -39,9 +39,6 @@ class FavouriteViewModel @ViewModelInject constructor(
     //加载监听
     private val pgLiveData = remote.pgLiveData
 
-    //request
-//    private val requestUtil = RequestUtil
-
     init {
         historyList.addAll(historyDB.loadAll().reversed())
         favouriteList.addAll(favouriteDB.loadAll())
@@ -64,7 +61,6 @@ class FavouriteViewModel @ViewModelInject constructor(
             R.id.favoriteFragment
         )
         requestUtil.loadCartoon(url)
-
     }
 
     /**
@@ -87,7 +83,9 @@ class FavouriteViewModel @ViewModelInject constructor(
 
     }
 
-
+    /**
+     * 判断追漫是否为0
+     * **/
     fun likesIsZero() {
         if (favouriteList.size == 0)
             likesLiveData.postValue(true)
@@ -115,7 +113,7 @@ class FavouriteViewModel @ViewModelInject constructor(
     fun setFavouriteFromHome(historyMark: Int): FavouriteInfor {
         val historyInfo = historyList[historyMark]
         val s = historyInfo.href
-        Log.i("TAG","FavouriteViewModel_setFavouriteFromHome 即将添加进喜爱的地址:$s ")
+        Log.i("TAG", "FavouriteViewModel_setFavouriteFromHome 即将添加进喜爱的地址:$s ")
         val favouriteInfo =
             FavouriteInfor(
                 historyInfo.mark,

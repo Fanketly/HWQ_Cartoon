@@ -79,7 +79,7 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
     }
 
 
-    override fun viewBinding(container: ViewGroup): FragmentMeBinding {
+    override fun viewBinding(container: ViewGroup?): FragmentMeBinding {
         return FragmentMeBinding.inflate(layoutInflater, container, false)
     }
 

@@ -111,7 +111,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         viewModel.isSearchFragment = false
     }
 
-    override fun viewBinding(container: ViewGroup): FragmentSearchBinding {
+    override fun viewBinding(container: ViewGroup?): FragmentSearchBinding {
         return FragmentSearchBinding.inflate(layoutInflater, container, false)
     }
 }

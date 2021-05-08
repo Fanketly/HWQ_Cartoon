@@ -84,7 +84,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
         }
     }
 
-    override fun viewBinding(container: ViewGroup): FragmentSpeciesBinding {
+    override fun viewBinding(container: ViewGroup?): FragmentSpeciesBinding {
         return FragmentSpeciesBinding.inflate(layoutInflater, container, false)
     }
 

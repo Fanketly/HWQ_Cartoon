@@ -50,6 +50,7 @@ class FavoriteFragment : Fragment() {
                     "确定"
                 ) { _, _ ->
                     favouriteViewModel.favouriteDel(it)
+                    favouriteViewModel.likesIsZero()
                 }
                 .setNegativeButton("取消") { p0, _ ->
                     p0.dismiss()

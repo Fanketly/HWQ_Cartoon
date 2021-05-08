@@ -31,8 +31,7 @@ class CartoonViewModel @ViewModelInject constructor(
         Log.i("CREATE", "CartoonViewModel_: ")
     }
 
-    //request
-//    private val requestUtil = RequestUtil
+    //跳转到Detail监听
     val msg3LiveData
         get() = requestUtil.msg3LiveData
 
@@ -50,8 +49,10 @@ class CartoonViewModel @ViewModelInject constructor(
     //val bannerLiveData = MutableLiveData<List<CartoonInfor>>()
     val bannerList by lazy { arrayListOf(R.drawable.lzsm1, R.drawable.lzsy2, R.drawable.am3) }
 
-    //remote
-//    private val remote = CartoonRemote
+    //轮播图监听
+    val lbtLiveData = MutableLiveData<Boolean>()
+
+    //错误
     val errorLiveData = remote.error
 
     //加载监听

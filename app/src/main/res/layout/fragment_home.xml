@@ -79,11 +79,16 @@
                             android:textSize="18sp"
                             app:drawableStartCompat="@drawable/recommend" />
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvHomeRecommend"
-                            android:layout_width="match_parent"
-                            android:layout_height="160dp"
-                            android:background="@color/white" />
+                      <com.example.ui.view.NestedScrollableHost
+                          android:layout_width="match_parent"
+                          android:layout_height="160dp">
+                          <androidx.recyclerview.widget.RecyclerView
+                              android:id="@+id/rvHomeRecommend"
+                              android:layout_width="match_parent"
+                              android:layout_height="160dp"
+                              android:background="@color/white" />
+                      </com.example.ui.view.NestedScrollableHost>
+
 
                         <TextView
                             android:layout_width="match_parent"

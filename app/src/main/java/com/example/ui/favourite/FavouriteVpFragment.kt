@@ -20,6 +20,7 @@ class FavouriteVpFragment : BaseFragment<FragmentVpBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.i("TAG", "FavouriteVpFragment_onViewCreated: ")
         val favouriteVpAdapter = FavouriteVpAdapter(
             this,
             listOf(FavoriteFragment(), HistoryFragment())
@@ -54,27 +55,18 @@ class FavouriteVpFragment : BaseFragment<FragmentVpBinding>() {
         b.vpFavourite.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-//                b.tabFavourite.setScrollPosition(position, 0f, false)
                 b.tabFavourite.getTabAt(position)?.select()
             }
         })
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        Log.i(TAG, "onHiddenChanged: $hidden")
-        if (!hidden) {
-            viewModel.likesIsZero()
-        }
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.i(TAG, "FavVponDestroy: ")
     }
 
-    override fun viewBinding(container: ViewGroup): FragmentVpBinding {
+    override fun viewBinding(container: ViewGroup?): FragmentVpBinding {
         return FragmentVpBinding.inflate(layoutInflater, container, false)
     }
 }
