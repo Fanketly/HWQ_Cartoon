@@ -39,11 +39,26 @@ class FavouriteViewModel @ViewModelInject constructor(
     //加载监听
     private val pgLiveData = remote.pgLiveData
 
+    //数量
+    var historySize = 0
+    var favouriteSize = 0
+    private val sizeLive = MutableLiveData<Boolean>()
+    val sizeLiveData
+        get() = sizeLive
+
     init {
         historyList.addAll(historyDB.loadAll().reversed())
         favouriteList.addAll(favouriteDB.loadAll())
     }
 
+    /**
+     * 获取数量
+     * */
+    fun getSize() {
+        historySize = historyList.size
+        favouriteSize = favouriteList.size
+        sizeLive.postValue(true)
+    }
 
     /***
      * favouriteFragment

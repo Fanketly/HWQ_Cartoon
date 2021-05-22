@@ -1,12 +1,7 @@
 package com.example.base
 
-import android.content.Context
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,8 +28,8 @@ fun <T> RecyclerView.setUpWithGrid(t: T, num: Int) {
 
 const val TAG = "TAG"
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-val AUTO = intPreferencesKey("auto")
+const val AUTO = "auto"
+const val THEME = "blackTheme"
 
 // val headers = Headers {
 //    val map: MutableMap<String, String> =

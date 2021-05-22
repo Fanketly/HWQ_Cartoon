@@ -10,8 +10,10 @@
     <color name="white_50alpha">#CEEDEDED</color>
     <color name="hui">#919191</color>
     <color name="species_hui">#494747</color>
+    <color name="home_rv_black">#292929</color>
     <color name="theme_blue">#03A9F4</color>
     <color name="home_background">#F3F3F3</color>
+    <color name="home_background_black">#1C1D21</color>
     <color name="hui_50alpha">#80919191</color>
     <color name="detail_tv_white">#D8D8D8</color>
 </resources>

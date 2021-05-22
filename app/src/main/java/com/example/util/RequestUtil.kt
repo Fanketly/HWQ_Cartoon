@@ -3,15 +3,14 @@ package com.example.util
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.example.base.TAG
 import com.example.repository.model.CartoonInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
-import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import org.jsoup.Jsoup
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Created by Android Studio.
@@ -19,18 +18,17 @@ import javax.inject.Inject
  * Date: 2021/4/1
  * Time: 21:16
  */
-@ActivityScoped
+@Singleton
 class RequestUtil @Inject constructor(val remote: CartoonRemote) {
     //msg3集数
     val msg3List: MutableList<CartoonInfo> by lazy { ArrayList() }
-    private val msg3liveData by lazy { MutableLiveData<Bundle>() }
+    private val msg3liveData by lazy { MutableLiveData<Bundle?>() }
     val msg3LiveData
         get() = msg3liveData
     var content: String? = null
     var update: String? = null
 
     //remote
-//    private val remote = CartoonRemote
     private val errorLiveData = remote.error
     private val pgLiveData = remote.pgLiveData//加载监听
 

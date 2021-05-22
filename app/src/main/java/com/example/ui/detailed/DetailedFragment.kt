@@ -60,11 +60,9 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
         b.frameLayout.setOnClickListener { }//避免点击到下一层的视图
         //返回
         b.btnDetailBack.setOnClickListener {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
+            remove()
         }
         val displayMetrics = resources.displayMetrics
-
         val ydpi = displayMetrics.heightPixels
         b.btnDetailAdd.setOnTouchListener { v, event ->
             when (event.action) {
@@ -150,6 +148,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
             if (!img.isNullOrEmpty())
                 b.imgDetailBackground.load(img)
             //集数Rv,判断是否在喜爱中
+            Log.i("TAG", "msg3:${viewModel.msg3List} ")
             favouriteDialogRvAdapter = if (favouriteInfor != null)
                 DetailRvAdapter(
                     viewModel.msg3List,

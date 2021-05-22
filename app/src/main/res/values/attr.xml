@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <attr name="home_background" format="color"/>
+        <attr name="tv_color" format="color"/>
+        <attr name="rv_item_background" format="color"/>
+        <attr name="tv_vp_clear" format="color"/>
+        <attr name="search_background" format="color"/>
+        <attr name="back_drawable" format="reference"/>
+</resources>

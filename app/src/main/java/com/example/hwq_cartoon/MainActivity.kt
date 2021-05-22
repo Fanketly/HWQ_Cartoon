@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import androidx.viewpager2.widget.ViewPager2
 import com.example.adapter.MainVpAdapter
+import com.example.hwq_cartoon.App.Companion.blackTheme
 import com.example.hwq_cartoon.databinding.ActivityMainBinding
 import com.example.ui.classification.SpeciesFragment
 import com.example.ui.detailed.DetailedFragment
@@ -42,6 +43,12 @@ class MainActivity : AppCompatActivity() {
 //    private val speciesFragment: SpeciesFragment by lazy { SpeciesFragment() }
 //    private val meFragment by lazy { MeFragment() }
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (blackTheme) {
+            Log.i("TAG", "MainActivity_onCreate: ")
+            setTheme(R.style.Theme_HWQ_Cartoon_Black)
+        } else {
+            setTheme(R.style.Theme_HWQ_Cartoon)
+        }
         super.onCreate(savedInstanceState)
         val b: ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
@@ -97,11 +104,13 @@ class MainActivity : AppCompatActivity() {
                         viewModel.lbtLiveData.postValue(true)
                     }
                     3 -> {
+                        favouriteViewModel.getSize()
                         viewModel.lbtLiveData.postValue(true)
                     }
                 }
             }
         })
+
         //pg监听
         viewModel.pgLiveData.observe(this) {
             b.pgMain.visibility = if (it) View.GONE else View.VISIBLE
@@ -112,12 +121,23 @@ class MainActivity : AppCompatActivity() {
 
         }
         //集数Detail监听
+        if (viewModel.msg3LiveData.value != null) {
+            Log.i("TAG", "msg3_value: ")
+            viewModel.msg3LiveData.value = null
+        }
         viewModel.msg3LiveData.observe(this) {
-            b.bottomNav.visibility = View.GONE
-            addWithBundle(it, DetailedFragment::class.java)
+            if (it != null) {
+                b.bottomNav.visibility = View.GONE
+                addWithBundle(it, DetailedFragment::class.java)
+            }
         }
         //Search监听
+        if (searchViewModel.searchLiveData.value != null) {
+            Log.i("TAG", "msg3_value: ")
+            searchViewModel.searchLiveData.value = null
+        }
         searchViewModel.searchLiveData.observe(this) {
+            if (it==null)return@observe
             if (!searchViewModel.isSearchFragment)
                 when (it) {
                     1 -> {
@@ -139,18 +159,10 @@ class MainActivity : AppCompatActivity() {
             add(R.id.layMain, clazz, bundle, "detail")
         }
 
-//    private fun add(fragment: Fragment) {
-//        if (fragment == lastFragment) return
-//        fragmentManager.commit {
-//            setCustomAnimations(R.anim.right_in, R.anim.left_out)
-//            if (fragment.isAdded)
-//                show(fragment)
-//            else
-//                add(R.id.layMain2, fragment)
-//            hide(lastFragment)
-//            lastFragment = fragment
-//        }
-//    }
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("TAG", "MainActivity_onDestroy: ")
+    }
 
     override fun onBackPressed() {
         val detailedFragment = fragmentManager.findFragmentByTag("detail")

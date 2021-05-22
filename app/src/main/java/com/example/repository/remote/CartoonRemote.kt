@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Created by Android Studio.
@@ -18,7 +19,7 @@ import javax.inject.Inject
  * Time: 19:18
  */
 
-@ActivityScoped
+@Singleton
 class CartoonRemote @Inject constructor() {
     private val errorLiveData = MutableLiveData<String>()
     private val pg = MutableLiveData<Boolean>()

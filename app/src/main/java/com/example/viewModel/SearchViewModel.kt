@@ -41,7 +41,7 @@ class SearchViewModel @ViewModelInject constructor(
     var isSearchFragment = false
 
     val searchList: MutableList<CartoonInfo> by lazy { ArrayList() }
-    val searchLiveData by lazy { MutableLiveData<Int>() }
+    val searchLiveData by lazy { MutableLiveData<Int?>() }
     val searchListYK: MutableList<CartoonInfo> by lazy { ArrayList() }
     private fun what5(s: String) {//查询
         if (s.isNotEmpty()) {

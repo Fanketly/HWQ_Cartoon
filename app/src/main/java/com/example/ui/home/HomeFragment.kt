@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.*
@@ -77,7 +77,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             adapter = BannerImageAdapter(viewModel.bannerList)
             indicator = CircleIndicator(context)
         }
-        viewModel.lbtLiveData.observe(viewLifecycleOwner){
+        viewModel.lbtLiveData.observe(viewLifecycleOwner) {
             if (it)
                 b.bannerHome.stop()
             else

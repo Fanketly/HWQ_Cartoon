@@ -4,23 +4,23 @@
     android:id="@+id/laySearch"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
     android:orientation="vertical"
     tools:context="com.example.ui.search.SearchFragment">
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/theme_blue">
+        android:layout_height="55dp"
+        android:background="?attr/search_background">
 
         <androidx.cardview.widget.CardView
+            app:cardBackgroundColor="?attr/rv_item_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="10dp"
             app:cardCornerRadius="10dp">
 
             <TextView
@@ -30,10 +30,11 @@
                 android:layout_marginStart="10dp"
                 android:contentDescription="@string/todo"
                 android:gravity="center"
-                android:src="@drawable/ic_baseline_arrow_back_ios_24"
+                android:textColor="@color/species_hui"
+                android:src="@drawable/ic_back_black"
                 android:text="返回" />
 
-            <SearchView
+            <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -47,13 +48,13 @@
         android:id="@+id/tabSearch"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/theme_blue"
-        app:tabIndicatorColor="@color/white"
-        app:tabSelectedTextColor="@color/white" />
+        android:background="?attr/home_background"
+        app:tabTextColor="@color/hui"
+        app:tabSelectedTextColor="@color/theme_blue" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/vpSearch"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/home_background" />
+        android:background="?attr/home_background" />
 </LinearLayout>

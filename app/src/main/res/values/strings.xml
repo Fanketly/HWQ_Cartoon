@@ -11,10 +11,7 @@
     <string name="vpfavourite_clear">清空历史</string>
     <string name="n_m">N/M</string>
     <string name="menu_me">个人</string>
-    <string-array name="search_kind">
-        <item>动漫之家</item>
-        <item>拷贝漫画</item>
-    </string-array>
+
 
     <string name="tran1">mark</string>
     <string name="detail_auto">自动滚动</string>

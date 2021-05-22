@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.viewbinding.ViewBinding
+import com.example.hwq_cartoon.R
 
 /**
  * Created by Android Studio.
@@ -39,10 +41,21 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
         toast?.show()
     }
 
+    fun add(fragment: Fragment) = requireActivity().supportFragmentManager.commit {
+        setCustomAnimations(R.anim.right_in, R.anim.left_out)
+        add(R.id.layMain, fragment, "detail")
+    }
+
+    fun remove() = requireActivity().supportFragmentManager.beginTransaction()
+        .setCustomAnimations(
+            0, R.anim.right_out
+        ).remove(this).commit()
+
+    fun longToast(string: String) = Toast.makeText(context, string, Toast.LENGTH_LONG).show()
+
     override fun onDestroyView() {
         super.onDestroyView()
         _b = null
     }
 
-    fun longToast(string: String) = Toast.makeText(context, string, Toast.LENGTH_LONG).show()
 }

@@ -1,31 +1,52 @@
 package com.example.ui.me
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.base.BaseFragment
 import com.example.base.ViewBindingRvAdapter
-import com.example.base.dataStore
+import com.example.hwq_cartoon.App
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.DialogAutoBinding
 import com.example.hwq_cartoon.databinding.FragmentMeBinding
 import com.example.hwq_cartoon.databinding.RvSettingBinding
 import com.example.repository.model.SettingInfo
+import com.example.viewModel.FavouriteViewModel
 import com.example.viewModel.MeViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class MeFragment : BaseFragment<FragmentMeBinding>() {
 
-    private val meViewModel: MeViewModel by viewModels()
+    private val meViewModel: MeViewModel by activityViewModels()
+    private val favouriteViewModel: FavouriteViewModel by activityViewModels()
+
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         b.rvSetting.layoutManager = LinearLayoutManager(context)
+        favouriteViewModel.sizeLiveData.observe(viewLifecycleOwner) {
+            b.tvMeHistorySize.text = "累计观看过的漫画数量：${favouriteViewModel.historySize}"
+            b.tvMeFavouriteSize.text = "追漫数量：${favouriteViewModel.favouriteSize}"
+        }
+        b.chipTheme.setChecked(App.blackTheme)
+        b.chipTheme.setOnCheckedChangeListener {
+            lifecycleScope.launch {
+                delay(200)
+                meViewModel.selectTheme()
+                requireActivity().recreate()
+            }
+        }
         val adapter =
             object : ViewBindingRvAdapter<SettingInfo, RvSettingBinding>(meViewModel.settingList) {
                 override fun onCreateViewHolder(
@@ -46,7 +67,6 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
                                     dialogAutoBinding.btn.setOnClickListener {
                                         lifecycleScope.launch {
                                             meViewModel.saveAuto(
-                                                requireContext().dataStore,
                                                 dialogAutoBinding.edt.text.toString().toInt()
                                             )
                                             Toast.makeText(
@@ -64,7 +84,18 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
                                     show()
                                 }
                             }
-
+                            1 -> {
+                                startActivity(
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse("https://gitee.com/fanketly/HWQ_Cartoon")
+                                    )
+                                )
+                            }
+                            2 -> {
+                                meViewModel.bottomLiveData.postValue(true)
+                                add(AboutFragment())
+                            }
                         }
                     }
                     b.tvSetting.setCompoundDrawablesWithIntrinsicBounds(

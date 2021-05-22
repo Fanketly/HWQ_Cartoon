@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.DataBindingAdapter
@@ -56,6 +57,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
                 )
                 adapterTop?.apply {
                     setOnClick(R.id.tvSpeciesTopRvItem) { p, t ->
+                        if (species==t.id)return@setOnClick
                         species = t.id
                         viewModel.getSpeciesData(species, 1)
                         pp = p
@@ -65,7 +67,7 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
                         if (p == mark)
                             tv.setTextColor(requireActivity().getColor(R.color.theme_blue))
                         else
-                            tv.setTextColor(requireActivity().getColor(R.color.species_hui))
+                            tv.setTextColor(requireActivity().getColor(R.color.hui))
                     }
                     b.rvSpeciesTop.setUpWithLinear(this)
                 }

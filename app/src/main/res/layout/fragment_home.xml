@@ -3,6 +3,7 @@
     android:id="@+id/layHome"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/home_background"
     android:orientation="vertical">
 
 
@@ -31,7 +32,7 @@
                 android:id="@+id/barHome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="?attr/home_background"
                 app:elevation="0dp">
 
 
@@ -51,10 +52,11 @@
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="10dp"
+                            app:cardBackgroundColor="?attr/rv_item_background"
                             app:cardCornerRadius="10dp">
 
 
-                            <SearchView
+                            <androidx.appcompat.widget.SearchView
                                 android:id="@+id/searchHome"
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
@@ -71,35 +73,33 @@
                             android:layout_width="match_parent"
                             android:layout_height="27dp"
                             android:layout_marginTop="10dp"
-                            android:background="@color/white"
                             android:drawablePadding="6dp"
                             android:paddingStart="10dp"
                             android:text="@string/home_yk_recommended"
-                            android:textColor="@color/black"
+                            android:textColor="?attr/tv_color"
                             android:textSize="18sp"
                             app:drawableStartCompat="@drawable/recommend" />
 
-                      <com.example.ui.view.NestedScrollableHost
-                          android:layout_width="match_parent"
-                          android:layout_height="160dp">
-                          <androidx.recyclerview.widget.RecyclerView
-                              android:id="@+id/rvHomeRecommend"
-                              android:layout_width="match_parent"
-                              android:layout_height="160dp"
-                              android:background="@color/white" />
-                      </com.example.ui.view.NestedScrollableHost>
+                        <com.example.ui.view.NestedScrollableHost
+                            android:layout_width="match_parent"
+                            android:layout_height="160dp">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvHomeRecommend"
+                                android:layout_width="match_parent"
+                                android:layout_height="160dp" />
+                        </com.example.ui.view.NestedScrollableHost>
 
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@color/white"
                             android:drawablePadding="6dp"
                             android:paddingStart="10dp"
                             android:paddingTop="5dp"
                             android:paddingBottom="6dp"
                             android:text="@string/home_update"
-                            android:textColor="@color/black"
+                            android:textColor="?attr/tv_color"
                             android:textSize="18sp"
                             app:drawableStartCompat="@drawable/update" />
                     </LinearLayout>
@@ -112,7 +112,7 @@
                 android:id="@+id/rvHome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="?attr/home_background"
                 android:overScrollMode="never"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

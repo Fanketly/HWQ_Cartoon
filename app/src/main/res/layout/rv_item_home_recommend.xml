@@ -15,7 +15,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:gravity="center"
-        android:textColor="@color/black"
+        android:textColor="?attr/tv_color"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imgCartoon"

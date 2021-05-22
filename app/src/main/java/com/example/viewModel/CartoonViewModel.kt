@@ -31,6 +31,10 @@ class CartoonViewModel @ViewModelInject constructor(
         Log.i("CREATE", "CartoonViewModel_: ")
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        Log.i("TAG","CartoonViewModel_onCleared: ")
+    }
     //跳转到Detail监听
     val msg3LiveData
         get() = requestUtil.msg3LiveData

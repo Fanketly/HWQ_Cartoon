@@ -24,6 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:visibility="visible"
+        android:background="?attr/home_background"
         app:itemIconTint="@color/bottom_nav"
         app:itemTextColor="@color/bottom_text"
         app:labelVisibilityMode="unlabeled"

@@ -58,7 +58,9 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.3.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0"
     //Jetpack DataStore
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha07"
+//    implementation "androidx.datastore:datastore:1.0.0-beta01"
+//    implementation "androidx.datastore:datastore-core:1.0.0-beta01"
+//    implementation "androidx.datastore:datastore-preferences:1.0.0-beta01"
     //hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
@@ -67,6 +69,8 @@ dependencies {
     //gson
     implementation 'com.google.code.gson:gson:2.8.6'
     //第三方
+    //MMKV
+    implementation 'com.tencent:mmkv-static:1.2.8'
     //GreenDao
     implementation 'org.greenrobot:greendao:3.3.0'
     //okhttp

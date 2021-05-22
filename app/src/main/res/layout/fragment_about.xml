@@ -1,0 +1,82 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/home_background"
+    tools:context="com.example.ui.me.AboutFragment">
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Fun漫"
+        android:textColor="?attr/tv_color"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/imgAbout"
+        app:layout_constraintStart_toStartOf="@+id/imgAbout"
+        app:layout_constraintTop_toBottomOf="@+id/imgAbout" />
+
+    <ImageButton
+        android:id="@+id/btnAboutBack"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:background="@null"
+        android:contentDescription="@string/todo"
+        android:paddingStart="5dp"
+        android:src="?attr/back_drawable"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAboutName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="关于我们"
+        android:textColor="?attr/tv_color"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnAboutBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnAboutBack" />
+
+    <ImageView
+        android:id="@+id/imgAbout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/manhua"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnAboutBack" />
+
+    <TextView
+        android:id="@+id/tvAboutVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="v1.0"
+        android:textColor="?attr/tv_color"
+        app:layout_constraintEnd_toEndOf="@+id/textView3"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/tvAboutContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textColor="?attr/tv_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAboutVersion" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

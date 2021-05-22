@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:layout_margin="5dp"
+    app:cardBackgroundColor="?attr/rv_item_background"
     app:cardCornerRadius="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,7 +19,7 @@
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:textColor="@color/black"
+            android:textColor="?attr/tv_color"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@+id/imgCartoon"
             app:layout_constraintStart_toStartOf="@+id/imgCartoon"
