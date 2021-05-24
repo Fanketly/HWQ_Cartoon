@@ -44,6 +44,7 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
     fun add(fragment: Fragment) = requireActivity().supportFragmentManager.commit {
         setCustomAnimations(R.anim.right_in, R.anim.left_out)
         add(R.id.layMain, fragment, "detail")
+//        addToBackStack(null)
     }
 
     fun remove() = requireActivity().supportFragmentManager.beginTransaction()
@@ -57,5 +58,6 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
         super.onDestroyView()
         _b = null
     }
+
 
 }

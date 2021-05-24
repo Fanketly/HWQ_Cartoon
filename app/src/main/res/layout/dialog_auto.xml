@@ -13,7 +13,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:hint="只能设置整数"
+        android:hint="只能输入范围在0-999的整数"
         android:inputType="number"
         android:maxLength="3"
         android:textColor="?attr/tv_color"

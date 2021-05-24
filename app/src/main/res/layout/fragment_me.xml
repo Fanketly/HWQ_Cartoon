@@ -1,15 +1,20 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/home_background"
     tools:context="com.example.ui.me.MeFragment">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_marginTop="6dp"
+    android:layout_height="wrap_content">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSetting"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:overScrollMode="never"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
@@ -19,11 +24,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:textSize="18sp"
-        android:textColor="?attr/tv_color"
         android:text="用户统计"
+        android:textColor="?attr/tv_color"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/tvMeHistorySize"
-        app:layout_constraintStart_toStartOf="parent "
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -57,12 +62,13 @@
         android:id="@+id/tvMeTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:drawableStart="@drawable/theme"
         android:drawablePadding="10dp"
         android:gravity="center|start"
         android:text="黑暗模式"
-        android:textSize="16sp"
         android:textColor="?attr/tv_color"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/rvSetting"
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -89,7 +95,6 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:text="更多功能敬请期待"
         android:textColor="?attr/tv_color"
         android:textSize="24sp"
@@ -98,3 +103,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvSetting" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

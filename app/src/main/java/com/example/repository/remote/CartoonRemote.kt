@@ -1,10 +1,8 @@
 package com.example.repository.remote
 
-import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.MutableLiveData
 import com.example.util.NetworkUtils
-import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -21,7 +19,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CartoonRemote @Inject constructor() {
-    private val errorLiveData = MutableLiveData<String>()
+    private val errorLiveData = MutableLiveData<String?>()
     private val pg = MutableLiveData<Boolean>()
     private val bottom = MutableLiveData<Boolean>()
 

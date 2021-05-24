@@ -25,7 +25,7 @@ class App : Application(), ImageLoaderFactory {
     companion object {
         lateinit var favouriteSession: DaoSession
         lateinit var historySession: DaoSession
-        var autoSetting: Int = 200
+        var autoSetting: Int =0
         var blackTheme = false
         lateinit var appContext: Context
         lateinit var kv:MMKV
@@ -39,7 +39,7 @@ class App : Application(), ImageLoaderFactory {
          kv = MMKV.defaultMMKV()!!
         kv.apply {
             blackTheme=decodeBool(THEME)
-            autoSetting=decodeInt(AUTO)
+            autoSetting=decodeInt(AUTO,200)
         }
         historySession = daoMaster("history.db")
         favouriteSession = daoMaster("favourite.db")

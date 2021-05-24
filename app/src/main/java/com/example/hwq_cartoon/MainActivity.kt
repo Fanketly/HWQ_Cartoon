@@ -118,7 +118,6 @@ class MainActivity : AppCompatActivity() {
         //底部监听
         viewModel.bottomLiveData.observe(this) {
             b.bottomNav.visibility = if (it) View.GONE else View.VISIBLE
-
         }
         //集数Detail监听
         if (viewModel.msg3LiveData.value != null) {
@@ -137,7 +136,7 @@ class MainActivity : AppCompatActivity() {
             searchViewModel.searchLiveData.value = null
         }
         searchViewModel.searchLiveData.observe(this) {
-            if (it==null)return@observe
+            if (it == null) return@observe
             if (!searchViewModel.isSearchFragment)
                 when (it) {
                     1 -> {
@@ -147,8 +146,13 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
         }
+        if (viewModel.errorLiveData.value != null) {
+            Log.i("TAG", "msg3_value: ")
+            viewModel.errorLiveData.value = null
+        }
         //错误监听
         viewModel.errorLiveData.observe(this) {
+            if(it==null)return@observe
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         }
     }
@@ -157,6 +161,7 @@ class MainActivity : AppCompatActivity() {
         fragmentManager.commit {
             setCustomAnimations(R.anim.right_in, R.anim.left_out)
             add(R.id.layMain, clazz, bundle, "detail")
+//            addToBackStack(null)
         }
 
     override fun onDestroy() {

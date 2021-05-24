@@ -44,7 +44,13 @@ class SearchViewModel @ViewModelInject constructor(
     val searchLiveData by lazy { MutableLiveData<Int?>() }
     val searchListYK: MutableList<CartoonInfo> by lazy { ArrayList() }
     private fun what5(s: String) {//查询
-        if (s.isNotEmpty()) {
+        if (s.isBlank()) {
+            if (errorLiveData.value == "优酷漫画查询不到此漫画")
+                pgLiveData.postValue(true)
+            errorLiveData.postValue("动漫之家查询不到此漫画")
+            searchLiveData.postValue(1)
+            return
+        }
             val ss = s.split("{").toTypedArray()
             var cartoonInfor: CartoonInfo
             if (ss.size > 10) {
@@ -88,11 +94,6 @@ class SearchViewModel @ViewModelInject constructor(
             }
             if (searchJob.isActive)
                 searchLiveData.postValue(1)
-        } else {
-            if (errorLiveData.value == "优酷漫画查询不到此漫画")
-                pgLiveData.postValue(true)
-            errorLiveData.postValue("动漫之家查询不到此漫画")
-        }
     }
 
 
@@ -166,6 +167,7 @@ class SearchViewModel @ViewModelInject constructor(
         }
         if (searchJob.isActive)
             searchLiveData.postValue(2)
+
     }
 
     /**
