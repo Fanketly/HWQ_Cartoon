@@ -38,10 +38,6 @@ class MainActivity : AppCompatActivity() {
     private var mark = 0
     private lateinit var menuItem: MenuItem
 
-    //    private val homeFragment: HomeFragment by lazy { HomeFragment() }
-//    private val favouriteVpFragment: FavouriteVpFragment by lazy { FavouriteVpFragment() }
-//    private val speciesFragment: SpeciesFragment by lazy { SpeciesFragment() }
-//    private val meFragment by lazy { MeFragment() }
     override fun onCreate(savedInstanceState: Bundle?) {
         if (blackTheme) {
             Log.i("TAG", "MainActivity_onCreate: ")
@@ -52,13 +48,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val b: ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(b.root)
-
 //        //切换界面
         fragmentManager = supportFragmentManager
-//        fragmentManager.beginTransaction()
-//            .setCustomAnimations(R.anim.right_in, R.anim.right_out)
-//            .add(R.id.layMain2, homeFragment).commit()
-//        lastFragment = homeFragment
         val menu = b.bottomNav.menu
         menuItem = menu.getItem(0)
         b.bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
@@ -113,6 +104,7 @@ class MainActivity : AppCompatActivity() {
 
         //pg监听
         viewModel.pgLiveData.observe(this) {
+            Log.i("TAG","MainActivity_onCreate:$it ")
             b.pgMain.visibility = if (it) View.GONE else View.VISIBLE
         }
         //底部监听

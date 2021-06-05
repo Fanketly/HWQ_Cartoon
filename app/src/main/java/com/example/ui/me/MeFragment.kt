@@ -7,15 +7,18 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.base.BaseFragment
+import com.example.base.PAGER_ORIENTATION
 import com.example.base.ViewBindingRvAdapter
 import com.example.hwq_cartoon.App
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.DialogAutoBinding
+import com.example.hwq_cartoon.databinding.DialogMePagerBinding
 import com.example.hwq_cartoon.databinding.FragmentMeBinding
 import com.example.hwq_cartoon.databinding.RvSettingBinding
 import com.example.repository.model.SettingInfo
@@ -93,6 +96,33 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
                                 )
                             }
                             2 -> {
+                                val dialogMePagerBinding =
+                                    DialogMePagerBinding.inflate(layoutInflater, null, false)
+                                when (App.pagerOrientation) {
+                                    LinearLayout.VERTICAL -> dialogMePagerBinding.swPagerV.setChecked(
+                                        true
+                                    )
+                                    LinearLayout.HORIZONTAL -> dialogMePagerBinding.swPagerH.setChecked(
+                                        true
+                                    )
+                                    3 -> dialogMePagerBinding.swPagerH2.setChecked(true)
+                                }
+                                dialogMePagerBinding.swPagerV.setOnClickListener {
+                                    pager(LinearLayout.VERTICAL, dialogMePagerBinding)
+                                }
+                                dialogMePagerBinding.swPagerH.setOnClickListener {
+                                    pager(LinearLayout.HORIZONTAL, dialogMePagerBinding)
+                                }
+                                dialogMePagerBinding.swPagerH2.setOnClickListener {
+                                    pager(3, dialogMePagerBinding)
+                                }
+                                val dialog = AlertDialog.Builder(requireContext())
+                                    .setView(dialogMePagerBinding.root).show()
+                                dialog.setOnDismissListener {
+                                    App.kv.encode(PAGER_ORIENTATION, App.pagerOrientation!!)
+                                }
+                            }
+                            3 -> {
                                 meViewModel.bottomLiveData.postValue(true)
                                 add(AboutFragment())
                             }
@@ -109,6 +139,22 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
         b.rvSetting.adapter = adapter
     }
 
+    private fun pager(orientation: Int, binding: DialogMePagerBinding) {
+        App.pagerOrientation?.let {
+            if (orientation == it) return
+            when (it) {
+                LinearLayout.VERTICAL -> binding.swPagerV.setChecked(false)
+                LinearLayout.HORIZONTAL -> binding.swPagerH.setChecked(false)
+                3 -> binding.swPagerH2.setChecked(false)
+            }
+            when (orientation) {
+                LinearLayout.VERTICAL -> binding.swPagerV.setChecked(true)
+                LinearLayout.HORIZONTAL -> binding.swPagerH.setChecked(true)
+                3 -> binding.swPagerH2.setChecked(true)
+            }
+            App.pagerOrientation = orientation
+        }
+    }
 
     override fun viewBinding(container: ViewGroup?): FragmentMeBinding {
         return FragmentMeBinding.inflate(layoutInflater, container, false)

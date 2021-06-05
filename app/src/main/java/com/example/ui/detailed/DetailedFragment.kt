@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.*
+import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -53,6 +54,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
     private var y: Float = 0f
     private var isLike: Boolean = false
     private lateinit var historyList: MutableList<HistoryInfor>
+    private val pagerOrientation = App.pagerOrientation
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility", "InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -182,10 +184,21 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                                 while (true) {
                                     if (!job!!.isActive) break
                                     delay(1000)
-                                    view4.rvCartoon.smoothScrollBy(
-                                        0,
-                                        view4.rvCartoon.scrollY + autoSetting
-                                    )
+                                    when(pagerOrientation){
+                                        LinearLayout.VERTICAL-> view4.rvCartoon.smoothScrollBy(
+                                            0,
+                                            view4.rvCartoon.scrollY + autoSetting!!
+                                        )
+                                        LinearLayout.HORIZONTAL-> view4.rvCartoon.smoothScrollBy(
+                                            view4.rvCartoon.scrollX + autoSetting!!,
+                                            0
+                                        )
+                                        3-> view4.rvCartoon.smoothScrollBy(
+                                            view4.rvCartoon.scrollX - autoSetting!!,
+                                            0
+                                        )
+                                    }
+
                                 }
                             }
                         } else {
@@ -228,7 +241,20 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             view4.layCartoonDialog.visibility = View.GONE
                         else view4.layCartoonDialog.visibility = View.VISIBLE
                     }
-                    view4.rvCartoon.setUpWithLinear(detailImgRvAdapter)
+                    App.pagerOrientation?.let {
+                        when (it) {
+                            3 -> view4.rvCartoon.setUpWithLinear(
+                                detailImgRvAdapter,
+                                LinearLayout.HORIZONTAL,
+                                true
+                            )
+                            LinearLayout.HORIZONTAL -> view4.rvCartoon.setUpWithLinear(
+                                detailImgRvAdapter,
+                                it
+                            )
+                            else -> view4.rvCartoon.setUpWithLinear(detailImgRvAdapter)
+                        }
+                    }
                     alertDialog.setOnDismissListener {
                         Log.i(TAG, "Dialog4Dismiss: ")
                         viewModel.onMsg4Dismiss()

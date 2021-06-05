@@ -1,6 +1,8 @@
 package com.example.base
 
+import android.graphics.drawable.GradientDrawable
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,14 +15,15 @@ import coil.load
  * Date: 2020/12/2
  * Time: 18:26
  */
-fun <T> RecyclerView.setUpWithLinear(t: T) {
-    layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+fun <T> RecyclerView.setUpWithLinear(
+    t: T,
+    orientation: Int = RecyclerView.VERTICAL,
+    reverse: Boolean = false
+) {
+    layoutManager = LinearLayoutManager(context, orientation, reverse)
     adapter = t as RecyclerView.Adapter<*>
 }
-fun <T> RecyclerView.setUpWithLinearHORIZONTAL(t: T) {
-    layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-    adapter = t as RecyclerView.Adapter<*>
-}
+
 fun <T> RecyclerView.setUpWithGrid(t: T, num: Int) {
     layoutManager = GridLayoutManager(context, num)
     adapter = t as RecyclerView.Adapter<*>
@@ -30,6 +33,7 @@ const val TAG = "TAG"
 
 const val AUTO = "auto"
 const val THEME = "blackTheme"
+const val PAGER_ORIENTATION = "pagerorientation"
 
 // val headers = Headers {
 //    val map: MutableMap<String, String> =

@@ -43,8 +43,9 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                 rv2 = RecyclerView(requireContext())
                 b.vpSearch.adapter = SearchVpAdapter(listOf(rv, rv2))
                 b.tabSearch.setupWithViewPager(b.vpSearch)
-                b.tabSearch.getTabAt(0)?.text = "漫画源1"
-                b.tabSearch.getTabAt(1)?.text = "漫画源2"
+                b.tabSearch.getTabAt(0)?.text = "某漫之家"
+                b.tabSearch.getTabAt(1)?.text = "某酷漫画"
+                b.tabSearch.getTabAt(2)?.text = "漫画源3"
             }
             when (it) {
                 1 -> if (homeRvAdapter == null) {

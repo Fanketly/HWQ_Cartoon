@@ -29,8 +29,8 @@ class MeViewModel @ViewModelInject constructor(
     val settingList = mutableListOf(
         SettingInfo(R.drawable.auto, "漫画自动滚动速度设置"),
         SettingInfo(R.drawable.liuyan, "留言反馈"),
-        SettingInfo(R.drawable.about, "关于我们"),
-//        SettingInfo(R.drawable.auto, "漫画自动滚动速度设置")
+        SettingInfo(R.drawable.auto, "漫画阅读模式设置"),
+        SettingInfo(R.drawable.about, "关于我们")
     )
 
     fun saveAuto(i: Int) {

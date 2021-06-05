@@ -3,9 +3,11 @@ package com.example.hwq_cartoon
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import android.widget.LinearLayout
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import com.example.base.AUTO
+import com.example.base.PAGER_ORIENTATION
 import com.example.base.THEME
 import com.example.repository.model.DaoMaster
 import com.example.repository.model.DaoSession
@@ -25,10 +27,11 @@ class App : Application(), ImageLoaderFactory {
     companion object {
         lateinit var favouriteSession: DaoSession
         lateinit var historySession: DaoSession
-        var autoSetting: Int =0
-        var blackTheme = false
+        var autoSetting: Int? = null
+        var blackTheme: Boolean = false
+        var pagerOrientation: Int? = null
         lateinit var appContext: Context
-        lateinit var kv:MMKV
+        lateinit var kv: MMKV
     }
 
     override fun onCreate() {
@@ -36,10 +39,11 @@ class App : Application(), ImageLoaderFactory {
         Log.i("TAG", "App_onCreate: ")
         appContext = applicationContext
         MMKV.initialize(this)
-         kv = MMKV.defaultMMKV()!!
+        kv = MMKV.defaultMMKV()!!
         kv.apply {
-            blackTheme=decodeBool(THEME)
-            autoSetting=decodeInt(AUTO,200)
+            blackTheme = decodeBool(THEME, false)
+            autoSetting = decodeInt(AUTO, 200)
+            pagerOrientation = decodeInt(PAGER_ORIENTATION, LinearLayout.VERTICAL)
         }
         historySession = daoMaster("history.db")
         favouriteSession = daoMaster("favourite.db")

@@ -22,7 +22,6 @@ abstract class BaseFragment<T : ViewBinding> : Fragment() {
     val b: T
         get() = _b!!
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

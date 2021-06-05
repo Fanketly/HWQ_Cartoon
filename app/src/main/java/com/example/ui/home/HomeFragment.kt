@@ -64,7 +64,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                     viewModel.getHomeYouKuCartoon(p)
                 }
                 b.rvHomeRecommend.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-                b.rvHomeRecommend.setUpWithLinearHORIZONTAL(homeRecommendRvAdapter)
+                b.rvHomeRecommend.setUpWithLinear(homeRecommendRvAdapter,RecyclerView.HORIZONTAL)
             } else {
                 homeRecommendRvAdapter?.notifyDataSetChanged()
             }

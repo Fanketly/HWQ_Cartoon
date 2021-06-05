@@ -113,7 +113,7 @@ class CartoonViewModel @ViewModelInject constructor(
     fun getYouKu() {
         viewModelScope.launch(Dispatchers.IO) {
             if (homeRecommendList.size > 0) homeRecommendList.clear()
-            remote.getData("https://www.ykmh.com/list/post/")
+            remote.getData("http://www.ykmh.com/list/post/")
                 .collect {
                     val document = Jsoup.parse(it)
                     val first = document.getElementsByClass("list_con_li clearfix").first()
