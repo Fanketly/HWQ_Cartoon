@@ -64,6 +64,7 @@ class App : Application(), ImageLoaderFactory {
             .okHttpClient {
                 NetworkUtils.okHttpClient
             }
+
 //            .memoryCachePolicy(CachePolicy.DISABLED)
             .build()
     }
