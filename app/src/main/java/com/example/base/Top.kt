@@ -1,13 +1,12 @@
 package com.example.base
 
-import android.graphics.drawable.GradientDrawable
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import okhttp3.Headers
 
 /**
  * Created by Android Studio.
@@ -15,7 +14,7 @@ import coil.load
  * Date: 2020/12/2
  * Time: 18:26
  */
-fun <T> RecyclerView.setUpWithLinear(
+ fun <T> RecyclerView.setUpWithLinear(
     t: T,
     orientation: Int = RecyclerView.VERTICAL,
     reverse: Boolean = false
@@ -44,6 +43,5 @@ const val PAGER_ORIENTATION = "pagerorientation"
 @BindingAdapter("setImg")
 fun setImg(imageView: ImageView, url: String) {
     imageView.load(url)
-//    Glide.with(imageView).asDrawable().skipMemoryCache(true).load(url).into(imageView)
 }
 

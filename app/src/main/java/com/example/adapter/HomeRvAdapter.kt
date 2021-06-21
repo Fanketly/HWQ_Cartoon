@@ -1,5 +1,6 @@
 package com.example.adapter
 
+import android.util.Log
 import android.view.ViewGroup
 import coil.load
 import com.example.base.ViewBindingRvAdapter
@@ -32,7 +33,10 @@ class HomeRvAdapter(list: List<CartoonInfo>) :
 //            Glide.with(b.imgCartoon).asDrawable().load(d.img)
 //                .skipMemoryCache(true).into(b.imgCartoon)
         }
-        b.imgCartoon.load(d.img)
+        Log.i("TAG", "CartoonViewModel_pager:${d.img} ")
+        b.imgCartoon.load(d.img){
+            setHeader("Referer","https://manhua.dmzj.com/update_1.shtml")
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH<CartoonRvItemBinding> {

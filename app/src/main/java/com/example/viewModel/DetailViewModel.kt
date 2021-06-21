@@ -46,7 +46,7 @@ class DetailViewModel @ViewModelInject constructor(
     val bottomLiveData = remote.bottomLiveData
 
     //msg4显示漫画
-    val msg4List: MutableList<String> by lazy { ArrayList() }
+    private val msg4List: MutableList<String> by lazy { ArrayList() }
     private var job: Job? = null
     private val imgUrlList = mutableListOf<String>()
     val msg4LiveData by lazy { MutableLiveData<List<String>>() }
@@ -393,14 +393,14 @@ class DetailViewModel @ViewModelInject constructor(
         var a = 0
         getStringListChar = s
         when {
-            s.toInt() in 48..57 -> {
-                a = s.toInt() - 48 //0-9
+            s.code in 48..57 -> {
+                a = s.code - 48 //0-9
             }
-            s.toInt() in 65..90 -> {
-                a = s.toInt() - 29 //36-61
+            s.code in 65..90 -> {
+                a = s.code - 29 //36-61
             }
-            s.toInt() in 97..122 -> {
-                a = s.toInt() - 87 //10-35
+            s.code in 97..122 -> {
+                a = s.code - 87 //10-35
             }
         }
         return a
@@ -421,7 +421,7 @@ class DetailViewModel @ViewModelInject constructor(
     private fun twoWords(bj: String, stringBuffer: StringBuilder) { //EG：11 or 1a
         val matcher = Pattern.compile(".*[a-zA-Z]+.*").matcher(bj) //判断有没有包含字母
         if (matcher.matches()) {
-            stringBuffer.append(getStringList2(bj[1].toInt() - 25))
+            stringBuffer.append(getStringList2(bj[1].code - 25))
         } else {
             val iBj = bj.toInt()
             if (iBj >= 10 && iBj + 52 < msg4List.size) { //66=14 66是第67个
