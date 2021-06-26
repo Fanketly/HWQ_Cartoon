@@ -169,7 +169,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                 if (msg4.isNotEmpty()) {
                     val builder = AlertDialog.Builder(requireContext())
                     val alertDialog = builder.create()
-                    val view4 = DialogCartoonBinding.inflate(layoutInflater, b.root, false)
+                    val view4 = DialogCartoonBinding.inflate(layoutInflater)
                     //图片数量
                     val num = msg4.size
                     view4.tvCartoonNum.text = "1/$num"
