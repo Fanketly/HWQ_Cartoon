@@ -24,7 +24,9 @@ class FavouriteRvAdapter(list: List<FavouriteInfor>) :
             }
         }
         if (d.imgUrl.isNullOrEmpty()) return
-        b.imgCartoon.load(d.imgUrl)
+        b.imgCartoon.load(d.imgUrl){
+            setHeader("Referer","https://manhua.dmzj.com/update_1.shtml")
+        }
 //        Glide.with(b.imgCartoon).asDrawable().load(d.imgUrl).skipMemoryCache(true)
 //            .into(b.imgCartoon)
     }

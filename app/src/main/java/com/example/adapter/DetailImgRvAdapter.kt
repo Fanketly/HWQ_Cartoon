@@ -16,7 +16,9 @@ class DetailImgRvAdapter(list: List<String>) :
 
     override fun onBind(b: CartoonImgRvItemBinding, d: String, p: Int) {
         b.imageView.setOnClickListener { onclick(p) }
-        b.imageView.load(d)
+        b.imageView.load(d){
+            setHeader("Referer","https://manhua.dmzj.com/update_1.shtml")
+        }
 //        Glide.with(b.imageView).asDrawable().load(d)
 //            .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(b.imageView)
     }

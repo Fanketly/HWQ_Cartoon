@@ -77,7 +77,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     //jsoup
     implementation 'org.jsoup:jsoup:1.13.1'
-    //Coil
+    //Coil https://coil-kt.github.io/coil/recipes/#headers
     implementation("io.coil-kt:coil:1.2.0")
     //refresh
     implementation 'com.scwang.smart:refresh-layout-kernel:2.0.1'      //核心必须依赖

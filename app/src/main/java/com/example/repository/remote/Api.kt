@@ -7,9 +7,9 @@ package com.example.repository.remote
  * Time: 17:21
  */
 object Api {
-    const val url2 = "https://manhua.dmzj1.com"
-    const val imgUrl = "https://images.dmzj1.com/"
-    const val sacgUrl="https://sacg.dmzj1.com/"
+    const val url2 = "https://manhua.dmzj.com"
+    const val imgUrl = "https://images.dmzj.com/"
+    const val sacgUrl="https://sacg.dmzj.com/"
     const val youkuUrl="http://www.ykmh.com"
     const val imgYKUrl="https://pic.w1fl.com"
 }
