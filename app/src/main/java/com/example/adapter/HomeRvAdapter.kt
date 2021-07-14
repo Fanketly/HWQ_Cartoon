@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.ViewGroup
 import coil.load
 import com.example.base.ViewBindingRvAdapter
+import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.CartoonRvItemBinding
 import com.example.repository.model.CartoonInfo
 
@@ -35,6 +36,7 @@ class HomeRvAdapter(list: List<CartoonInfo>) :
         }
         Log.i("TAG", "CartoonViewModel_pager:${d.img} ")
         b.imgCartoon.load(d.img){
+            placeholder(R.drawable.place)
             setHeader("Referer","https://manhua.dmzj.com/update_1.shtml")
         }
     }
