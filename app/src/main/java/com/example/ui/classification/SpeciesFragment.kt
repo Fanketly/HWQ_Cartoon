@@ -1,15 +1,16 @@
 package com.example.ui.classification
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.DataBindingAdapter
 import com.example.adapter.FavouriteRvAdapter
 import com.example.base.BaseFragment
+import com.example.base.TAG
 import com.example.base.setUpWithGrid
 import com.example.base.setUpWithLinear
 import com.example.hwq_cartoon.BR
@@ -30,26 +31,25 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
         //标记分类
         var mark = 0
         var pp = 0
-        //
-        var species = "0"
-        var pager = 1
         viewModel.getSpeciesType()
         var adapter: FavouriteRvAdapter? = null
         b.rvSpeciesTop.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         b.refreshCartoon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
-                viewModel.getSpeciesData(species, 1)
+                if (adapter==null)
                 viewModel.getSpeciesType()
+                else
+                viewModel.refresh()
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {
-                pager += 1
-                viewModel.loadMoreData(species, pager)
+                viewModel.loadMoreData()
             }
 
         })
         viewModel.speciesLiveData.observe(viewLifecycleOwner) {
             if (adapter == null) {
+                Log.i(TAG, "init species adapter ")
                 adapterTop = DataBindingAdapter(
                     viewModel.typesList,
                     BR.type,
@@ -57,10 +57,8 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
                 )
                 adapterTop?.apply {
                     setOnClick(R.id.tvSpeciesTopRvItem) { p, t ->
-                        if (species==t.id)return@setOnClick
-                        species = t.id
-                        viewModel.getSpeciesData(species, 1)
-                        pp = p
+                        if (viewModel.switchCategory(t.id))
+                            pp = p
                     }
                     getView { p, _, v ->
                         val tv = v.findViewById<TextView>(R.id.tvSpeciesTopRvItem)
@@ -74,12 +72,14 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
                 adapter = FavouriteRvAdapter(it)
                 b.rvSpecies.setUpWithGrid(adapter, 3)
                 adapter?.setOnClick(onclick = { p -> viewModel.getSpeciesCartoon(p) })
+                b.refreshCartoon.closeHeaderOrFooter()
             } else {
                 b.refreshCartoon.closeHeaderOrFooter()
                 adapter?.notifyDataSetChanged()
             }
         }
         viewModel.adapterTopLiveData.observe(viewLifecycleOwner) {
+            Log.i(TAG, "refresh or switch")
             adapterTop?.notifyItemChanged(mark)
             mark = pp
             adapterTop?.notifyItemChanged(mark)

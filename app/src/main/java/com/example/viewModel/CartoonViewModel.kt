@@ -99,11 +99,10 @@ class CartoonViewModel @ViewModelInject constructor(
                 },
                 success = {
                     homeLiveData.postValue(true)
-                },
-                fail = {
-                    homeLiveData.postValue(true)
                 }
-            ).collect {
+            ) {
+                homeLiveData.postValue(true)
+            }.collect {
                 cartoonInfors.add(it)
             }
         }

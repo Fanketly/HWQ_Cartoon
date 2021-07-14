@@ -39,8 +39,9 @@
             android:id="@+id/rvSpecies"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp" />
+            android:background="?attr/home_background"
+            android:paddingTop="5dp"
+            android:paddingEnd="5dp" />
 
 
         <com.scwang.smart.refresh.footer.ClassicsFooter

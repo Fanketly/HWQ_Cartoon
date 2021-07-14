@@ -392,14 +392,14 @@ class DetailViewModel @ViewModelInject constructor(
     private fun conversion(s: Char): Int {
         var a = 0
         getStringListChar = s
-        when {
-            s.code in 48..57 -> {
+        when (s.code) {
+            in 48..57 -> {
                 a = s.code - 48 //0-9
             }
-            s.code in 65..90 -> {
+            in 65..90 -> {
                 a = s.code - 29 //36-61
             }
-            s.code in 97..122 -> {
+            in 97..122 -> {
                 a = s.code - 87 //10-35
             }
         }

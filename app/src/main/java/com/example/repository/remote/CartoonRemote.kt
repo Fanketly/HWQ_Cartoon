@@ -50,28 +50,16 @@ class CartoonRemote @Inject constructor() {
     suspend fun <T> getData(
         url: String,
         data: suspend (data: String, flow: FlowCollector<T>) -> Unit,
-        success: () -> Unit,
-        fail: () -> Unit = {}
+        success: (() -> Unit)? = null,
+        fail: (() -> Unit)? = null
     ) = flow {
         data(NetworkUtils.okhttpGet(url), this)
-    }.onCompletion { cause -> if (cause == null) success() }
+    }.onCompletion { cause -> if (cause == null) success?.invoke() }
         .catch {
             error.postValue(it.message)
             pg.postValue(true)
-            fail()
+            fail?.invoke()
         }
 
-
-    /**
-     * @param fail 当错误时做的一些事情
-     * **/
-    @WorkerThread
-    suspend fun getData(url: String, fail: () -> Unit) = flow {
-        emit(NetworkUtils.okhttpGet(url))
-    }.catch {
-        error.postValue(it.message)
-        pg.postValue(true)
-        fail()
-    }
 
 }

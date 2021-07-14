@@ -34,57 +34,79 @@ class SpeciesViewModel @ViewModelInject constructor(
     private val typeList: MutableList<SpeciesInfo> by lazy { ArrayList() }
     val typesList
         get() = typeList
-    val speciesLiveData by lazy { MutableLiveData<List<FavouriteInfor>>() }
+    val speciesLiveData = MutableLiveData<List<FavouriteInfor>>()
 
     //    private val remote = CartoonRemote
     private val pgLiveData = remote.pgLiveData
     private val errorLiveData = remote.error
 
-    //request
-//    private val requestUtil = RequestUtil
+    //记录页数
+    private var pager = 1
+
+    //当前分类类型
+    private var species = "0"
+
+    //分类切换监听有没有成功 成功就变色
+    val adapterTopLiveData = MutableLiveData<Boolean>()
+
 
     //加载分类
     fun getSpeciesType() {
         if (typeList.size > 0) {//判断是否有加载过分类，有就加载现有数据
+            what7(Api.sacgUrl + "mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=$species&_order=h&p=1&callback=search.renderResult")
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
-            remote.getData(Api.url2 + "/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor")
-                .collect {
-                    what8(it)
-                }
+            remote.getData<SpeciesInfo>(Api.url2 + "/tags/category_search/0-0-0-all-0-0-0-1.shtml#category_nav_anchor",
+                data = { data, flow ->
+                    typeList.add(SpeciesInfo("0", "全部"))
+                    val document = Jsoup.parse(data)
+                    val typeElms = document.getElementsByClass("search_list_m_right")[4]
+                    for (a in typeElms.select("a")) {
+                        flow.emit(
+                            SpeciesInfo(
+                                a.attr("id").substring(5),
+                                a.attr("title")
+                            )
+                        )
+                    }
+                }, success = {
+                    //解析完加载全部分类的漫画
+                    what7(Api.sacgUrl + "mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=$species&_order=h&p=1&callback=search.renderResult")
+
+                }).collect {
+                typeList.add(it)
+            }
         }
     }
 
-    val adapterTopLiveData = MutableLiveData<Boolean>()//分类切换监听有没有成功 成功就变色
 
-    //初始化加载全部分类数据；加载切换分类数据；加载刷新数据
-    fun getSpeciesData(species: String, p: Int) {
+    //加载当前分类漫画
+    fun refresh() {
         if (speciesList.size > 0) speciesList.clear()
-        Log.i(TAG, "getSpecies:$species")
-        viewModelScope.launch(Dispatchers.IO) {
-            remote.getData(
-                //&_order=h 排序 p=1页数
-                Api.sacgUrl + "mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=$species&_order=h&p=$p&callback=search.renderResult"
-            )
-                .collect {
-                    what7(it)
-                }
-        }
+        what7(Api.sacgUrl + "mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=$species&_order=h&p=1&callback=search.renderResult")
+
+    }
+
+    //切换分类
+    fun switchCategory(id: String): Boolean {
+        if (species == id) return false
+        species = id
+        if (speciesList.size > 0) speciesList.clear()
+        pager = 1
+        Log.i(TAG, "switchCategory:$species")
+        what7(Api.sacgUrl + "mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=$species&_order=h&p=1&callback=search.renderResult")
+        adapterTopLiveData.postValue(true)
+        return true
     }
 
     //加载更多
-    fun loadMoreData(species: String, p: Int) {
-        Log.i(TAG, "loadMoreData:$p ")
-        viewModelScope.launch(Dispatchers.IO) {
-            remote.getData(
-                //&_order=h 排序 p=1页数
-                Api.sacgUrl + "mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=$species&_order=h&p=$p&callback=search.renderResult"
-            )
-                .collect {
-                    what7(it)
-                }
-        }
+    fun loadMoreData() {
+        pager += 1
+        Log.i(TAG, "loadMoreData:$pager ")
+        what7(
+            Api.sacgUrl + "mh/index.php?c=category&m=doSearch&status=0&reader_group=0&zone=0&initial=all&type=$species&_order=h&p=$pager&callback=search.renderResult"
+        )
     }
 
     //加载所点击漫画数据
@@ -101,49 +123,37 @@ class SpeciesViewModel @ViewModelInject constructor(
         requestUtil.loadCartoon(s)
     }
 
-    //解析数据
-    private fun what7(str2: String) {
-        Log.i(TAG, "what7: $str2")
-        if (!str2.contains("search.renderResult")) {
-            errorLiveData.postValue("数据加载失败")
-            return
+    /**
+     * &_order=h 排序 p=1页数
+     * 解析数据
+     * **/
+    private fun what7(url: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            remote.getData<FavouriteInfor>(url, data = { str2, flow ->
+                Log.i(TAG, "what7: $str2")
+                if (!str2.contains("search.renderResult")) {
+                    errorLiveData.postValue("数据加载失败")
+                } else {
+                    val str = str2.substring(str2.indexOf("["), str2.lastIndexOf("]") + 1)
+                    val gson = Gson()
+                    val speciesInfor2s: List<SpeciesInfo2Item> =
+                        gson.fromJson(
+                            str,
+                            SpeciesInfo2::class.java
+                        )
+                    Log.i(TAG, ": " + speciesInfor2s[0].comic_cover)
+                    for ((_, comic_cover, comic_url, _, _, _, _, name) in speciesInfor2s) {
+                        flow.emit(
+                            FavouriteInfor(
+                                comic_url,
+                                "https:$comic_cover",
+                                name
+                            )
+                        )
+                    }
+                }
+            }, success = { speciesLiveData.postValue(speciesList) }).collect { speciesList.add(it) }
         }
-        adapterTopLiveData.postValue(true)
-        val str = str2.substring(str2.indexOf("["), str2.lastIndexOf("]") + 1)
-        val gson = Gson()
-        val speciesInfor2s: List<SpeciesInfo2Item> =
-            gson.fromJson(
-                str,
-                SpeciesInfo2::class.java
-            )
-        Log.i(TAG, ": " + speciesInfor2s[0].comic_cover)
-        for ((_, comic_cover, comic_url, _, _, _, _, name) in speciesInfor2s) {
-            speciesList.add(
-                FavouriteInfor(
-                    comic_url,
-                    "https:$comic_cover",
-                    name
-                )
-            )
-        }
-        speciesLiveData.postValue(speciesList)
-    }
 
-    //解析分类数据
-    private fun what8(s: String) {
-        typeList.add(SpeciesInfo("0", "全部"))
-        val document = Jsoup.parse(s)
-        val typeElms = document.getElementsByClass("search_list_m_right")[4]
-        for (a in typeElms.select("a")) {
-            typeList.add(
-                SpeciesInfo(
-                    a.attr("id").substring(5),
-                    a.attr("title")
-                )
-            )
-        }
-        //解析完加载全部分类的漫画
-        getSpeciesData("0", 1)
-    }
 
 }
