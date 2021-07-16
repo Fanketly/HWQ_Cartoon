@@ -1,4 +1,4 @@
-package com.example.base
+package com.example.hwq_cartoon
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import okhttp3.Headers
 
 /**
  * Created by Android Studio.

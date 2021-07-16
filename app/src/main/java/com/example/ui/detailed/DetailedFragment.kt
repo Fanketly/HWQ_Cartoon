@@ -16,8 +16,7 @@ import coil.load
 import com.example.adapter.DetailImgRvAdapter
 import com.example.adapter.DetailRvAdapter
 import com.example.base.*
-import com.example.hwq_cartoon.App
-import com.example.hwq_cartoon.R
+import com.example.hwq_cartoon.*
 import com.example.hwq_cartoon.databinding.DialogCartoonBinding
 import com.example.hwq_cartoon.databinding.FragmentDetailedBinding
 import com.example.repository.model.FavouriteInfor

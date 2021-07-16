@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.base.TAG
+import com.example.hwq_cartoon.TAG
 import com.example.hwq_cartoon.R
 import com.example.repository.local.CartoonDB
 import com.example.repository.local.HistoryDB

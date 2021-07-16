@@ -5,7 +5,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.base.TAG
+import com.example.hwq_cartoon.TAG
 import com.example.hwq_cartoon.R
 import com.example.repository.model.CartoonInfo
 import com.example.repository.remote.Api
@@ -33,8 +33,9 @@ class CartoonViewModel @ViewModelInject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        Log.i("TAG","CartoonViewModel_onCleared: ")
+        Log.i("TAG", "CartoonViewModel_onCleared: ")
     }
+
     //跳转到Detail监听
     val msg3LiveData
         get() = requestUtil.msg3LiveData
@@ -99,10 +100,9 @@ class CartoonViewModel @ViewModelInject constructor(
                 },
                 success = {
                     homeLiveData.postValue(true)
-                }
-            ) {
-                homeLiveData.postValue(true)
-            }.collect {
+                }, fail = {
+                    homeLiveData.postValue(true)
+                }).collect {
                 cartoonInfors.add(it)
             }
         }
@@ -112,24 +112,26 @@ class CartoonViewModel @ViewModelInject constructor(
     fun getYouKu() {
         viewModelScope.launch(Dispatchers.IO) {
             if (homeRecommendList.size > 0) homeRecommendList.clear()
-            remote.getData("http://www.ykmh.com/list/post/")
-                .collect {
-                    val document = Jsoup.parse(it)
-                    val first = document.getElementsByClass("list_con_li clearfix").first()
-                    Log.i(TAG, "getYouKu: $first")
-                    for (element in first.select("li")) {
-                        val a = element.select("a").first()
-                        val img = a.select("img").first()
-                        homeRecommendList.add(
-                            CartoonInfo(
-                                img.attr("alt"),
-                                a.attr("href"),
-                                img.attr("src")
-                            )
+            remote.getData<CartoonInfo>("http://www.ykmh.com/list/post/", data = { data, flow ->
+                val document = Jsoup.parse(data)
+                val first = document.getElementsByClass("list_con_li clearfix").first()
+                Log.i(TAG, "getYouKu: $first")
+                for (element in first.select("li")) {
+                    val a = element.select("a").first()
+                    val img = a.select("img").first()
+                    flow.emit(
+                        CartoonInfo(
+                            img.attr("alt"),
+                            a.attr("href"),
+                            img.attr("src")
                         )
-                    }
-                    homeRecommendLiveData.postValue(homeRecommendList)
+                    )
+
                 }
+            }, success = { homeRecommendLiveData.postValue(homeRecommendList) }).collect {
+                homeRecommendList.add(it)
+            }
+
         }
     }
 

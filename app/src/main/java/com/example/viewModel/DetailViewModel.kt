@@ -4,10 +4,11 @@ import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.base.TAG
+import com.example.hwq_cartoon.TAG
 import com.example.repository.model.CartoonInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
+import com.example.util.NetworkUtils
 import com.example.util.RequestUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -63,15 +64,36 @@ class DetailViewModel @ViewModelInject constructor(
         Log.i(TAG, "msg3Send: $url")
         job = CoroutineScope(Dispatchers.IO).launch {
             if (url.contains("ykmh")) {
-                remote.getData(url)
-                    .collect {
-                        what1YK(it)
+                remote.getData<String>(url, data = { data, flow ->
+                    val document = Jsoup.parse(data).body()
+                    val elements = document.getElementsByTag("script")
+                    if (elements.isEmpty()) {
+                        pgLiveData.postValue(true)
+                        errorLiveData.postValue("所选漫画消失")
+                    } else {
+                        val s = elements[0].data()
+                        val ss = s.substring(s.indexOf("[") + 1, s.indexOf("]")).split(",")
+                        for (str in ss) {
+                            flow.emit(str)
+                        }
                     }
+                }, success = {
+                    msg4LiveData.postValue(imgUrlList)
+                }).collect {
+                    send(Api.imgYKUrl + it.replace("\\", "").replace("\"", ""))
+                }
+
+
+//                remote.getData(url)
+//                    .collect {
+//                        what1YK(it)
+//                    }
             } else {
-                remote.getData(Api.url2 + url)
-                    .collect {
-                        what1(it)
-                    }
+                what1(Api.url2 + url)
+//                remote.getData(Api.url2 + url)
+//                    .collect {
+//                        what1(it)
+//                    }
             }
         }
     }
@@ -82,7 +104,8 @@ class DetailViewModel @ViewModelInject constructor(
     }
 
     //老代码不想优化
-    private fun what1(string: String) {//图片
+    private fun what1(url: String) {//图片
+        val string = NetworkUtils.okhttpGet(url)
         val document = Jsoup.parse(string)
         val elements = document.getElementsByTag("script")
         if (elements.size != 0) {
@@ -342,21 +365,6 @@ class DetailViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun what1YK(string: String) {
-        val document = Jsoup.parse(string).body()
-        val elements = document.getElementsByTag("script")
-        if (elements.isEmpty()) {
-            pgLiveData.postValue(true)
-            errorLiveData.postValue("所选漫画消失")
-            return
-        }
-        val s = elements[0].data()
-        val ss = s.substring(s.indexOf("[") + 1, s.indexOf("]")).split(",")
-        for (str in ss) {
-            send(Api.imgYKUrl + str.replace("\\", "").replace("\"", ""))
-        }
-        msg4LiveData.postValue(imgUrlList)
-    }
 
     fun onMsg3Dismiss() { //清除集数
         msg3List.clear()

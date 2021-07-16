@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.base.BaseFragment
-import com.example.base.TAG
+import com.example.hwq_cartoon.TAG
 import com.example.hwq_cartoon.databinding.FragmentVpBinding
 import com.example.viewModel.FavouriteViewModel
 import com.google.android.material.tabs.TabLayout

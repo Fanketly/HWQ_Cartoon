@@ -6,9 +6,6 @@ import android.util.Log
 import android.widget.LinearLayout
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import com.example.base.AUTO
-import com.example.base.PAGER_ORIENTATION
-import com.example.base.THEME
 import com.example.repository.model.DaoMaster
 import com.example.repository.model.DaoSession
 import com.example.util.NetworkUtils

@@ -2,6 +2,7 @@ package com.example.ui.search
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -12,9 +13,10 @@ import com.example.adapter.DataBindingAdapter
 import com.example.adapter.HomeRvAdapter
 import com.example.adapter.SearchVpAdapter
 import com.example.base.BaseFragment
-import com.example.base.setUpWithLinear
+import com.example.hwq_cartoon.setUpWithLinear
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
+import com.example.hwq_cartoon.TAG
 import com.example.hwq_cartoon.databinding.FragmentSearchBinding
 import com.example.repository.model.CartoonInfo
 import com.example.viewModel.SearchViewModel
@@ -35,18 +37,20 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
             requireActivity().supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
         }
+//        if (b.vpSearch.adapter == null) {
+            rv = RecyclerView(requireContext())
+            rv2 = RecyclerView(requireContext())
+            b.vpSearch.adapter = SearchVpAdapter(listOf(rv, rv2))
+            b.tabSearch.setupWithViewPager(b.vpSearch)
+            b.tabSearch.getTabAt(0)?.text = "某漫之家"
+            b.tabSearch.getTabAt(1)?.text = "某酷漫画"
+//                b.tabSearch.getTabAt(2)?.text = "漫画源3"
+//        }
         viewModel.searchLiveData.observe(viewLifecycleOwner) {
+            Log.i(TAG, "search: $it")
             if (viewModel.pgLiveData.value == false)
                 viewModel.pgLiveData.value = true
-            if (b.vpSearch.adapter == null) {
-                rv = RecyclerView(requireContext())
-                rv2 = RecyclerView(requireContext())
-                b.vpSearch.adapter = SearchVpAdapter(listOf(rv, rv2))
-                b.tabSearch.setupWithViewPager(b.vpSearch)
-                b.tabSearch.getTabAt(0)?.text = "某漫之家"
-                b.tabSearch.getTabAt(1)?.text = "某酷漫画"
-                b.tabSearch.getTabAt(2)?.text = "漫画源3"
-            }
+
             when (it) {
                 1 -> if (homeRvAdapter == null) {
                     homeRvAdapter = HomeRvAdapter(viewModel.searchList)
@@ -69,6 +73,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                     adapter2?.setOnClick(R.id.layoutCartoon) { _, t ->
                         viewModel.getSearchYK(t)
                     }
+                    Log.i(TAG, "search2:adapter ")
                 } else {
                     adapter2?.notifyDataSetChanged()
                 }

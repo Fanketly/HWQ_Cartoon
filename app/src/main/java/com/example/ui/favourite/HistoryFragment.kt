@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.adapter.HistoryRvAdapter
 import com.example.adapter.SpacesItemDecoration
-import com.example.base.setUpWithLinear
+import com.example.hwq_cartoon.setUpWithLinear
 import com.example.hwq_cartoon.databinding.FragmentHistoryBinding
 import com.example.viewModel.FavouriteViewModel
 import dagger.hilt.android.AndroidEntryPoint

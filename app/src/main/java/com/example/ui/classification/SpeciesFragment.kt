@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.DataBindingAdapter
 import com.example.adapter.FavouriteRvAdapter
 import com.example.base.BaseFragment
-import com.example.base.TAG
-import com.example.base.setUpWithGrid
-import com.example.base.setUpWithLinear
+import com.example.hwq_cartoon.TAG
+import com.example.hwq_cartoon.setUpWithGrid
+import com.example.hwq_cartoon.setUpWithLinear
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.databinding.FragmentSpeciesBinding

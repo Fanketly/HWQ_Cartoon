@@ -3,8 +3,8 @@ package com.example.viewModel
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
-import com.example.base.AUTO
-import com.example.base.THEME
+import com.example.hwq_cartoon.AUTO
+import com.example.hwq_cartoon.THEME
 import com.example.hwq_cartoon.App
 import com.example.hwq_cartoon.R
 import com.example.repository.model.SettingInfo

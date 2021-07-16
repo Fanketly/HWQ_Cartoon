@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.base.BaseFragment
-import com.example.base.PAGER_ORIENTATION
+import com.example.hwq_cartoon.PAGER_ORIENTATION
 import com.example.base.ViewBindingRvAdapter
 import com.example.hwq_cartoon.App
 import com.example.hwq_cartoon.R

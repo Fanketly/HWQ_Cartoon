@@ -4,17 +4,14 @@ import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.base.TAG
+import com.example.hwq_cartoon.TAG
 import com.example.hwq_cartoon.R
 import com.example.repository.model.CartoonInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.RequestUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 
 /**
@@ -24,9 +21,9 @@ import org.jsoup.Jsoup
  * Time: 19:58
  */
 class SearchViewModel @ViewModelInject constructor(
-    private val requestUtil:RequestUtil,
-    private val remote:CartoonRemote
-): ViewModel() {
+    private val requestUtil: RequestUtil,
+    private val remote: CartoonRemote
+) : ViewModel() {
     //remote
 //    private val remote = CartoonRemote
     private val errorLiveData = remote.error
@@ -43,16 +40,16 @@ class SearchViewModel @ViewModelInject constructor(
     val searchList: MutableList<CartoonInfo> by lazy { ArrayList() }
     val searchLiveData by lazy { MutableLiveData<Int?>() }
     val searchListYK: MutableList<CartoonInfo> by lazy { ArrayList() }
-    private fun what5(s: String) {//查询
-        if (s.isBlank()) {
-            if (errorLiveData.value == "优酷漫画查询不到此漫画")
-                pgLiveData.postValue(true)
-            errorLiveData.postValue("动漫之家查询不到此漫画")
-            searchLiveData.postValue(1)
-            return
-        }
+    private suspend inline fun searchDMZJ(url: String) {//查询
+        remote.getData<CartoonInfo>(url, data = { s, flow ->
+            if (s.isBlank()) {
+                if (errorLiveData.value == "优酷漫画查询不到此漫画")
+                    pgLiveData.postValue(true)
+                errorLiveData.postValue("动漫之家查询不到此漫画")
+                searchLiveData.postValue(1)
+                return@getData
+            }
             val ss = s.split("{").toTypedArray()
-            var cartoonInfor: CartoonInfo
             if (ss.size > 10) {
                 var ss2: Array<String>
                 var s51: String
@@ -64,13 +61,14 @@ class SearchViewModel @ViewModelInject constructor(
                     s51 = ss2[1]
                     s56 = ss2[6]
                     s54 = ss2[4]
-                    cartoonInfor = CartoonInfo(
-                        decode(s51.substring(14, s51.length - 1))!!,
-                        "https://" + s56.substring(21, s56.length - 1)
-                            .replace("\\", ""),
-                        s54.substring(9, s54.length - 1).replace("\\", "")
+                    flow.emit(
+                        CartoonInfo(
+                            decode(s51.substring(14, s51.length - 1))!!,
+                            "https://" + s56.substring(21, s56.length - 1)
+                                .replace("\\", ""),
+                            s54.substring(9, s54.length - 1).replace("\\", "")
+                        )
                     )
-                    searchList.add(cartoonInfor)
                 }
             } else {
                 var ss2: Array<String>
@@ -83,17 +81,29 @@ class SearchViewModel @ViewModelInject constructor(
                     s51 = ss2[1]
                     s56 = ss2[6]
                     s54 = ss2[4]
-                    cartoonInfor = CartoonInfo(
-                        decode(s51.substring(14, s51.length - 1))!!,
-                        "https://" + s56.substring(21, s56.length - 1)
-                            .replace("\\", ""),
-                        s54.substring(9, s54.length - 1).replace("\\", "")
+                    flow.emit(
+                        CartoonInfo(
+                            decode(s51.substring(14, s51.length - 1))!!,
+                            "https://" + s56.substring(21, s56.length - 1)
+                                .replace("\\", ""),
+                            s54.substring(9, s54.length - 1).replace("\\", "")
+                        )
                     )
-                    searchList.add(cartoonInfor)
                 }
             }
-            if (searchJob.isActive)
+
+        }, success = {
+            if (searchJob.isActive) {
                 searchLiveData.postValue(1)
+            }
+        }, fail = {
+            if (searchJob.isActive) {
+                searchLiveData.postValue(1)
+            }
+        }).collect {
+            searchList.add(it)
+        }
+
     }
 
 
@@ -120,22 +130,52 @@ class SearchViewModel @ViewModelInject constructor(
     private lateinit var searchJob: Job
     fun search(name: String?) {
         pgLiveData.value = false
-        Log.i(TAG, "search: $name")
+        Log.i(TAG, "search_name: $name")
         searchJob = CoroutineScope(Dispatchers.IO).launch {
             launch {
-                remote.getData(Api.sacgUrl + "comicsum/search.php?s=$name")
-                    .collect {
-                        what5(it)
-                    }
+                searchDMZJ(Api.sacgUrl + "comicsum/search.php?s=$name")
             }
             launch {
-                remote.getData(Api.youkuUrl + "/search/?keywords=$name").collect {
-                    mhYKSearch(it)
+                remote.getData<CartoonInfo>(
+                    Api.youkuUrl + "/search/?keywords=$name",
+                    data = { data, flow ->
+                        val jsoup = Jsoup.parse(data)
+                        val elements =
+                            jsoup.getElementsByClass("list_con_li update_con autoHeight").first()
+                        if (elements == null) {
+                            if (errorLiveData.value == "动漫之家查询不到此漫画")
+                                pgLiveData.postValue(true)
+                            errorLiveData.postValue("优酷漫画查询不到此漫画")
+                            return@getData
+                        }
+                        for (element in elements.select("li")) {
+                            val a = element.select("a").first()
+                            val img = a.select("img").first()
+                            flow.emit(
+                                CartoonInfo(
+                                    a.attr("title"),
+                                    a.attr("href"),
+                                    img.attr("src")
+                                )
+                            )
+                        }
+                    },
+                    success = {
+                        if (searchJob.isActive) {
+                            delay(100)
+                            searchLiveData.postValue(2)
+                        }
+                    }, fail = {
+                        if (searchJob.isActive) {
+                            delay(100)
+                            searchLiveData.postValue(2)
+                        }
+                    }).collect {
+                    searchListYK.add(it)
                 }
             }
         }
     }
-
 
 
     fun clearSearchList() {
@@ -145,30 +185,6 @@ class SearchViewModel @ViewModelInject constructor(
         if (searchListYK.size > 0) searchListYK.clear()
     }
 
-    private fun mhYKSearch(string: String) {
-        val jsoup = Jsoup.parse(string)
-        val elements = jsoup.getElementsByClass("list_con_li update_con autoHeight").first()
-        if (elements == null) {
-            if (errorLiveData.value == "动漫之家查询不到此漫画")
-                pgLiveData.postValue(true)
-            errorLiveData.postValue("优酷漫画查询不到此漫画")
-            return
-        }
-        for (element in elements.select("li")) {
-            val a = element.select("a").first()
-            val img = a.select("img").first()
-            searchListYK.add(
-                CartoonInfo(
-                    a.attr("title"),
-                    a.attr("href"),
-                    img.attr("src")
-                )
-            )
-        }
-        if (searchJob.isActive)
-            searchLiveData.postValue(2)
-
-    }
 
     /**
      * 逻辑处理部分

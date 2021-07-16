@@ -47,72 +47,69 @@ class RequestUtil @Inject constructor(val remote: CartoonRemote) {
     fun loadCartoon(url: String) {
         CoroutineScope(Dispatchers.IO).launch {
             if (url.contains("ykmh")) {
-                Log.i("TAG","RequestUtil_loadYkCartoon:$url ")
-                remote.getData(url)
-                    .collect {
-                        what3YK(it)
+                Log.i("TAG", "RequestUtil_loadYkCartoon:$url ")
+                remote.getData<CartoonInfo>(url, data = { data, flow ->
+                    val document = Jsoup.parse(data)
+                    val elements = document.getElementsByClass("list_con_li autoHeight")
+                    if (elements.text().isEmpty()) {
+                        pgLiveData.postValue(true)
+                        errorLiveData.postValue("此漫画无法浏览")
+                        return@getData
                     }
+                    content = document.select(".comic_deCon_d").text()
+                    for (e in elements.select("li")) {
+                        flow.emit(
+                            CartoonInfo(
+                                e.selectFirst(".list_con_zj").text(),
+                                Api.youkuUrl + e.selectFirst("a").attr("href")
+                            )
+                        )
+                    }
+
+                }, success = {
+                    msg3liveData.postValue(bundle)
+                    delay(300)
+                    pgLiveData.postValue(true)
+                }).collect {
+                    msg3List.add(it)
+                }
+
                 return@launch
             }
             var s = url
             if (!s.contains("dmzj"))
                 s = Api.url2 + "/" + s//需要加"/"
-            Log.i("TAG","RequestUtil_loadCartoon:$s ")
-            remote.getData(s)
-                .collect {
-                    what3(it)
+            Log.i("TAG", "RequestUtil_loadCartoon:$s ")
+            remote.getData<CartoonInfo>(s, data = { data, flow ->
+                val document = Jsoup.parse(data)
+                val elements = document.getElementsByClass("cartoon_online_border")
+                if (elements.text().isEmpty()) {
+                    pgLiveData.postValue(true)
+                    errorLiveData.postValue("此漫画无法浏览")
+                    return@getData
                 }
+                update = document.getElementsByClass("update2").text() ?: ""
+                content = document.select(".line_height_content").text()
+                val elements1 = elements.select("a")
+                for (e in elements1) {
+                    flow.emit(
+                        CartoonInfo(
+                            e.text(),
+                            e.attr("href")
+                        )
+                    )
+                }
+
+            }, success = {
+                if (msg3List.size > 0) msg3liveData.postValue(bundle)
+                delay(300)
+                pgLiveData.postValue(true)
+            }).collect {
+                msg3List.add(it)
+            }
         }
     }
 
 
-    private suspend fun what3YK(string: String) {
-        val document = Jsoup.parse(string)
-        val elements = document.getElementsByClass("list_con_li autoHeight")
-        if (elements.text().isEmpty()) {
-            pgLiveData.postValue(true)
-            errorLiveData.postValue("此漫画无法浏览")
-            return
-        }
-        content = document.select(".comic_deCon_d").text()
-        var cartoonInfor: CartoonInfo
-        for (e in elements.select("li")) {
-            cartoonInfor = CartoonInfo(
-                e.selectFirst(".list_con_zj").text(),
-                Api.youkuUrl + e.selectFirst("a").attr("href")
-            )
-            msg3List.add(cartoonInfor)
-        }
-//        if (msg3List.size > 0) {
-//            msg3List.reverse()
-        msg3liveData.postValue(bundle)
-//        }
-        delay(300)
-        pgLiveData.postValue(true)
-    }
 
-    private suspend fun what3(string: String) {//集数
-        val document = Jsoup.parse(string)
-        val elements = document.getElementsByClass("cartoon_online_border")
-//        Log.i(TAG, "what3: ${document}")
-        if (elements.text().isEmpty()) {
-            pgLiveData.postValue(true)
-            errorLiveData.postValue("此漫画无法浏览")
-            return
-        }
-        update = document.getElementsByClass("update2").text() ?: ""
-        content = document.select(".line_height_content").text()
-        val elements1 = elements.select("a")
-        var cartoonInfor: CartoonInfo
-        for (e in elements1) {
-            cartoonInfor = CartoonInfo(
-                e.text(),
-                e.attr("href")
-            )
-            msg3List.add(cartoonInfor)
-        }
-        if (msg3List.size > 0) msg3liveData.postValue(bundle)
-        delay(300)
-        pgLiveData.postValue(true)
-    }
 }

@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
 
         //pg监听
         viewModel.pgLiveData.observe(this) {
-            Log.i("TAG","MainActivity_onCreate:$it ")
+            Log.i("TAG", "MainActivity_onCreate:$it ")
             b.pgMain.visibility = if (it) View.GONE else View.VISIBLE
         }
         //底部监听
@@ -129,14 +129,11 @@ class MainActivity : AppCompatActivity() {
         }
         searchViewModel.searchLiveData.observe(this) {
             if (it == null) return@observe
-            if (!searchViewModel.isSearchFragment)
-                when (it) {
-                    1 -> {
-                        b.bottomNav.visibility = View.GONE
-                        addWithBundle(null, SearchFragment::class.java)
-                        searchViewModel.isSearchFragment = true
-                    }
-                }
+            if (!searchViewModel.isSearchFragment) {
+                b.bottomNav.visibility = View.GONE
+                addWithBundle(null, SearchFragment::class.java)
+                searchViewModel.isSearchFragment = true
+            }
         }
         if (viewModel.errorLiveData.value != null) {
             Log.i("TAG", "msg3_value: ")
@@ -144,7 +141,7 @@ class MainActivity : AppCompatActivity() {
         }
         //错误监听
         viewModel.errorLiveData.observe(this) {
-            if(it==null)return@observe
+            if (it == null) return@observe
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         }
     }
