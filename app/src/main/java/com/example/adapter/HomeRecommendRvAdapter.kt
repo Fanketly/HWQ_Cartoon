@@ -23,9 +23,6 @@ class HomeRecommendRvAdapter(list: List<CartoonInfo>) :
         }
         if (d.img.isEmpty()) return
         b.imgCartoon.load(d.img)
-//            Glide.with(b.imgCartoon).asDrawable().load(d.img)
-//                .skipMemoryCache(true).into(b.imgCartoon)
-
     }
 
     override fun onCreateViewHolder(

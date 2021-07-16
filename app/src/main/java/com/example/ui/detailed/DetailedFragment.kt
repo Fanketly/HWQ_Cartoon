@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.imageLoader
 import coil.load
 import com.example.adapter.DetailImgRvAdapter
 import com.example.adapter.DetailRvAdapter
@@ -234,7 +235,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     })
 
                     detailImgRvAdapter =
-                        DetailImgRvAdapter(msg4)
+                        DetailImgRvAdapter(msg4,context.imageLoader)
                     detailImgRvAdapter.setOnClick {
                         if (view4.layCartoonDialog.visibility == View.VISIBLE)
                             view4.layCartoonDialog.visibility = View.GONE

@@ -57,12 +57,10 @@ class App : Application(), ImageLoaderFactory {
      * memoryCachePolicy 设置默认的内存缓存策略
      * **/
     override fun newImageLoader(): ImageLoader {
-        return ImageLoader.Builder(applicationContext)
-            .okHttpClient {
-                NetworkUtils.okHttpClient
-            }
-
-//            .memoryCachePolicy(CachePolicy.DISABLED)
-            .build()
+        return ImageLoader.Builder(applicationContext).apply {
+            okHttpClient(NetworkUtils.okHttpClient)
+            placeholder(R.drawable.place)
+            error(R.drawable.error)
+        }.build()
     }
 }
