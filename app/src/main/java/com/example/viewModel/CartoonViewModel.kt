@@ -5,9 +5,10 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hwq_cartoon.TAG
 import com.example.hwq_cartoon.R
+import com.example.hwq_cartoon.TAG
 import com.example.repository.model.CartoonInfo
+import com.example.repository.model.KBNewestInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.RequestUtil
@@ -45,9 +46,16 @@ class CartoonViewModel @ViewModelInject constructor(
     val homeLiveData = MutableLiveData<Boolean>()
     private var pager = 1
 
-    //主页57推荐漫画
+    //主页优酷漫画
     private val homeRecommendList = ArrayList<CartoonInfo>()
     val homeRecommendLiveData = MutableLiveData<List<CartoonInfo>>()
+
+    //主页拷贝漫画
+    private val homeKBList = ArrayList<CartoonInfo>()
+    private val homeKBLive = MutableLiveData<List<CartoonInfo>>()
+    val honeKBLiveData
+        get() = homeKBLive
+
 
     //banner
     //val bannerList: MutableList<CartoonInfor> = ArrayList()
@@ -107,6 +115,33 @@ class CartoonViewModel @ViewModelInject constructor(
             }
         }
 
+    //拷贝
+    fun getKaobei() {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (homeKBList.size > 0) homeKBList.clear()
+            val data = remote.getData(
+                Api.baseKbUrl + "update/newest?limit=20&amp;offset=0&amp;platform=3",
+                KBNewestInfo::class.java,
+                requestUtil.headers
+            ) ?: return@launch
+            if (data.code == 200) {
+                for (listDTO in data.results.list) {
+                    val comic = listDTO.comic
+                    homeKBList.add(
+                        CartoonInfo(
+                            comic.name,
+                            Api.baseKbUrl + "comic2/${comic.pathWord}?platform=3", comic.cover
+                        )
+                    )
+                }
+                Log.i(TAG, "getKaobei: ${homeKBList.size}")
+                homeKBLive.postValue(homeKBList)
+            } else {
+                errorLiveData.postValue(data.message)
+            }
+
+        }
+    }
 
     //优酷漫画
     fun getYouKu() {
@@ -135,6 +170,19 @@ class CartoonViewModel @ViewModelInject constructor(
         }
     }
 
+    //获取拷贝漫画详情
+    fun getHomeKBCartoon(p: Int) {
+        if (pgLiveData.value == false) return
+        pgLiveData.value = false
+        val info = homeKBList[p]
+        val s = info.href
+        requestUtil.putBundle(info.title, info.img, s, R.id.homeFragment)
+        if (s.isEmpty()) {
+            pgLiveData.value = true
+            return
+        }
+        requestUtil.loadCartoon(s)
+    }
 
     //获取优酷漫画详细
     fun getHomeYouKuCartoon(position: Int) {

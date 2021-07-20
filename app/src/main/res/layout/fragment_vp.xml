@@ -1,32 +1,27 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/home_background"
     android:orientation="vertical"
     tools:context="com.example.ui.favourite.FavouriteVpFragment">
 
 
-    <com.example.ui.view.NestedScrollableHost
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vpFavourite"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vpFavourite"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.example.ui.view.NestedScrollableHost>
+        android:layout_marginTop="60dp" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabFavourite"
-        app:tabTextColor="@color/hui"
-        app:tabSelectedTextColor="@color/theme_blue"
-        android:background="?attr/home_background"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_gravity="center|top" />
+        android:layout_gravity="center|top"
+        android:background="?attr/home_background"
+        app:tabSelectedTextColor="@color/theme_blue"
+        app:tabTextColor="@color/hui" />
 
     <TextView
         android:id="@+id/tvVpFavouriteClear"

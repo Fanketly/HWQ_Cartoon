@@ -2,6 +2,7 @@ package com.example.util
 
 import coil.util.CoilUtils
 import com.example.hwq_cartoon.App
+import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.TimeUnit
@@ -22,9 +23,12 @@ object NetworkUtils {
         get() = client
 
     fun okhttpGet(url: String): String {
-        val request: Request = Request.Builder().get().url(url).build()
-        val call = client.newCall(request)
-        return call.execute().body?.string() ?: return ""
+        return client.newCall(Request.Builder().get().url(url).build()).execute().body?.string()
+            ?: return ""
     }
 
+    fun okhttpGet(url: String, headers: Headers): String {
+        return client.newCall(Request.Builder().headers(headers).get().url(url).build())
+            .execute().body?.string() ?: return ""
+    }
 }

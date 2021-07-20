@@ -58,18 +58,34 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         viewModel.getHomeCartoon()
         var homeRvAdapter: HomeRvAdapter? = null
         var homeRecommendRvAdapter: HomeRecommendRvAdapter? = null
+        var homeKBRvAdapter: HomeRecommendRvAdapter? = null
         //优酷
         viewModel.getYouKu()
         viewModel.homeRecommendLiveData.observe(viewLifecycleOwner) {
-            if (homeRecommendRvAdapter == null) {
+            if (homeRecommendRvAdapter != null) {
+                homeRecommendRvAdapter?.notifyDataSetChanged()
+            } else {
                 homeRecommendRvAdapter = HomeRecommendRvAdapter(it)
                 homeRecommendRvAdapter?.setOnClick { p ->
                     viewModel.getHomeYouKuCartoon(p)
                 }
                 b.rvHomeRecommend.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-                b.rvHomeRecommend.setUpWithLinear(homeRecommendRvAdapter,RecyclerView.HORIZONTAL)
+                b.rvHomeRecommend.setUpWithLinear(homeRecommendRvAdapter, RecyclerView.HORIZONTAL)
+
+            }
+        }
+        //拷贝
+        viewModel.getKaobei()
+        viewModel.honeKBLiveData.observe(viewLifecycleOwner) {
+            if (homeKBRvAdapter != null) {
+                homeKBRvAdapter!!.notifyDataSetChanged()
             } else {
-                homeRecommendRvAdapter?.notifyDataSetChanged()
+                homeKBRvAdapter = HomeRecommendRvAdapter(it)
+                homeKBRvAdapter!!.setOnClick { p ->
+                    viewModel.getHomeKBCartoon(p)
+                }
+                b.rvHomeKB.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+                b.rvHomeKB.setUpWithGrid(homeKBRvAdapter, 2, RecyclerView.HORIZONTAL)
             }
         }
         //轮播图
@@ -130,7 +146,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         viewModel.homeLiveData.observe(viewLifecycleOwner, {
             Log.i("TAG", "homeLiveData:$it ")
             if (it) {
-                if (homeRvAdapter == null) {
+                if (homeRvAdapter != null) {
+                    homeRvAdapter?.notifyDataSetChanged()
+                    b.refreshCartoon.closeHeaderOrFooter()
+                } else {
                     homeRvAdapter = HomeRvAdapter(viewModel.cartoonInfors)
                     homeRvAdapter?.apply {
                         with(b.rvHome) {
@@ -141,9 +160,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                             viewModel.getHomeCartoon(p)
                         }
                     }
-                } else {
-                    homeRvAdapter?.notifyDataSetChanged()
-                    b.refreshCartoon.closeHeaderOrFooter()
                 }
             } else {
                 b.rvHome.scrollToPosition(0)

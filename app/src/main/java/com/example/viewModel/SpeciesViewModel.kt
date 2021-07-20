@@ -5,8 +5,8 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hwq_cartoon.TAG
 import com.example.hwq_cartoon.R
+import com.example.hwq_cartoon.TAG
 import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.SpeciesInfo
 import com.example.repository.model.SpeciesInfo2
@@ -14,7 +14,6 @@ import com.example.repository.model.SpeciesInfo2Item
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.RequestUtil
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -135,9 +134,8 @@ class SpeciesViewModel @ViewModelInject constructor(
                     errorLiveData.postValue("数据加载失败")
                 } else {
                     val str = str2.substring(str2.indexOf("["), str2.lastIndexOf("]") + 1)
-                    val gson = Gson()
                     val speciesInfor2s: List<SpeciesInfo2Item> =
-                        gson.fromJson(
+                        remote.gson.fromJson(
                             str,
                             SpeciesInfo2::class.java
                         )

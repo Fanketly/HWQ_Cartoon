@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.hwq_cartoon.TAG
 import com.example.repository.model.CartoonInfo
+import com.example.repository.model.KBCartoonChapter
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.NetworkUtils
@@ -13,6 +14,7 @@ import com.example.util.RequestUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
@@ -63,37 +65,44 @@ class DetailViewModel @ViewModelInject constructor(
         val url = msg3List[position].href
         Log.i(TAG, "msg3Send: $url")
         job = CoroutineScope(Dispatchers.IO).launch {
-            if (url.contains("ykmh")) {
-                remote.getData<String>(url, data = { data, flow ->
-                    val document = Jsoup.parse(data).body()
-                    val elements = document.getElementsByTag("script")
-                    if (elements.isEmpty()) {
-                        pgLiveData.postValue(true)
-                        errorLiveData.postValue("所选漫画消失")
-                    } else {
-                        val s = elements[0].data()
-                        val ss = s.substring(s.indexOf("[") + 1, s.indexOf("]")).split(",")
-                        for (str in ss) {
-                            flow.emit(str)
+            when {
+                url.contains("ykmh") -> {
+                    remote.getData<String>(url, data = { data, flow ->
+                        val document = Jsoup.parse(data).body()
+                        val elements = document.getElementsByTag("script")
+                        if (elements.isEmpty()) {
+                            pgLiveData.postValue(true)
+                            errorLiveData.postValue("所选漫画消失")
+                        } else {
+                            val s = elements[0].data()
+                            val ss = s.substring(s.indexOf("[") + 1, s.indexOf("]")).split(",")
+                            for (str in ss) {
+                                flow.emit(str)
+                            }
                         }
+                    }, success = {
+                        msg4LiveData.postValue(imgUrlList)
+                    }).collect {
+                        send(Api.imgYKUrl + it.replace("\\", "").replace("\"", ""))
                     }
-                }, success = {
-                    msg4LiveData.postValue(imgUrlList)
-                }).collect {
-                    send(Api.imgYKUrl + it.replace("\\", "").replace("\"", ""))
                 }
-
-
-//                remote.getData(url)
-//                    .collect {
-//                        what1YK(it)
-//                    }
-            } else {
-                what1(Api.url2 + url)
-//                remote.getData(Api.url2 + url)
-//                    .collect {
-//                        what1(it)
-//                    }
+                url.contains("copymanga") -> {
+                    val data = remote.getData(url, KBCartoonChapter::class.java,requestUtil.headers) ?: return@launch
+                    if (data.code == 200) {
+                        for (content in data.results.chapter.contents) {
+                            if (!job!!.isActive) {
+                                return@launch
+                            }
+                            send(content.url)
+                        }
+                        msg4LiveData.postValue(imgUrlList)
+                    } else {
+                        errorLiveData.postValue(data.message)
+                    }
+                }
+                else -> {
+                    what1(Api.url2 + url)
+                }
             }
         }
     }

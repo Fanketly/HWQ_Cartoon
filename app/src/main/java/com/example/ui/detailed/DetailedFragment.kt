@@ -235,7 +235,7 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                     })
 
                     detailImgRvAdapter =
-                        DetailImgRvAdapter(msg4,context.imageLoader)
+                        DetailImgRvAdapter(msg4,requireContext().imageLoader)
                     detailImgRvAdapter.setOnClick {
                         if (view4.layCartoonDialog.visibility == View.VISIBLE)
                             view4.layCartoonDialog.visibility = View.GONE

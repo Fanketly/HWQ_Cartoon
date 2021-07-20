@@ -15,6 +15,7 @@
 
     <string name="tran1">mark</string>
     <string name="detail_auto">自动滚动</string>
-    <string name="home_update">最近更新</string>
-    <string name="home_yk_recommended">漫画推荐</string>
+    <string name="home_dmzj_update">某漫之家最近更新</string>
+    <string name="home_yk_recommended">某酷漫画推荐</string>
+    <string name="home_kb_recommended">某贝漫画最近更新</string>
 </resources>

@@ -80,16 +80,11 @@
                             android:textSize="18sp"
                             app:drawableStartCompat="@drawable/recommend" />
 
-                        <com.example.ui.view.NestedScrollableHost
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvHomeRecommend"
                             android:layout_width="match_parent"
-                            android:layout_height="160dp">
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvHomeRecommend"
-                                android:layout_width="match_parent"
-                                android:layout_height="160dp" />
-                        </com.example.ui.view.NestedScrollableHost>
-
+                            android:layout_height="160dp" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -98,7 +93,25 @@
                             android:paddingStart="10dp"
                             android:paddingTop="5dp"
                             android:paddingBottom="6dp"
-                            android:text="@string/home_update"
+                            android:text="@string/home_kb_recommended"
+                            android:textColor="?attr/tv_color"
+                            android:textSize="18sp"
+                            app:drawableStartCompat="@drawable/update" />
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvHomeKB"
+                            android:layout_width="match_parent"
+                            android:layout_height="320dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="6dp"
+                            android:paddingStart="10dp"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="6dp"
+                            android:text="@string/home_dmzj_update"
                             android:textColor="?attr/tv_color"
                             android:textSize="18sp"
                             app:drawableStartCompat="@drawable/update" />

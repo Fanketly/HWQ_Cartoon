@@ -13,7 +13,7 @@ import coil.load
  * Date: 2020/12/2
  * Time: 18:26
  */
- fun <T> RecyclerView.setUpWithLinear(
+fun <T> RecyclerView.setUpWithLinear(
     t: T,
     orientation: Int = RecyclerView.VERTICAL,
     reverse: Boolean = false
@@ -22,8 +22,13 @@ import coil.load
     adapter = t as RecyclerView.Adapter<*>
 }
 
-fun <T> RecyclerView.setUpWithGrid(t: T, num: Int) {
-    layoutManager = GridLayoutManager(context, num)
+fun <T> RecyclerView.setUpWithGrid(
+    t: T,
+    num: Int,
+    orientation: Int = RecyclerView.VERTICAL,
+    reverse: Boolean = false
+) {
+    layoutManager = GridLayoutManager(context, num, orientation, reverse)
     adapter = t as RecyclerView.Adapter<*>
 }
 

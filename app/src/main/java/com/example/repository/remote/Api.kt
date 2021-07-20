@@ -12,4 +12,5 @@ object Api {
     const val sacgUrl="https://sacg.dmzj.com/"
     const val youkuUrl="http://www.ykmh.com"
     const val imgYKUrl="https://pic.w1fl.com"
+    const val baseKbUrl="https://api.copymanga.com/api/v3/"
 }

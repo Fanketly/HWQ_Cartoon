@@ -11,6 +11,7 @@ import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.adapter.MainVpAdapter
 import com.example.hwq_cartoon.App.Companion.blackTheme
@@ -25,6 +26,8 @@ import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.FavouriteViewModel
 import com.example.viewModel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.reflect.Field
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -76,6 +79,18 @@ class MainActivity : AppCompatActivity() {
         b.vpMain.offscreenPageLimit = 3
         b.vpMain.adapter = mainVpAdapter
 
+        try {
+            val recyclerViewField: Field = ViewPager2::class.java.getDeclaredField("mRecyclerView")
+            recyclerViewField.isAccessible = true
+            val recyclerView = recyclerViewField.get(b.vpMain)
+            val touchSlopField: Field = RecyclerView::class.java.getDeclaredField("mTouchSlop")
+            touchSlopField.isAccessible = true
+            touchSlopField.set(
+                recyclerView,
+                touchSlopField.get(recyclerView) as Int * 4
+            ) //6 is empirical value
+        } catch (ignore: Exception) {
+        }
         b.vpMain.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
