@@ -9,7 +9,7 @@ import com.example.repository.model.KBCartoonInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import okhttp3.Headers
 import org.jsoup.Jsoup
 import javax.inject.Inject
@@ -54,6 +54,20 @@ class RequestUtil @Inject constructor(val remote: CartoonRemote) {
         bundle.putInt("mark", mark)
     }
 
+    suspend fun <T> getFlow(
+        list: List<T>,
+        collect: suspend (data: T) -> Unit,
+        success: (suspend () -> Unit)? = null,
+        fail: (suspend () -> Unit)? = null
+    ) {
+        list.asFlow().onCompletion { cause -> if (cause == null) success?.invoke() }
+            .catch {
+                errorLiveData.postValue(it.message)
+                pgLiveData.postValue(true)
+                fail?.invoke()
+            }.collect { collect(it) }
+    }
+
     /***加载漫画,判断漫画源**/
     fun loadCartoon(url: String) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -94,14 +108,14 @@ class RequestUtil @Inject constructor(val remote: CartoonRemote) {
                         val results = data.results
                         val comic = results.comic
                         val default = results.groups.default
-                        content = comic.brief
-                        update = comic.datetimeUpdated
                         val data1 = remote.getData(
                             Api.baseKbUrl + "comic/${comic.pathWord}/group/${default.pathWord}/chapters?limit=${default.count}&amp;offset=0&amp;platform=3",
                             KBCartoonChapters::class.java,
                             headers
                         ) ?: return@launch
                         if (data1.code == 200) {
+                            content = comic.brief
+                            update = comic.datetimeUpdated
                             for (chapter in data1.results.list) {
                                 msg3List.add(
                                     CartoonInfo(
@@ -109,7 +123,6 @@ class RequestUtil @Inject constructor(val remote: CartoonRemote) {
                                         Api.baseKbUrl + "comic/${chapter.comicPathWord}/chapter2/${chapter.uuid}?platform=3"
                                     )
                                 )
-
                             }
                             if (msg3List.size > 0) msg3liveData.postValue(bundle)
                             delay(300)

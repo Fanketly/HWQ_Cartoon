@@ -4,9 +4,10 @@ import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.hwq_cartoon.TAG
 import com.example.hwq_cartoon.R
+import com.example.hwq_cartoon.TAG
 import com.example.repository.model.CartoonInfo
+import com.example.repository.model.KBSearchInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.RequestUtil
@@ -37,9 +38,10 @@ class SearchViewModel @ViewModelInject constructor(
     /**判断是否在searchFragment**/
     var isSearchFragment = false
 
-    val searchList: MutableList<CartoonInfo> by lazy { ArrayList() }
+    val searchDMZJList: MutableList<CartoonInfo> by lazy { ArrayList() }
     val searchLiveData by lazy { MutableLiveData<Int?>() }
-    val searchListYK: MutableList<CartoonInfo> by lazy { ArrayList() }
+    val searchYKList: MutableList<CartoonInfo> by lazy { ArrayList() }
+    val searchKBList: MutableList<CartoonInfo> by lazy { ArrayList() }
     private suspend inline fun searchDMZJ(url: String) {//查询
         remote.getData<CartoonInfo>(url, data = { s, flow ->
             if (s.isBlank()) {
@@ -101,7 +103,7 @@ class SearchViewModel @ViewModelInject constructor(
                 searchLiveData.postValue(1)
             }
         }).collect {
-            searchList.add(it)
+            searchDMZJList.add(it)
         }
 
     }
@@ -113,19 +115,20 @@ class SearchViewModel @ViewModelInject constructor(
     fun getSearch(position: Int) {
         if (pgLiveData.value == false) return
         pgLiveData.value = false
-        val cartoonInfor = searchList[position]
+        val cartoonInfor = searchDMZJList[position]
         val s = cartoonInfor.href
         requestUtil.putBundle(cartoonInfor.title, cartoonInfor.img, s, R.id.searchFragment)
         requestUtil.loadCartoon(s)
     }
 
-    fun getSearchYK(cartoonInfo: CartoonInfo) {
+    fun getSearch(cartoonInfo: CartoonInfo) {
         if (pgLiveData.value == false) return
         pgLiveData.value = false
         val s = cartoonInfo.href
         requestUtil.putBundle(cartoonInfo.title, cartoonInfo.img, s, R.id.searchFragment)
         requestUtil.loadCartoon(s)
     }
+
 
     private lateinit var searchJob: Job
     fun search(name: String?) {
@@ -135,6 +138,7 @@ class SearchViewModel @ViewModelInject constructor(
             launch {
                 searchDMZJ(Api.sacgUrl + "comicsum/search.php?s=$name")
             }
+            //YK
             launch {
                 remote.getData<CartoonInfo>(
                     Api.youkuUrl + "/search/?keywords=$name",
@@ -162,16 +166,51 @@ class SearchViewModel @ViewModelInject constructor(
                     },
                     success = {
                         if (searchJob.isActive) {
-                            delay(100)
-                            searchLiveData.postValue(2)
+                            withContext(Dispatchers.Main) {
+                                searchLiveData.value = 2
+                            }
                         }
                     }, fail = {
                         if (searchJob.isActive) {
-                            delay(100)
-                            searchLiveData.postValue(2)
+                            withContext(Dispatchers.Main) {
+                                searchLiveData.value = 2
+                            }
                         }
                     }).collect {
-                    searchListYK.add(it)
+                    searchYKList.add(it)
+                }
+            }
+//            copy
+            launch copy@{
+                val data = remote.getData(
+                    Api.KbSearchUrl + name,
+                    KBSearchInfo::class.java,
+                    requestUtil.headers
+                )
+                    ?: return@copy
+                if (data.code == 200) {
+                    requestUtil.getFlow(data.results.list, success = {
+                        if (searchJob.isActive) {
+                            withContext(Dispatchers.Main) {
+                                searchLiveData.value = 3
+                            }
+                        }
+                    }, fail = {
+                        if (searchJob.isActive) {
+                            withContext(Dispatchers.Main) {
+                                searchLiveData.value = 3
+                            }
+                        }
+                    }, collect = {
+                        searchKBList.add(
+                            CartoonInfo(
+                                it.name,
+                                Api.baseKbUrl + "comic2/${it.pathWord}?platform=3", it.cover
+                            )
+                        )
+                    })
+                } else {
+                    errorLiveData.postValue(data.message)
                 }
             }
         }
@@ -181,8 +220,9 @@ class SearchViewModel @ViewModelInject constructor(
     fun clearSearchList() {
         Log.i(TAG, "clearSearchList: ")
         searchJob.cancel()
-        if (searchList.size > 0) searchList.clear()
-        if (searchListYK.size > 0) searchListYK.clear()
+        if (searchDMZJList.size > 0) searchDMZJList.clear()
+        if (searchYKList.size > 0) searchYKList.clear()
+        if (searchKBList.size > 0) searchKBList.clear()
     }
 
 

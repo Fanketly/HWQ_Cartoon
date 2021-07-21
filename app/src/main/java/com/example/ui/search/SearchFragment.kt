@@ -28,23 +28,27 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
     private var name = ""
     private lateinit var rv: RecyclerView
     private lateinit var rv2: RecyclerView
+    private lateinit var rv3: RecyclerView
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         b.laySearch.setOnClickListener { }
         var homeRvAdapter: HomeRvAdapter? = null
         var adapter2: DataBindingAdapter<CartoonInfo>? = null
+        var adapter3: DataBindingAdapter<CartoonInfo>? = null
         b.btnSearchBack.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.right_in, R.anim.right_out).remove(this).commit()
         }
 //        if (b.vpSearch.adapter == null) {
-            rv = RecyclerView(requireContext())
-            rv2 = RecyclerView(requireContext())
-            b.vpSearch.adapter = SearchVpAdapter(listOf(rv, rv2))
-            b.tabSearch.setupWithViewPager(b.vpSearch)
-            b.tabSearch.getTabAt(0)?.text = "某漫之家"
-            b.tabSearch.getTabAt(1)?.text = "某酷漫画"
-//                b.tabSearch.getTabAt(2)?.text = "漫画源3"
+        rv = RecyclerView(requireContext())
+        rv2 = RecyclerView(requireContext())
+        rv3 = RecyclerView(requireContext())
+        b.vpSearch.adapter = SearchVpAdapter(listOf(rv, rv2, rv3))
+        b.vpSearch.offscreenPageLimit=2
+        b.tabSearch.setupWithViewPager(b.vpSearch)
+        b.tabSearch.getTabAt(0)?.text = "某漫之家"
+        b.tabSearch.getTabAt(1)?.text = "某酷漫画"
+        b.tabSearch.getTabAt(2)?.text = "某贝漫画"
 //        }
         viewModel.searchLiveData.observe(viewLifecycleOwner) {
             Log.i(TAG, "search: $it")
@@ -53,7 +57,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
             when (it) {
                 1 -> if (homeRvAdapter == null) {
-                    homeRvAdapter = HomeRvAdapter(viewModel.searchList)
+                    homeRvAdapter = HomeRvAdapter(viewModel.searchDMZJList)
                     homeRvAdapter?.apply {
                         rv.setUpWithLinear(homeRvAdapter)
                         setOnClick { p ->
@@ -63,19 +67,33 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                 } else {
                     homeRvAdapter?.notifyDataSetChanged()
                 }
-                2 -> if (adapter2 == null) {//57漫画
+                2 -> if (adapter2 == null) {//优酷漫画
                     adapter2 = DataBindingAdapter(
-                        viewModel.searchListYK,
+                        viewModel.searchYKList,
                         BR.data,
                         R.layout.rv_item_57_cartoon
                     )
                     rv2.setUpWithLinear(adapter2)
                     adapter2?.setOnClick(R.id.layoutCartoon) { _, t ->
-                        viewModel.getSearchYK(t)
+                        viewModel.getSearch(t)
                     }
                     Log.i(TAG, "search2:adapter ")
                 } else {
                     adapter2?.notifyDataSetChanged()
+                }
+                3 -> if (adapter3 == null) {//拷贝漫画
+                    adapter3 = DataBindingAdapter(
+                        viewModel.searchKBList,
+                        BR.data,
+                        R.layout.rv_item_57_cartoon
+                    )
+                    rv3.setUpWithLinear(adapter3)
+                    adapter3?.setOnClick(R.id.layoutCartoon) { _, t ->
+                        viewModel.getSearch(t)
+                    }
+                    Log.i(TAG, "adapter3:adapter ")
+                } else {
+                    adapter3?.notifyDataSetChanged()
                 }
             }
         }

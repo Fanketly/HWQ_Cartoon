@@ -13,4 +13,5 @@ object Api {
     const val youkuUrl="http://www.ykmh.com"
     const val imgYKUrl="https://pic.w1fl.com"
     const val baseKbUrl="https://api.copymanga.com/api/v3/"
+    const val KbSearchUrl="https://api.copymanga.com/api/kb/web/searchc/comics?q="
 }

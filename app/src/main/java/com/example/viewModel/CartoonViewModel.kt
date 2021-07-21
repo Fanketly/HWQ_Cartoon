@@ -134,12 +134,10 @@ class CartoonViewModel @ViewModelInject constructor(
                         )
                     )
                 }
-                Log.i(TAG, "getKaobei: ${homeKBList.size}")
                 homeKBLive.postValue(homeKBList)
             } else {
                 errorLiveData.postValue(data.message)
             }
-
         }
     }
 

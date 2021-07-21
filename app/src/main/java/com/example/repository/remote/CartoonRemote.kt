@@ -1,9 +1,7 @@
 package com.example.repository.remote
 
-import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.MutableLiveData
-import com.example.hwq_cartoon.TAG
 import com.example.util.NetworkUtils
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.FlowCollector
@@ -39,10 +37,9 @@ class CartoonRemote @Inject constructor() {
         try {
             val okhttpGet = if (headers == null) NetworkUtils.okhttpGet(url)
             else NetworkUtils.okhttpGet(url, headers)
-            Log.i(TAG, "getData: $okhttpGet")
             return gson.fromJson(okhttpGet, clazz)
         } catch (e: Exception) {
-            pg.postValue(false)
+            pg.postValue(true)
             error.postValue(e.message)
         }
         return null
