@@ -174,6 +174,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             override fun onRefresh(refreshLayout: RefreshLayout) {
                 viewModel.refreshPager()
                 viewModel.getYouKu()
+                viewModel.getKaobei()
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {
