@@ -86,9 +86,15 @@ class DetailViewModel @ViewModelInject constructor(
                     }
                 }
                 url.contains("copymanga") -> {
-                    val data = remote.getData(url, KBCartoonChapter::class.java,requestUtil.headers) ?: return@launch
+                    val data =
+                        remote.getData(url, KBCartoonChapter::class.java, requestUtil.headers)
+                            ?: return@launch
                     if (data.code == 200) {
-                        for (content in data.results.chapter.contents) {
+                        val words = data.results.chapter.words.toMutableList()
+                        val contents = data.results.chapter.contents.toMutableList()
+                        quickSort(words, contents, 0, words.size - 1)
+                        Log.i(TAG, "msg3Send: $words")
+                        for (content in contents) {
                             if (!job!!.isActive) {
                                 return@launch
                             }
@@ -106,6 +112,35 @@ class DetailViewModel @ViewModelInject constructor(
         }
     }
 
+    private fun quickSort(
+        words: MutableList<Int>,
+        contents: MutableList<KBCartoonChapter.Results.Chapter.Content>,
+        begin: Int,
+        end: Int
+    ) {
+        if (begin < end) {
+            val temp = words[begin]
+            val temp2 = contents[begin]
+            var i = begin
+            var j = end
+            while (i < j) {
+                while (i < j && words[j] > temp)
+                    j--
+                words[i] = words[j]
+                contents[i] = contents[j]
+                while (i < j && words[i] <= temp)
+                    i++
+                words[j] = words[i]
+                contents[j] = contents[i]
+            }
+            words[i] = temp
+            contents[i] = temp2
+            quickSort(words, contents, begin, i - 1)
+            quickSort(words, contents, i + 1, end)
+        } else {
+            return
+        }
+    }
 
     private fun send(url: String) {//what4
         imgUrlList.add(url)
