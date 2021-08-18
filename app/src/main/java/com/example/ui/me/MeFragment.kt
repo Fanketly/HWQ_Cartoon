@@ -69,8 +69,10 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
                                         DialogAutoBinding.inflate(layoutInflater, null, false)
                                     dialogAutoBinding.btn.setOnClickListener {
                                         lifecycleScope.launch {
+                                            var auto = dialogAutoBinding.edt.text.toString()
+                                            if (auto.isEmpty()) auto = "0"
                                             meViewModel.saveAuto(
-                                                dialogAutoBinding.edt.text.toString().toInt()
+                                                auto.toInt()
                                             )
                                             Toast.makeText(
                                                 requireContext(),
@@ -119,7 +121,7 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
                                 val dialog = AlertDialog.Builder(requireContext())
                                     .setView(dialogMePagerBinding.root).show()
                                 dialog.setOnDismissListener {
-                                    App.kv.encode(PAGER_ORIENTATION, App.pagerOrientation!!)
+                                    App.kv.encode(PAGER_ORIENTATION, App.pagerOrientation)
                                 }
                             }
                             3 -> {
@@ -140,7 +142,7 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
     }
 
     private fun pager(orientation: Int, binding: DialogMePagerBinding) {
-        App.pagerOrientation?.let {
+        App.pagerOrientation.let {
             if (orientation == it) return
             when (it) {
                 LinearLayout.VERTICAL -> binding.swPagerV.setChecked(false)

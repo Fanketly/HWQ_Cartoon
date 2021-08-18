@@ -38,12 +38,7 @@ const val AUTO = "auto"
 const val THEME = "blackTheme"
 const val PAGER_ORIENTATION = "pagerorientation"
 
-// val headers = Headers {
-//    val map: MutableMap<String, String> =
-//        HashMap()
-//    map["Referer"] = "https://manhua.dmzj.com/update_1.shtml"
-//    map
-//}
+
 @BindingAdapter("setImg")
 fun setImg(imageView: ImageView, url: String) {
     imageView.load(url)

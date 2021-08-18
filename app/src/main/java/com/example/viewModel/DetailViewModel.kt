@@ -159,6 +159,7 @@ class DetailViewModel @ViewModelInject constructor(
             var urlheard: String? = null
             val ss = s7.substring(0, s7.indexOf(".") - 1)
             Collections.addAll(
+
                 msg4List,
                 *ss.split("|").toTypedArray()
             )

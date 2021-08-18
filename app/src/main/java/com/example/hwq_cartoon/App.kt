@@ -26,7 +26,7 @@ class App : Application(), ImageLoaderFactory {
         lateinit var historySession: DaoSession
         var autoSetting: Int? = null
         var blackTheme: Boolean = false
-        var pagerOrientation: Int? = null
+        var pagerOrientation: Int = LinearLayout.VERTICAL
         lateinit var appContext: Context
         lateinit var kv: MMKV
     }

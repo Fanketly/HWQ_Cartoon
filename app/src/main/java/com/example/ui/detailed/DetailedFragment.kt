@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.imageLoader
 import coil.load
 import com.example.adapter.DetailImgRvAdapter
+import com.example.adapter.DetailImgRvAdapter2
 import com.example.adapter.DetailRvAdapter
 import com.example.base.*
 import com.example.hwq_cartoon.*
@@ -39,7 +40,7 @@ import java.util.*
 @AndroidEntryPoint
 class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
 
-    private lateinit var detailImgRvAdapter: DetailImgRvAdapter
+
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.CHINA)
     private var favouriteInfor: FavouriteInfor? = null
     private var historyInfor: HistoryInfor? = null
@@ -181,24 +182,23 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             Log.i(TAG, "autoScroll: ")
                             val autoSetting = App.autoSetting
                             job = CoroutineScope(Dispatchers.Main).launch {
-                                while (true) {
-                                    if (!job!!.isActive) break
+                                while (!job!!.isCancelled) {
                                     delay(1000)
-                                    when(pagerOrientation){
-                                        LinearLayout.VERTICAL-> view4.rvCartoon.smoothScrollBy(
+                                    when (pagerOrientation) {
+                                        LinearLayout.VERTICAL -> view4.rvCartoon.smoothScrollBy(
                                             0,
                                             view4.rvCartoon.scrollY + autoSetting!!
                                         )
-                                        LinearLayout.HORIZONTAL-> view4.rvCartoon.smoothScrollBy(
+
+                                        LinearLayout.HORIZONTAL -> view4.rvCartoon.smoothScrollBy(
                                             view4.rvCartoon.scrollX + autoSetting!!,
                                             0
                                         )
-                                        3-> view4.rvCartoon.smoothScrollBy(
+                                        3 -> view4.rvCartoon.smoothScrollBy(
                                             view4.rvCartoon.scrollX - autoSetting!!,
                                             0
                                         )
                                     }
-
                                 }
                             }
                         } else {
@@ -207,41 +207,44 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                         }
                     }
                     //判断能否加载下一话
+                    val create = AlertDialog.Builder(requireContext()).setMessage("是否加载下一话")
+                        .setNegativeButton("否") { d, _ ->
+                            d.dismiss()
+                        }.setPositiveButton("是") { d, _ ->
+                            shortToast("正在加载下一页")
+                            d.dismiss()
+                            alertDialog.setOnDismissListener(null)
+                            alertDialog.dismiss()
+                            viewModel.onMsg4Dismiss()
+                            update(historyInfor!!.mark + 1)
+                        }.create()
+
                     view4.rvCartoon.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                             super.onScrolled(recyclerView, dx, dy)
                             val position =
-                                (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                                (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1
                             if (lastPosition == position) return
                             lastPosition = position
-                            view4.tvCartoonNum.text = "${position + 1}/$num"
+                            view4.tvCartoonNum.text = "$position/$num"
                             //第一部分判断是否为最后一张图片 第二部分判断集数是否为最后一集
-                            if (position + 1 == num && viewModel.msg3List.size - 1 > historyInfor!!.mark) {
+                            if (position == num && viewModel.msg3List.size - 1 > historyInfor!!.mark) {
                                 //取消滚动
                                 view4.chipAuto.setChecked(false)
-                                AlertDialog.Builder(requireContext()).setMessage("是否加载下一话")
-                                    .setNegativeButton("否") { d, _ ->
-                                        d.dismiss()
-                                    }.setPositiveButton("是") { d, _ ->
-                                        shortToast("正在加载下一页")
-                                        d.dismiss()
-                                        alertDialog.setOnDismissListener(null)
-                                        alertDialog.dismiss()
-                                        viewModel.onMsg4Dismiss()
-                                        update(historyInfor!!.mark + 1)
-                                    }.show()
+                                if (!create.isShowing) create.show()
                             }
                         }
                     })
-
-                    detailImgRvAdapter =
-                        DetailImgRvAdapter(msg4,requireContext().imageLoader)
+                    val detailImgRvAdapter = if (pagerOrientation == LinearLayout.VERTICAL)
+                        DetailImgRvAdapter2(msg4, requireContext().imageLoader)
+                    else
+                        DetailImgRvAdapter(msg4, requireContext().imageLoader)
                     detailImgRvAdapter.setOnClick {
                         if (view4.layCartoonDialog.visibility == View.VISIBLE)
                             view4.layCartoonDialog.visibility = View.GONE
                         else view4.layCartoonDialog.visibility = View.VISIBLE
                     }
-                    App.pagerOrientation?.let {
+                    App.pagerOrientation.let {
                         when (it) {
                             3 -> view4.rvCartoon.setUpWithLinear(
                                 detailImgRvAdapter,

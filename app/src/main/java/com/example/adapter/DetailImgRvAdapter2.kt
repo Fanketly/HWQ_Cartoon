@@ -6,7 +6,7 @@ import coil.ImageLoader
 import coil.load
 import com.example.base.ViewBindingRvAdapter
 import com.example.hwq_cartoon.TAG
-import com.example.hwq_cartoon.databinding.CartoonImgRvItemBinding
+import com.example.hwq_cartoon.databinding.CartoonImgRvItem2Binding
 
 /**
  * Created by Android Studio.
@@ -14,14 +14,13 @@ import com.example.hwq_cartoon.databinding.CartoonImgRvItemBinding
  * Date: 2021/3/15
  * Time: 9:29
  */
-class DetailImgRvAdapter(
+class DetailImgRvAdapter2(
     list: List<String>,
     private val imageLoader: ImageLoader,
 ) :
-    ViewBindingRvAdapter<String, CartoonImgRvItemBinding>(list) {
+    ViewBindingRvAdapter<String, CartoonImgRvItem2Binding>(list) {
 
-    override fun onBind(b: CartoonImgRvItemBinding, d: String, p: Int) {
-
+    override fun onBind(b: CartoonImgRvItem2Binding, d: String, p: Int) {
         b.imageView.load(d) {
             setHeader("Referer", "https://manhua.dmzj.com/update_1.shtml")
             listener(onError = { request, _ ->
@@ -30,14 +29,16 @@ class DetailImgRvAdapter(
                     imageLoader.enqueue(request)
                 }
             }, onSuccess = { _, _ ->
-
                 b.imageView.setOnClickListener { onclick(p) }
             })
         }
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH<CartoonImgRvItemBinding> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): VH<CartoonImgRvItem2Binding> {
         return viewBinding(parent)
     }
 
