@@ -1,4 +1,4 @@
-package com.example.util
+package com.example.repository.remote
 
 import android.os.Bundle
 import android.util.Log
@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.example.repository.model.CartoonInfo
 import com.example.repository.model.KBCartoonChapters
 import com.example.repository.model.KBCartoonInfo
-import com.example.repository.remote.Api
-import com.example.repository.remote.CartoonRemote
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import okhttp3.Headers

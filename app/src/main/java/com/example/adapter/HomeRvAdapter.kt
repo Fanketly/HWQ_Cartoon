@@ -4,7 +4,7 @@ import android.util.Log
 import android.view.ViewGroup
 import coil.load
 import com.example.base.ViewBindingRvAdapter
-import com.example.hwq_cartoon.databinding.CartoonRvItemBinding
+import com.example.hwq_cartoon.databinding.RvItemCartoonBinding
 import com.example.repository.model.CartoonInfo
 
 /**
@@ -14,8 +14,8 @@ import com.example.repository.model.CartoonInfo
  * Time: 20:18
  */
 class HomeRvAdapter(list: List<CartoonInfo>) :
-    ViewBindingRvAdapter<CartoonInfo, CartoonRvItemBinding>(list) {
-    override fun onBind(b: CartoonRvItemBinding, d: CartoonInfo, p: Int) {
+    ViewBindingRvAdapter<CartoonInfo, RvItemCartoonBinding>(list) {
+    override fun onBind(b: RvItemCartoonBinding, d: CartoonInfo, p: Int) {
         b.tvCartoonTitle.text = d.title
         b.root.setOnClickListener {
             onclick(
@@ -32,7 +32,7 @@ class HomeRvAdapter(list: List<CartoonInfo>) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH<CartoonRvItemBinding> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH<RvItemCartoonBinding> {
         return viewBinding(parent)
     }
 

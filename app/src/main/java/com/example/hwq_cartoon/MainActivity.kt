@@ -43,9 +43,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (blackTheme) {
-            Log.i("TAG", "MainActivity_onCreate: ")
+            Log.i("TAG", "THEME:BLACK ")
             setTheme(R.style.Theme_HWQ_Cartoon_Black)
         } else {
+            Log.i("TAG", "THEME:LIGHT ")
             setTheme(R.style.Theme_HWQ_Cartoon)
         }
         super.onCreate(savedInstanceState)
@@ -59,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.homeFragment -> {
                     if (mark == 0) {
-                        viewModel.homeLiveData.postValue(false)
+                        viewModel.homeLiveData.postValue(State.REFRESH)
                     } else {
                         b.vpMain.setCurrentItem(0, false)
                     }

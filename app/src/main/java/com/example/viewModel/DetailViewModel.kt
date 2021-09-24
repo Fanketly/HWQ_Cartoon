@@ -10,7 +10,7 @@ import com.example.repository.model.KBCartoonChapter
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
 import com.example.util.NetworkUtils
-import com.example.util.RequestUtil
+import com.example.repository.remote.RequestUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -50,7 +50,7 @@ class DetailViewModel @ViewModelInject constructor(
     //msg4显示漫画
     private val msg4List: MutableList<String> by lazy { ArrayList() }
     private var job: Job? = null
-    private val imgUrlList = mutableListOf<String>()
+    private val imgUrlList = ArrayList<String>()
     val msg4LiveData by lazy { MutableLiveData<List<String>>() }
 
 

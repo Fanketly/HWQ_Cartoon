@@ -10,7 +10,10 @@ class Test {
 
 
 }
-
+enum class E(val value:Int){
+    Red(1),
+    Blue(2)
+}
 fun main() {
     val n= arrayOf(1,23,4,5)
 

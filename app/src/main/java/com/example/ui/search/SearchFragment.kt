@@ -71,7 +71,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                     adapter2 = DataBindingAdapter(
                         viewModel.searchYKList,
                         BR.data,
-                        R.layout.rv_item_57_cartoon
+                        R.layout.rv_item_search
                     )
                     rv2.setUpWithLinear(adapter2)
                     adapter2?.setOnClick(R.id.layoutCartoon) { _, t ->
@@ -85,7 +85,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                     adapter3 = DataBindingAdapter(
                         viewModel.searchKBList,
                         BR.data,
-                        R.layout.rv_item_57_cartoon
+                        R.layout.rv_item_search
                     )
                     rv3.setUpWithLinear(adapter3)
                     adapter3?.setOnClick(R.id.layoutCartoon) { _, t ->

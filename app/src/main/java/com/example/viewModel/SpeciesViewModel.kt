@@ -13,7 +13,7 @@ import com.example.repository.model.SpeciesInfo2
 import com.example.repository.model.SpeciesInfo2Item
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
-import com.example.util.RequestUtil
+import com.example.repository.remote.RequestUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

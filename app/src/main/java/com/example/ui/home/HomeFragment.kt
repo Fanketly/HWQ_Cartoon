@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.*
 import com.example.base.*
+import com.example.hwq_cartoon.State
 import com.example.hwq_cartoon.TAG
 import com.example.hwq_cartoon.databinding.FragmentHomeBinding
 import com.example.hwq_cartoon.setUpWithGrid
@@ -20,14 +21,18 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener
 import com.youth.banner.indicator.CircleIndicator
 import com.youth.banner.transformer.ScaleInTransformer
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 //dmzj漫画完整地址在RequestUtil的loadCartoon
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     private val viewModel: CartoonViewModel by activityViewModels()
     private val searchViewModel: SearchViewModel by activityViewModels()
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.i(TAG, "HomeFragment_onViewCreated ")
         //渐入动画
 //        CoroutineScope(Dispatchers.Main).launch {
 //            delay(400)
@@ -54,40 +59,83 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 //                viewModel.bottomAlphaLiveData.postValue(i / 100f)
 //            }
 //        }
-
-        viewModel.getHomeCartoon()
+        //加载骨架屏
+        val homeShimmerRvAdapter = HomeShimmerRvAdapter(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+        b.rvHome.setUpWithGrid(homeShimmerRvAdapter, 2)
+        b.rvHomeKB.setUpWithGrid(homeShimmerRvAdapter, 2, RecyclerView.HORIZONTAL)
+        b.rvHomeRecommend.setUpWithLinear(homeShimmerRvAdapter, RecyclerView.HORIZONTAL)
         var homeRvAdapter: HomeRvAdapter? = null
         var homeRecommendRvAdapter: HomeRecommendRvAdapter? = null
         var homeKBRvAdapter: HomeRecommendRvAdapter? = null
         //优酷
         viewModel.getYouKu()
         viewModel.homeRecommendLiveData.observe(viewLifecycleOwner) {
-            if (homeRecommendRvAdapter != null) {
-                homeRecommendRvAdapter?.notifyDataSetChanged()
-            } else {
-                homeRecommendRvAdapter = HomeRecommendRvAdapter(it)
+            Log.i("TAG", "homeRecommendLiveData:$it ")
+            if (it == State.NOTHING) return@observe
+            if (homeRecommendRvAdapter == null) {
+                homeRecommendRvAdapter = HomeRecommendRvAdapter(viewModel.homeRecommendList)
                 homeRecommendRvAdapter?.setOnClick { p ->
                     viewModel.getHomeYouKuCartoon(p)
                 }
                 b.rvHomeRecommend.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-                b.rvHomeRecommend.setUpWithLinear(homeRecommendRvAdapter, RecyclerView.HORIZONTAL)
-
+                b.rvHomeRecommend.setUpWithLinear(
+                    homeRecommendRvAdapter,
+                    RecyclerView.HORIZONTAL
+                )
+            } else {
+                homeRecommendRvAdapter?.notifyDataSetChanged()
             }
         }
         //拷贝
         viewModel.getKaobei()
         viewModel.honeKBLiveData.observe(viewLifecycleOwner) {
-            if (homeKBRvAdapter != null) {
-                homeKBRvAdapter!!.notifyDataSetChanged()
-            } else {
-                homeKBRvAdapter = HomeRecommendRvAdapter(it)
+            Log.i("TAG", "honeKBLiveData:$it ")
+            if (it == State.NOTHING) return@observe
+            if (homeKBRvAdapter == null) {
+                homeKBRvAdapter = HomeRecommendRvAdapter(viewModel.homeKBList)
                 homeKBRvAdapter!!.setOnClick { p ->
                     viewModel.getHomeKBCartoon(p)
                 }
                 b.rvHomeKB.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
                 b.rvHomeKB.setUpWithGrid(homeKBRvAdapter, 2, RecyclerView.HORIZONTAL)
+            } else {
+                homeKBRvAdapter?.notifyDataSetChanged()
             }
         }
+        //加载主页 如果true加载数据 点击导航栏false上拉刷新
+        viewModel.getHomeCartoon()
+        viewModel.homeLiveData.observe(viewLifecycleOwner, {
+            Log.i("TAG", "homeLiveData:$it ")
+            when (it!!) {
+                State.SUCCESS -> {
+                    if (homeRvAdapter == null) {
+                        homeRvAdapter = HomeRvAdapter(viewModel.cartoonInfoList)
+                        homeRvAdapter?.apply {
+                            with(b.rvHome) {
+                                addItemDecoration(SpacesItemDecoration(20))
+                                setUpWithGrid(this@apply, 2)
+                            }
+                            setOnClick { p ->
+                                viewModel.getHomeCartoon(p)
+                            }
+                        }
+                    } else {
+                        homeRvAdapter?.notifyDataSetChanged()
+                        b.refreshCartoon.closeHeaderOrFooter()
+                    }
+                }
+                State.REFRESH -> {
+                    b.rvHome.scrollToPosition(0)
+                    b.refreshCartoon.autoRefresh()
+                }
+                State.FAIL -> {
+                    homeRvAdapter?.notifyDataSetChanged()
+                    b.refreshCartoon.closeHeaderOrFooter()
+                }
+                State.NOTHING -> {
+                }
+            }
+        })
         //轮播图
         b.bannerHome.apply {
             setPageTransformer(ScaleInTransformer())
@@ -142,32 +190,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                 }
             })
         }
-        //加载主页 如果true加载数据 点击导航栏false上拉刷新
-        viewModel.homeLiveData.observe(viewLifecycleOwner, {
-            Log.i("TAG", "homeLiveData:$it ")
-            if (it) {
-                if (homeRvAdapter != null) {
-                    homeRvAdapter?.notifyDataSetChanged()
-                    b.refreshCartoon.closeHeaderOrFooter()
-                } else {
-                    homeRvAdapter = HomeRvAdapter(viewModel.cartoonInfors)
-                    homeRvAdapter?.apply {
-                        with(b.rvHome) {
-                            addItemDecoration(SpacesItemDecoration(20))
-                            setUpWithGrid(this@apply, 2)
-                        }
-                        setOnClick { p ->
-                            viewModel.getHomeCartoon(p)
-                        }
-                    }
-                }
-            } else {
-                b.rvHome.scrollToPosition(0)
-//                viewModel.refreshPager()
-//                viewModel.getYouKu()
-                b.refreshCartoon.autoRefresh()
-            }
-        })
+
 
         //刷新和加载
         b.refreshCartoon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
@@ -188,6 +211,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     override fun onDestroy() {
         super.onDestroy()
+        viewModel.onDestroyView()
         Log.i(TAG, "HomeOnDestroy: ")
     }
 

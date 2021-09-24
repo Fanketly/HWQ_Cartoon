@@ -10,7 +10,7 @@ import com.example.repository.model.CartoonInfo
 import com.example.repository.model.KBSearchInfo
 import com.example.repository.remote.Api
 import com.example.repository.remote.CartoonRemote
-import com.example.util.RequestUtil
+import com.example.repository.remote.RequestUtil
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import org.jsoup.Jsoup

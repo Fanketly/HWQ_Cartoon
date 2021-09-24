@@ -31,7 +31,7 @@ class CartoonRemote @Inject constructor() {
         get() = pg
     val error
         get() = errorLiveData
-
+    //请求api时使用
     @WorkerThread
     fun <T> getData(url: String, clazz: Class<T>, headers: Headers? = null): T? {
         try {
@@ -40,7 +40,7 @@ class CartoonRemote @Inject constructor() {
             return gson.fromJson(okhttpGet, clazz)
         } catch (e: Exception) {
             pg.postValue(true)
-            error.postValue(e.message)
+            errorLiveData.postValue(e.message)
         }
         return null
     }
@@ -51,6 +51,7 @@ class CartoonRemote @Inject constructor() {
     //onCompletion 操作符与 catch 不同，它不处理异常。我们可以看到前⾯的⽰例代码，异常仍然流向下游。它将被提供 给后⾯的 onCompletion 操作符，并可以由 catch 操作符处理。
     /**
      * flow用法
+     * 爬取网页数据时使用
      * @param url 加载数据的地址
      * @param data 发射的数据
      * @param success 当成功时做的一些事情
@@ -66,7 +67,7 @@ class CartoonRemote @Inject constructor() {
         data(NetworkUtils.okhttpGet(url), this)
     }.onCompletion { cause -> if (cause == null) success?.invoke() }
         .catch {
-            error.postValue(it.message)
+            errorLiveData.postValue(it.message)
             pg.postValue(true)
             fail?.invoke()
         }

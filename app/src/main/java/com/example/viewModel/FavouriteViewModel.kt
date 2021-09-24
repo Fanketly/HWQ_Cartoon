@@ -11,7 +11,7 @@ import com.example.repository.local.HistoryDB
 import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.HistoryInfor
 import com.example.repository.remote.CartoonRemote
-import com.example.util.RequestUtil
+import com.example.repository.remote.RequestUtil
 
 /**
  * Created by Android Studio.
