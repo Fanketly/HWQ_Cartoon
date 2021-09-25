@@ -3,7 +3,6 @@ package com.example.hwq_cartoon
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import android.widget.LinearLayout
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import com.example.repository.model.DaoMaster
@@ -26,7 +25,7 @@ class App : Application(), ImageLoaderFactory {
         lateinit var historySession: DaoSession
         var autoSetting: Int? = null
         var blackTheme: Boolean = false
-        var pagerOrientation: Int = LinearLayout.VERTICAL
+        var pagerOrientation: Int = 1
         lateinit var appContext: Context
         lateinit var kv: MMKV
     }
@@ -40,7 +39,7 @@ class App : Application(), ImageLoaderFactory {
         kv.apply {
             blackTheme = decodeBool(THEME, false)
             autoSetting = decodeInt(AUTO, 200)
-            pagerOrientation = decodeInt(PAGER_ORIENTATION, LinearLayout.VERTICAL)
+            pagerOrientation = decodeInt(PAGER_ORIENTATION, PagerOrientationEnum.VERTICAL.value)
         }
         historySession = daoMaster("history.db")
         favouriteSession = daoMaster("favourite.db")

@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.homeFragment -> {
                     if (mark == 0) {
-                        viewModel.homeLiveData.postValue(State.REFRESH)
+                        viewModel.homeLiveData.postValue(StateEnum.REFRESH)
                     } else {
                         b.vpMain.setCurrentItem(0, false)
                     }

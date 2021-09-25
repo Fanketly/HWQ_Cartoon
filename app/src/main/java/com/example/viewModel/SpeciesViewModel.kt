@@ -134,13 +134,13 @@ class SpeciesViewModel @ViewModelInject constructor(
                     errorLiveData.postValue("数据加载失败")
                 } else {
                     val str = str2.substring(str2.indexOf("["), str2.lastIndexOf("]") + 1)
-                    val speciesInfor2s: List<SpeciesInfo2Item> =
+                    val speciesInfo2s: List<SpeciesInfo2Item> =
                         remote.gson.fromJson(
                             str,
                             SpeciesInfo2::class.java
                         )
-                    Log.i(TAG, ": " + speciesInfor2s[0].comic_cover)
-                    for ((_, comic_cover, comic_url, _, _, _, _, name) in speciesInfor2s) {
+                    Log.i(TAG, ": " + speciesInfo2s[0].comic_cover)
+                    for ((_, comic_cover, comic_url, _, _, _, _, name) in speciesInfo2s) {
                         flow.emit(
                             FavouriteInfor(
                                 comic_url,

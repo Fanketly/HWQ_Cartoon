@@ -7,16 +7,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.base.BaseFragment
-import com.example.hwq_cartoon.PAGER_ORIENTATION
 import com.example.base.ViewBindingRvAdapter
-import com.example.hwq_cartoon.App
-import com.example.hwq_cartoon.R
+import com.example.hwq_cartoon.*
 import com.example.hwq_cartoon.databinding.DialogAutoBinding
 import com.example.hwq_cartoon.databinding.DialogMePagerBinding
 import com.example.hwq_cartoon.databinding.FragmentMeBinding
@@ -39,8 +36,10 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
         super.onViewCreated(view, savedInstanceState)
         b.rvSetting.layoutManager = LinearLayoutManager(context)
         favouriteViewModel.sizeLiveData.observe(viewLifecycleOwner) {
-            b.tvMeHistorySize.text = "累计观看过的漫画数量：${favouriteViewModel.historySize}"
-            b.tvMeFavouriteSize.text = "追漫数量：${favouriteViewModel.favouriteSize}"
+            if (it == StateEnum.SUCCESS) {
+                b.tvMeHistorySize.text = "累计观看过的漫画数量：${favouriteViewModel.historySize}"
+                b.tvMeFavouriteSize.text = "追漫数量：${favouriteViewModel.favouriteSize}"
+            }
         }
         b.chipTheme.setChecked(App.blackTheme)
         b.chipTheme.setOnCheckedChangeListener {
@@ -101,25 +100,34 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
                                 val dialogMePagerBinding =
                                     DialogMePagerBinding.inflate(layoutInflater, null, false)
                                 when (App.pagerOrientation) {
-                                    LinearLayout.VERTICAL -> dialogMePagerBinding.swPagerV.setChecked(
+                                    PagerOrientationEnum.VERTICAL.value -> dialogMePagerBinding.swPagerV.setChecked(
                                         true
                                     )
-                                    LinearLayout.HORIZONTAL -> dialogMePagerBinding.swPagerH.setChecked(
+                                    PagerOrientationEnum.HORIZONTAL.value -> dialogMePagerBinding.swPagerH.setChecked(
                                         true
                                     )
-                                    3 -> dialogMePagerBinding.swPagerH2.setChecked(true)
+                                    PagerOrientationEnum.REVERSE_HORIZONTAL.value -> dialogMePagerBinding.swPagerH2.setChecked(
+                                        true
+                                    )
                                 }
                                 dialogMePagerBinding.swPagerV.setOnClickListener {
-                                    pager(LinearLayout.VERTICAL, dialogMePagerBinding)
+                                    pager(PagerOrientationEnum.VERTICAL.value, dialogMePagerBinding)
                                 }
                                 dialogMePagerBinding.swPagerH.setOnClickListener {
-                                    pager(LinearLayout.HORIZONTAL, dialogMePagerBinding)
+                                    pager(
+                                        PagerOrientationEnum.HORIZONTAL.value,
+                                        dialogMePagerBinding
+                                    )
                                 }
                                 dialogMePagerBinding.swPagerH2.setOnClickListener {
-                                    pager(3, dialogMePagerBinding)
+                                    pager(
+                                        PagerOrientationEnum.REVERSE_HORIZONTAL.value,
+                                        dialogMePagerBinding
+                                    )
                                 }
                                 val dialog = AlertDialog.Builder(requireContext())
                                     .setView(dialogMePagerBinding.root).show()
+                                //dialog消失之后再做保存
                                 dialog.setOnDismissListener {
                                     App.kv.encode(PAGER_ORIENTATION, App.pagerOrientation)
                                 }
@@ -145,14 +153,14 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
         App.pagerOrientation.let {
             if (orientation == it) return
             when (it) {
-                LinearLayout.VERTICAL -> binding.swPagerV.setChecked(false)
-                LinearLayout.HORIZONTAL -> binding.swPagerH.setChecked(false)
-                3 -> binding.swPagerH2.setChecked(false)
+                PagerOrientationEnum.VERTICAL.value -> binding.swPagerV.setChecked(false)
+                PagerOrientationEnum.HORIZONTAL.value -> binding.swPagerH.setChecked(false)
+                PagerOrientationEnum.REVERSE_HORIZONTAL.value -> binding.swPagerH2.setChecked(false)
             }
             when (orientation) {
-                LinearLayout.VERTICAL -> binding.swPagerV.setChecked(true)
-                LinearLayout.HORIZONTAL -> binding.swPagerH.setChecked(true)
-                3 -> binding.swPagerH2.setChecked(true)
+                PagerOrientationEnum.VERTICAL.value -> binding.swPagerV.setChecked(true)
+                PagerOrientationEnum.HORIZONTAL.value -> binding.swPagerH.setChecked(true)
+                PagerOrientationEnum.REVERSE_HORIZONTAL.value -> binding.swPagerH2.setChecked(true)
             }
             App.pagerOrientation = orientation
         }
@@ -162,5 +170,9 @@ class MeFragment : BaseFragment<FragmentMeBinding>() {
         return FragmentMeBinding.inflate(layoutInflater, container, false)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        favouriteViewModel.onDestroyMeView()
+    }
 
 }

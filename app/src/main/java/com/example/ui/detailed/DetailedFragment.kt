@@ -8,14 +8,12 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.*
-import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.imageLoader
 import coil.load
 import com.example.adapter.DetailImgRvAdapter
-import com.example.adapter.DetailImgRvAdapter2
 import com.example.adapter.DetailRvAdapter
 import com.example.base.*
 import com.example.hwq_cartoon.*
@@ -185,16 +183,16 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                                 while (!job!!.isCancelled) {
                                     delay(1000)
                                     when (pagerOrientation) {
-                                        LinearLayout.VERTICAL -> view4.rvCartoon.smoothScrollBy(
+                                        PagerOrientationEnum.VERTICAL.value -> view4.rvCartoon.smoothScrollBy(
                                             0,
                                             view4.rvCartoon.scrollY + autoSetting!!
                                         )
 
-                                        LinearLayout.HORIZONTAL -> view4.rvCartoon.smoothScrollBy(
+                                        PagerOrientationEnum.HORIZONTAL.value -> view4.rvCartoon.smoothScrollBy(
                                             view4.rvCartoon.scrollX + autoSetting!!,
                                             0
                                         )
-                                        3 -> view4.rvCartoon.smoothScrollBy(
+                                        PagerOrientationEnum.REVERSE_HORIZONTAL.value -> view4.rvCartoon.smoothScrollBy(
                                             view4.rvCartoon.scrollX - autoSetting!!,
                                             0
                                         )
@@ -218,44 +216,67 @@ class DetailedFragment : BaseFragment<FragmentDetailedBinding>() {
                             viewModel.onMsg4Dismiss()
                             update(historyInfor!!.mark + 1)
                         }.create()
-
-                    view4.rvCartoon.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                            super.onScrolled(recyclerView, dx, dy)
-                            val position =
-                                (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition() + 1
-                            if (lastPosition == position) return
-                            lastPosition = position
-                            view4.tvCartoonNum.text = "$position/$num"
-                            //第一部分判断是否为最后一张图片 第二部分判断集数是否为最后一集
-                            if (position == num && viewModel.msg3List.size - 1 > historyInfor!!.mark) {
-                                //取消滚动
-                                view4.chipAuto.setChecked(false)
-                                if (!create.isShowing) create.show()
+                    if (pagerOrientation == PagerOrientationEnum.VERTICAL.value) {
+                        view4.rvCartoon.addOnScrollListener(object :
+                            RecyclerView.OnScrollListener() {
+                            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                                super.onScrolled(recyclerView, dx, dy)
+                                val position =
+                                    (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() + 1
+                                if (position == 0 || lastPosition == position) return
+                                Log.i(TAG, "onScrolled: $position")
+                                lastPosition = position
+                                view4.tvCartoonNum.text = "$position/$num"
+                                if (position == num && viewModel.msg3List.size - 1 > historyInfor!!.mark) {
+                                    if (view4.chipAuto.isChecked) view4.chipAuto.setChecked(false)
+                                    if (!create.isShowing) create.show()
+                                }
                             }
-                        }
-                    })
-                    val detailImgRvAdapter = if (pagerOrientation == LinearLayout.VERTICAL)
-                        DetailImgRvAdapter2(msg4, requireContext().imageLoader)
-                    else
-                        DetailImgRvAdapter(msg4, requireContext().imageLoader)
+                        })
+                    } else {
+                        view4.rvCartoon.addOnScrollListener(object :
+                            RecyclerView.OnScrollListener() {
+                            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                                super.onScrolled(recyclerView, dx, dy)
+                                val position =
+                                    (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition() + 1
+                                if (position == 0 || lastPosition == position) return
+                                Log.i(TAG, "onScrolled: $position")
+                                lastPosition = position
+                                view4.tvCartoonNum.text = "$position/$num"
+                                if (position == num && viewModel.msg3List.size - 1 > historyInfor!!.mark) {
+                                    if (view4.chipAuto.isChecked) view4.chipAuto.setChecked(false)
+                                    if (!create.isShowing) create.show()
+                                }
+                            }
+                        })
+                    }
+
+                    val detailImgRvAdapter =
+                        if (pagerOrientation == PagerOrientationEnum.VERTICAL.value)
+                            DetailImgRvAdapter(msg4, requireContext().imageLoader, true)
+                        else
+                            DetailImgRvAdapter(msg4, requireContext().imageLoader)
+
                     detailImgRvAdapter.setOnClick {
                         if (view4.layCartoonDialog.visibility == View.VISIBLE)
                             view4.layCartoonDialog.visibility = View.GONE
                         else view4.layCartoonDialog.visibility = View.VISIBLE
                     }
-                    App.pagerOrientation.let {
+                    pagerOrientation.let {
                         when (it) {
-                            3 -> view4.rvCartoon.setUpWithLinear(
+                            PagerOrientationEnum.REVERSE_HORIZONTAL.value -> view4.rvCartoon.setUpWithLinear(
                                 detailImgRvAdapter,
-                                LinearLayout.HORIZONTAL,
+                                RecyclerView.HORIZONTAL,
                                 true
                             )
-                            LinearLayout.HORIZONTAL -> view4.rvCartoon.setUpWithLinear(
+                            PagerOrientationEnum.HORIZONTAL.value -> view4.rvCartoon.setUpWithLinear(
                                 detailImgRvAdapter,
-                                it
+                                RecyclerView.HORIZONTAL
                             )
-                            else -> view4.rvCartoon.setUpWithLinear(detailImgRvAdapter)
+                            PagerOrientationEnum.VERTICAL.value -> view4.rvCartoon.setUpWithLinear(
+                                detailImgRvAdapter
+                            )
                         }
                     }
                     alertDialog.setOnDismissListener {

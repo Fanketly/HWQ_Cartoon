@@ -33,7 +33,6 @@ class DetailViewModel @ViewModelInject constructor(
     private val remote: CartoonRemote
 ) : ViewModel() {
 
-    //    private val requestUtil = RequestUtil
     val content: String?
         get() = requestUtil.content
     val update: String?

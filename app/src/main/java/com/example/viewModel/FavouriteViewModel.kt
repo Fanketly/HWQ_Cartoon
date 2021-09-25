@@ -2,10 +2,12 @@ package com.example.viewModel
 
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.hwq_cartoon.TAG
 import com.example.hwq_cartoon.R
+import com.example.hwq_cartoon.StateEnum
 import com.example.repository.local.CartoonDB
 import com.example.repository.local.HistoryDB
 import com.example.repository.model.FavouriteInfor
@@ -27,12 +29,18 @@ class FavouriteViewModel @ViewModelInject constructor(
     private val favouriteDB: CartoonDB
 ) : ViewModel() {
 
-    val historyList: MutableList<HistoryInfor> = mutableListOf()
-    val favouriteList: MutableList<FavouriteInfor> = mutableListOf()
-    val likesLiveData = MutableLiveData<Boolean>()
+    val historyList: MutableList<HistoryInfor> = ArrayList()
+    private val _favouriteList: MutableList<FavouriteInfor> = ArrayList()
+    val favouriteList: List<FavouriteInfor>
+        get() = _favouriteList
+    private val _likesLiveData = MutableLiveData<Boolean>()
+    val likesLiveData: LiveData<Boolean>
+        get() = _likesLiveData
 
     /**判断是删除还是添加，方便rv刷新**/
-    var delOrIns = true
+    private var _delOrIns = true
+    val delOrIns
+        get() = _delOrIns
     val historyLivaData = MutableLiveData<Int>()
     val favouriteLivaData = MutableLiveData<Int>()
 
@@ -40,24 +48,32 @@ class FavouriteViewModel @ViewModelInject constructor(
     private val pgLiveData = remote.pgLiveData
 
     //数量
-    var historySize = 0
-    var favouriteSize = 0
-    private val sizeLive = MutableLiveData<Boolean>()
-    val sizeLiveData
+    private var _historySize = 0
+    val historySize
+        get() = _historySize
+    private var _favouriteSize = 0
+    val favouriteSize
+        get() = _favouriteSize
+    private val sizeLive = MutableLiveData<StateEnum>()
+    val sizeLiveData: LiveData<StateEnum>
         get() = sizeLive
 
     init {
-        historyList.addAll(historyDB.loadAll().reversed())
-        favouriteList.addAll(favouriteDB.loadAll())
+        this.historyList.addAll(historyDB.loadAll().reversed())
+        _favouriteList.addAll(favouriteDB.loadAll())
     }
 
     /**
      * 获取数量
      * */
     fun getSize() {
-        historySize = historyList.size
-        favouriteSize = favouriteList.size
-        sizeLive.postValue(true)
+        _historySize = this.historyList.size
+        _favouriteSize = _favouriteList.size
+        sizeLive.postValue(StateEnum.SUCCESS)
+    }
+
+    fun onDestroyMeView() {
+        sizeLive.value = StateEnum.NOTHING
     }
 
     /***
@@ -82,14 +98,14 @@ class FavouriteViewModel @ViewModelInject constructor(
      *historyFragment
      * */
     fun historyGet(it: Int) {
-        val historyInfor = historyList[it]
+        val historyInfo = this.historyList[it]
         if (pgLiveData.value == false) return
         pgLiveData.value = false
-        val url = historyInfor.href
+        val url = historyInfo.href
         Log.i(TAG, "historyGet: $url")
         requestUtil.putBundle(
-            historyInfor.title,
-            historyInfor.imgUrl,
+            historyInfo.title,
+            historyInfo.imgUrl,
             url,
             R.id.historyFragment
         )
@@ -102,10 +118,10 @@ class FavouriteViewModel @ViewModelInject constructor(
      * 判断追漫是否为0
      * **/
     fun likesIsZero() {
-        if (favouriteList.size == 0)
-            likesLiveData.postValue(true)
+        if (_favouriteList.isEmpty())
+            _likesLiveData.postValue(true)
         else
-            likesLiveData.postValue(false)
+            _likesLiveData.postValue(false)
     }
 
 
@@ -120,13 +136,13 @@ class FavouriteViewModel @ViewModelInject constructor(
 
     fun historyClear() {
         historyDB.clear()
-        historyList.clear()
+        this.historyList.clear()
         historyLivaData.value = -1//全部刷新
     }
 
     //homeFragment
     fun setFavouriteFromHome(historyMark: Int): FavouriteInfor {
-        val historyInfo = historyList[historyMark]
+        val historyInfo = this.historyList[historyMark]
         val s = historyInfo.href
         Log.i("TAG", "FavouriteViewModel_setFavouriteFromHome 即将添加进喜爱的地址:$s ")
         val favouriteInfo =
@@ -136,11 +152,6 @@ class FavouriteViewModel @ViewModelInject constructor(
                 historyInfo.imgUrl,
                 historyInfo.title
             )
-//            FavouriteInfor(
-//                historyInfor.mark,
-//                Api.url2 + "/" + s,
-//                historyInfor.imgUrl,
-//                historyInfor.title
         favouriteDB.insert(favouriteInfo)
         return favouriteInfo
     }
@@ -151,8 +162,8 @@ class FavouriteViewModel @ViewModelInject constructor(
     }
 
     fun favouriteDel(favouriteMark: Int) {
-        delOrIns = true
-        favouriteDB.del(favouriteList.removeAt(favouriteMark))
+        _delOrIns = true
+        favouriteDB.del(_favouriteList.removeAt(favouriteMark))
         favouriteLivaData.value = favouriteMark
     }
 
@@ -160,10 +171,10 @@ class FavouriteViewModel @ViewModelInject constructor(
         favouriteDB.updata(favouriteInfor)
     }
 
-    fun favouriteListAdd(favouriteInfor: FavouriteInfor): Int {
-        favouriteList.add(favouriteInfor)
-        delOrIns = false
-        val p = favouriteList.size - 1
+    fun favouriteListAdd(favouriteInfo: FavouriteInfor): Int {
+        _favouriteList.add(favouriteInfo)
+        _delOrIns = false
+        val p = _favouriteList.size - 1
         favouriteLivaData.value = p
         return p
     }

@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hwq_cartoon.R
-import com.example.hwq_cartoon.State
+import com.example.hwq_cartoon.StateEnum
 import com.example.hwq_cartoon.TAG
 import com.example.repository.model.CartoonInfo
 import com.example.repository.model.KBNewestInfo
@@ -45,7 +45,7 @@ class CartoonViewModel @ViewModelInject constructor(
 
     //msg2主页漫画
     private val _cartoonInfoList: MutableList<CartoonInfo> = ArrayList()
-    val homeLiveData = MutableLiveData<State>()
+    val homeLiveData = MutableLiveData<StateEnum>()
     private var pager = 1
     val cartoonInfoList: List<CartoonInfo>
         get() = _cartoonInfoList
@@ -53,16 +53,16 @@ class CartoonViewModel @ViewModelInject constructor(
 
     //主页优酷漫画
     private val _homeRecommendList = ArrayList<CartoonInfo>()
-    private val _homeRecommendLiveData = MutableLiveData<State>()
-    val homeRecommendLiveData: LiveData<State>
+    private val _homeRecommendLiveData = MutableLiveData<StateEnum>()
+    val homeRecommendLiveData: LiveData<StateEnum>
         get() = _homeRecommendLiveData
     val homeRecommendList: List<CartoonInfo>
         get() = _homeRecommendList
 
     //主页拷贝漫画
     private val _homeKBList = ArrayList<CartoonInfo>()
-    private val _homeKBLiveData = MutableLiveData<State>()
-    val honeKBLiveData: LiveData<State>
+    private val _homeKBLiveData = MutableLiveData<StateEnum>()
+    val honeKBLiveData: LiveData<StateEnum>
         get() = _homeKBLiveData
     val homeKBList: List<CartoonInfo>
         get() = _homeKBList
@@ -118,9 +118,9 @@ class CartoonViewModel @ViewModelInject constructor(
                     }
                 },
                 success = {
-                    homeLiveData.postValue(State.SUCCESS)
+                    homeLiveData.postValue(StateEnum.SUCCESS)
                 }, fail = {
-                    homeLiveData.postValue(State.FAIL)
+                    homeLiveData.postValue(StateEnum.FAIL)
                 }).collect {
                 _cartoonInfoList.add(it)
             }
@@ -145,7 +145,7 @@ class CartoonViewModel @ViewModelInject constructor(
                         )
                     )
                 }
-                _homeKBLiveData.postValue(State.SUCCESS)
+                _homeKBLiveData.postValue(StateEnum.SUCCESS)
             } else {
                 errorLiveData.postValue(data.message)
             }
@@ -172,7 +172,7 @@ class CartoonViewModel @ViewModelInject constructor(
                     )
 
                 }
-            }, success = { _homeRecommendLiveData.postValue(State.SUCCESS) })
+            }, success = { _homeRecommendLiveData.postValue(StateEnum.SUCCESS) })
                 .collect {
                     _homeRecommendList.add(it)
                 }
@@ -222,9 +222,9 @@ class CartoonViewModel @ViewModelInject constructor(
     fun getHomeCartoon() = pager()
 
     fun onDestroyView() {
-        homeLiveData.value = State.NOTHING
-        _homeRecommendLiveData.value = State.NOTHING
-        _homeKBLiveData.value = State.NOTHING
+        homeLiveData.value = StateEnum.NOTHING
+        _homeRecommendLiveData.value = StateEnum.NOTHING
+        _homeKBLiveData.value = StateEnum.NOTHING
     }
 
 }

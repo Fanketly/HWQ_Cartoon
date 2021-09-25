@@ -1,6 +1,6 @@
 package com.example.hwq_cartoon
 
-enum class State {
+enum class StateEnum {
     FAIL,
     SUCCESS,
     REFRESH,

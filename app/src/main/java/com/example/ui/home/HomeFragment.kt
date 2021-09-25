@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.*
 import com.example.base.*
-import com.example.hwq_cartoon.State
+import com.example.hwq_cartoon.StateEnum
 import com.example.hwq_cartoon.TAG
 import com.example.hwq_cartoon.databinding.FragmentHomeBinding
 import com.example.hwq_cartoon.setUpWithGrid
@@ -71,7 +71,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         viewModel.getYouKu()
         viewModel.homeRecommendLiveData.observe(viewLifecycleOwner) {
             Log.i("TAG", "homeRecommendLiveData:$it ")
-            if (it == State.NOTHING) return@observe
+            if (it == StateEnum.NOTHING) return@observe
             if (homeRecommendRvAdapter == null) {
                 homeRecommendRvAdapter = HomeRecommendRvAdapter(viewModel.homeRecommendList)
                 homeRecommendRvAdapter?.setOnClick { p ->
@@ -90,7 +90,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         viewModel.getKaobei()
         viewModel.honeKBLiveData.observe(viewLifecycleOwner) {
             Log.i("TAG", "honeKBLiveData:$it ")
-            if (it == State.NOTHING) return@observe
+            if (it == StateEnum.NOTHING) return@observe
             if (homeKBRvAdapter == null) {
                 homeKBRvAdapter = HomeRecommendRvAdapter(viewModel.homeKBList)
                 homeKBRvAdapter!!.setOnClick { p ->
@@ -107,7 +107,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         viewModel.homeLiveData.observe(viewLifecycleOwner, {
             Log.i("TAG", "homeLiveData:$it ")
             when (it!!) {
-                State.SUCCESS -> {
+                StateEnum.SUCCESS -> {
                     if (homeRvAdapter == null) {
                         homeRvAdapter = HomeRvAdapter(viewModel.cartoonInfoList)
                         homeRvAdapter?.apply {
@@ -124,15 +124,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
                         b.refreshCartoon.closeHeaderOrFooter()
                     }
                 }
-                State.REFRESH -> {
+                StateEnum.REFRESH -> {
                     b.rvHome.scrollToPosition(0)
                     b.refreshCartoon.autoRefresh()
                 }
-                State.FAIL -> {
+                StateEnum.FAIL -> {
                     homeRvAdapter?.notifyDataSetChanged()
                     b.refreshCartoon.closeHeaderOrFooter()
                 }
-                State.NOTHING -> {
+                StateEnum.NOTHING -> {
                 }
             }
         })

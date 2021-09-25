@@ -24,20 +24,23 @@ class CartoonRemote @Inject constructor() {
     private val errorLiveData = MutableLiveData<String?>()
     private val pg = MutableLiveData<Boolean>()
     private val bottom = MutableLiveData<Boolean>()
-    val gson = Gson()
+    private val _gson = Gson()
+    val gson
+        get() = _gson
     val bottomLiveData
         get() = bottom
     val pgLiveData
         get() = pg
     val error
         get() = errorLiveData
+
     //请求api时使用
     @WorkerThread
     fun <T> getData(url: String, clazz: Class<T>, headers: Headers? = null): T? {
         try {
             val okhttpGet = if (headers == null) NetworkUtils.okhttpGet(url)
             else NetworkUtils.okhttpGet(url, headers)
-            return gson.fromJson(okhttpGet, clazz)
+            return _gson.fromJson(okhttpGet, clazz)
         } catch (e: Exception) {
             pg.postValue(true)
             errorLiveData.postValue(e.message)
