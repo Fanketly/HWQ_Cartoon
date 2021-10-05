@@ -411,12 +411,13 @@ class DetailViewModel @ViewModelInject constructor(
 
     fun onMsg3Dismiss() { //清除集数
         msg3List.clear()
-        if (job != null)
-            if (job!!.isActive) {
-                job!!.cancel()
+        job?.run {
+            if (isActive){
+                cancel()
                 pgLiveData.postValue(true)
             }
-        Log.i("TAG", "onDismiss3: ")
+            Log.i("TAG", "onDismiss3: ")
+        }
     }
 
     fun onMsg4Dismiss() {

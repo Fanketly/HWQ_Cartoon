@@ -1,4 +1,4 @@
-package com.example.ui
+package com.example.ui.view
 
 import androidx.transition.ChangeBounds
 import androidx.transition.ChangeImageTransform

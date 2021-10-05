@@ -36,10 +36,10 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
         b.rvSpeciesTop.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         b.refreshCartoon.setOnRefreshLoadMoreListener(object : OnRefreshLoadMoreListener {
             override fun onRefresh(refreshLayout: RefreshLayout) {
-                if (adapter==null)
-                viewModel.getSpeciesType()
+                if (adapter == null)
+                    viewModel.getSpeciesType()
                 else
-                viewModel.refresh()
+                    viewModel.refresh()
             }
 
             override fun onLoadMore(refreshLayout: RefreshLayout) {
@@ -70,8 +70,10 @@ class SpeciesFragment : BaseFragment<FragmentSpeciesBinding>() {
                     b.rvSpeciesTop.setUpWithLinear(this)
                 }
                 adapter = FavouriteRvAdapter(it)
-                b.rvSpecies.setUpWithGrid(adapter, 3)
-                adapter?.setOnClick(onclick = { p -> viewModel.getSpeciesCartoon(p) })
+                adapter?.run {
+                    b.rvSpecies.setUpWithGrid(this, 3)
+                    setOnClick(onclick = { p -> viewModel.getSpeciesCartoon(p) })
+                }
                 b.refreshCartoon.closeHeaderOrFooter()
             } else {
                 b.refreshCartoon.closeHeaderOrFooter()

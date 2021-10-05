@@ -65,6 +65,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         b.rvHome.isNestedScrollingEnabled = true
         b.rvHomeKB.setUpWithGrid(homeShimmerRvAdapter, 2, RecyclerView.HORIZONTAL)
         b.rvHomeRecommend.setUpWithLinear(homeShimmerRvAdapter, RecyclerView.HORIZONTAL)
+        b.rvHomeRecommend.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        b.rvHomeKB.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         var homeRvAdapter: HomeRvAdapter? = null
         var homeRecommendRvAdapter: HomeRecommendRvAdapter? = null
         var homeKBRvAdapter: HomeRecommendRvAdapter? = null
@@ -75,14 +77,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             if (it == StateEnum.NOTHING) return@observe
             if (homeRecommendRvAdapter == null) {
                 homeRecommendRvAdapter = HomeRecommendRvAdapter(viewModel.homeRecommendList)
-                homeRecommendRvAdapter?.setOnClick { p ->
-                    viewModel.getHomeYouKuCartoon(p)
+                homeRecommendRvAdapter?.run {
+                    setOnClick { p ->
+                        viewModel.getHomeYouKuCartoon(p)
+                    }
+                    b.rvHomeRecommend.setUpWithLinear(
+                        this,
+                        RecyclerView.HORIZONTAL
+                    )
                 }
-                b.rvHomeRecommend.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-                b.rvHomeRecommend.setUpWithLinear(
-                    homeRecommendRvAdapter,
-                    RecyclerView.HORIZONTAL
-                )
             } else {
                 homeRecommendRvAdapter?.notifyDataSetChanged()
             }
@@ -94,11 +97,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             if (it == StateEnum.NOTHING) return@observe
             if (homeKBRvAdapter == null) {
                 homeKBRvAdapter = HomeRecommendRvAdapter(viewModel.homeKBList)
-                homeKBRvAdapter!!.setOnClick { p ->
-                    viewModel.getHomeKBCartoon(p)
+                homeKBRvAdapter?.run {
+                    setOnClick { p ->
+                        viewModel.getHomeKBCartoon(p)
+                    }
+                    b.rvHomeKB.setUpWithGrid(this, 2, RecyclerView.HORIZONTAL)
                 }
-                b.rvHomeKB.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-                b.rvHomeKB.setUpWithGrid(homeKBRvAdapter, 2, RecyclerView.HORIZONTAL)
             } else {
                 homeKBRvAdapter?.notifyDataSetChanged()
             }

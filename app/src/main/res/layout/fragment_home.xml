@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/home_background"
-                app:layout_behavior="com.example.ui.view.AppBarLayoutBehavior"
+                app:layout_behavior="com.example.ui.view.AppBarBehavior"
                 app:elevation="0dp">
 
 

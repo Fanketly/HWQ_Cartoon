@@ -13,23 +13,23 @@ import coil.load
  * Date: 2020/12/2
  * Time: 18:26
  */
-fun <T> RecyclerView.setUpWithLinear(
-    t: T,
+fun RecyclerView.setUpWithLinear(
+    t: RecyclerView.Adapter<*>,
     orientation: Int = RecyclerView.VERTICAL,
     reverse: Boolean = false
 ) {
     layoutManager = LinearLayoutManager(context, orientation, reverse)
-    adapter = t as RecyclerView.Adapter<*>
+    adapter = t
 }
 
-fun <T> RecyclerView.setUpWithGrid(
-    t: T,
+fun RecyclerView.setUpWithGrid(
+    t: RecyclerView.Adapter<*>,
     num: Int,
     orientation: Int = RecyclerView.VERTICAL,
     reverse: Boolean = false
 ) {
     layoutManager = GridLayoutManager(context, num, orientation, reverse)
-    adapter = t as RecyclerView.Adapter<*>
+    adapter = t
 }
 
 const val TAG = "TAG"

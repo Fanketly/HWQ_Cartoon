@@ -33,38 +33,42 @@ class FavoriteFragment : Fragment() {
             ViewModelProvider(requireActivity())[FavouriteViewModel::class.java]
         val list = favouriteViewModel.favouriteList
         favouriteViewModel.likesIsZero()
-        favouriteViewModel.likesLiveData.observe(viewLifecycleOwner) {
-            if (it) b!!.tvFavouriteTip.visibility = View.VISIBLE
-            else b!!.tvFavouriteTip.visibility = View.GONE
-        }
-        if (favouriteRvAdapter == null)
+        b?.run {
+            favouriteViewModel.likesLiveData.observe(viewLifecycleOwner) {
+                if (it) tvFavouriteTip.visibility = View.VISIBLE
+                else tvFavouriteTip.visibility = View.GONE
+            }
             favouriteRvAdapter = FavouriteRvAdapter(list)
-        b!!.rvFavourite.setUpWithGrid(favouriteRvAdapter, 3)
-        b!!.rvFavourite.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-        //漫画点击监听
-        favouriteRvAdapter?.setOnClick(onclick = {
-            favouriteViewModel.favouriteGet(list[it])
-        }, longOnclick = {
-            AlertDialog.Builder(context).setMessage("是否取消追漫")
-                .setPositiveButton(
-                    "确定"
-                ) { _, _ ->
-                    favouriteViewModel.favouriteDel(it)
-                    favouriteViewModel.likesIsZero()
+            favouriteRvAdapter?.run {
+                rvFavourite.setUpWithGrid(this, 3)
+                rvFavourite.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+                //漫画点击监听
+                setOnClick(onclick = {
+                    favouriteViewModel.favouriteGet(list[it])
+                }, longOnclick = {
+                    AlertDialog.Builder(context).setMessage("是否取消追漫")
+                        .setPositiveButton(
+                            "确定"
+                        ) { _, _ ->
+                            favouriteViewModel.favouriteDel(it)
+                            favouriteViewModel.likesIsZero()
+                        }
+                        .setNegativeButton("取消") { p0, _ ->
+                            p0.dismiss()
+                        }.show()
+                })
+            }
+            //漫画rv监听
+            favouriteViewModel.favouriteLivaData.observe(viewLifecycleOwner) {
+                if (favouriteViewModel.delOrIns) {
+                    favouriteRvAdapter?.notifyItemRemoved(it)
+                    favouriteRvAdapter?.notifyItemRangeChanged(it, list.size)
+                } else {
+                    favouriteRvAdapter?.notifyItemChanged(it)
                 }
-                .setNegativeButton("取消") { p0, _ ->
-                    p0.dismiss()
-                }.show()
-        })
-        //漫画rv监听
-        favouriteViewModel.favouriteLivaData.observe(viewLifecycleOwner) {
-            if (favouriteViewModel.delOrIns) {
-                favouriteRvAdapter?.notifyItemRemoved(it)
-                favouriteRvAdapter?.notifyItemRangeChanged(it, list.size)
-            } else {
-                favouriteRvAdapter?.notifyItemChanged(it)
             }
         }
+
     }
 
     override fun onDestroyView() {

@@ -44,7 +44,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
         rv2 = RecyclerView(requireContext())
         rv3 = RecyclerView(requireContext())
         b.vpSearch.adapter = SearchVpAdapter(listOf(rv, rv2, rv3))
-        b.vpSearch.offscreenPageLimit=2
+        b.vpSearch.offscreenPageLimit = 2
         b.tabSearch.setupWithViewPager(b.vpSearch)
         b.tabSearch.getTabAt(0)?.text = "某漫之家"
         b.tabSearch.getTabAt(1)?.text = "某酷漫画"
@@ -59,7 +59,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                 1 -> if (homeRvAdapter == null) {
                     homeRvAdapter = HomeRvAdapter(viewModel.searchDMZJList)
                     homeRvAdapter?.apply {
-                        rv.setUpWithLinear(homeRvAdapter)
+                        rv.setUpWithLinear(this)
                         setOnClick { p ->
                             viewModel.getSearch(p)
                         }
@@ -73,9 +73,11 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                         BR.data,
                         R.layout.rv_item_search
                     )
-                    rv2.setUpWithLinear(adapter2)
-                    adapter2?.setOnClick(R.id.layoutCartoon) { _, t ->
-                        viewModel.getSearch(t)
+                    adapter2?.run {
+                        rv2.setUpWithLinear(this)
+                        setOnClick(R.id.layoutCartoon) { _, t ->
+                            viewModel.getSearch(t)
+                        }
                     }
                     Log.i(TAG, "search2:adapter ")
                 } else {
@@ -87,9 +89,11 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>() {
                         BR.data,
                         R.layout.rv_item_search
                     )
-                    rv3.setUpWithLinear(adapter3)
-                    adapter3?.setOnClick(R.id.layoutCartoon) { _, t ->
-                        viewModel.getSearch(t)
+                    adapter3?.run {
+                        rv3.setUpWithLinear(this)
+                        setOnClick(R.id.layoutCartoon) { _, t ->
+                            viewModel.getSearch(t)
+                        }
                     }
                     Log.i(TAG, "adapter3:adapter ")
                 } else {
