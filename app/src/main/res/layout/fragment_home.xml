@@ -11,10 +11,6 @@
         android:id="@+id/refreshCartoon"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:srlAccentColor="@color/header_background"
         app:srlHeaderTriggerRate="0.6">
 
@@ -33,17 +29,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/home_background"
+                app:layout_behavior="com.example.ui.view.AppBarLayoutBehavior"
                 app:elevation="0dp">
 
 
-                <com.google.android.material.appbar.CollapsingToolbarLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_scrollFlags="scroll">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:layout_scrollFlags="scroll"
                         android:orientation="vertical">
 
                         <androidx.cardview.widget.CardView
@@ -119,13 +113,12 @@
                     </LinearLayout>
 
 
-                </com.google.android.material.appbar.CollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvHome"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="?attr/home_background"
                 android:overScrollMode="never"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />

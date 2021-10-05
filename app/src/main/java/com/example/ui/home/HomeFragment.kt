@@ -62,6 +62,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         //加载骨架屏
         val homeShimmerRvAdapter = HomeShimmerRvAdapter(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
         b.rvHome.setUpWithGrid(homeShimmerRvAdapter, 2)
+        b.rvHome.isNestedScrollingEnabled = true
         b.rvHomeKB.setUpWithGrid(homeShimmerRvAdapter, 2, RecyclerView.HORIZONTAL)
         b.rvHomeRecommend.setUpWithLinear(homeShimmerRvAdapter, RecyclerView.HORIZONTAL)
         var homeRvAdapter: HomeRvAdapter? = null

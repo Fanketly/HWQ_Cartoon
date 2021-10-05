@@ -1,5 +1,6 @@
 package com.example.adapter
 
+import android.util.Log
 import android.view.ViewGroup
 import coil.load
 import com.example.base.ViewBindingRvAdapter
@@ -21,6 +22,8 @@ class HomeRecommendRvAdapter(list: List<CartoonInfo>) :
                 p
             )
         }
+        Log.i("TAG", "CartoonViewModel_pager:${d.img} ")
+
         if (d.img.isEmpty()) return
         b.imgCartoon.load(d.img)
     }
