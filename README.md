@@ -1,7 +1,7 @@
 # Fun漫画
 
 #### 介绍(可能是最后一次更新功能了，以后要是什么好想法可能会添加，漫画源问题和bug会进行修复)
-漫画软件，现漫画源主要为动漫之家，次要为优酷漫画、拷贝漫画。主要使用kotlin开发，使用MVVM架构,Jsoup爬取网站数据，okhttp请求网络数据，Coil加载网络图片，使用多种Jetpack库，可用于新手学习。可在右侧发行版下载APK。
+漫画软件，现漫画源主要为动漫之家，次要为优酷漫画、拷贝漫画。主要使用kotlin开发，使用MVVM架构,Jsoup爬取网站数据，okhttp请求网络数据，Coil加载网络图片，使用多种Jetpack库，可用于新手学习,viewModel部分比较臃肿，可以拆分到Repository。可在右侧发行版下载APK。
 [ **Compose版链接** ](https://gitee.com/fanketly/FunCartoon_Compose) 目前只完成一小部分
 
 有什么大bug可以在评论区说。
