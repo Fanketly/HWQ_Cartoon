@@ -13,12 +13,12 @@ import com.example.adapter.DataBindingAdapter
 import com.example.adapter.HomeRvAdapter
 import com.example.adapter.SearchVpAdapter
 import com.example.base.BaseFragment
-import com.example.hwq_cartoon.setUpWithLinear
 import com.example.hwq_cartoon.BR
 import com.example.hwq_cartoon.R
-import com.example.hwq_cartoon.TAG
+import com.example.util.TAG
 import com.example.hwq_cartoon.databinding.FragmentSearchBinding
 import com.example.repository.model.CartoonInfo
+import com.example.util.setUpWithLinear
 import com.example.viewModel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

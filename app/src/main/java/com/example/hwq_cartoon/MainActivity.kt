@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
             touchSlopField.set(
                 recyclerView,
                 touchSlopField.get(recyclerView) as Int * 4
-            ) //6 is empirical value
+            )
         } catch (ignore: Exception) {
         }
         b.vpMain.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {

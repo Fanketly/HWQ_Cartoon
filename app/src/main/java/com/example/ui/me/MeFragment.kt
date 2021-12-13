@@ -19,6 +19,7 @@ import com.example.hwq_cartoon.databinding.DialogMePagerBinding
 import com.example.hwq_cartoon.databinding.FragmentMeBinding
 import com.example.hwq_cartoon.databinding.RvSettingBinding
 import com.example.repository.model.SettingInfo
+import com.example.util.PAGER_ORIENTATION
 import com.example.viewModel.FavouriteViewModel
 import com.example.viewModel.MeViewModel
 import dagger.hilt.android.AndroidEntryPoint

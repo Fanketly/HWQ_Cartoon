@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.FavouriteRvAdapter
-import com.example.hwq_cartoon.setUpWithGrid
+import com.example.util.setUpWithGrid
 import com.example.hwq_cartoon.databinding.FragmentFavoriteBinding
 import com.example.viewModel.FavouriteViewModel
 import dagger.hilt.android.AndroidEntryPoint

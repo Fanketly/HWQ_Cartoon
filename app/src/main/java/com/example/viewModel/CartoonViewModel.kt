@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.StateEnum
-import com.example.hwq_cartoon.TAG
+import com.example.util.TAG
 import com.example.repository.model.CartoonInfo
 import com.example.repository.model.KBNewestInfo
 import com.example.repository.remote.Api

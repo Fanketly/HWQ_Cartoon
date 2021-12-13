@@ -1,4 +1,4 @@
-package com.example.hwq_cartoon
+package com.example.util
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter

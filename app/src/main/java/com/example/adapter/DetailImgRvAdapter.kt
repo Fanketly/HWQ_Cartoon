@@ -6,7 +6,7 @@ import android.widget.RelativeLayout
 import coil.ImageLoader
 import coil.load
 import com.example.base.ViewBindingRvAdapter
-import com.example.hwq_cartoon.TAG
+import com.example.util.TAG
 import com.example.hwq_cartoon.databinding.CartoonImgRvItemBinding
 
 /**

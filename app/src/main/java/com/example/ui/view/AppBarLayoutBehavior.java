@@ -1,20 +1,22 @@
 package com.example.ui.view;
 
 import android.content.Context;
-
-import com.google.android.material.appbar.AppBarLayout;
-
-import androidx.annotation.NonNull;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.OverScroller;
 
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.google.android.material.appbar.AppBarLayout;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+
+import static kotlin.system.TimingKt.measureTimeMillis;
 
 /**
  * 解决appbarLayout若干问题：
@@ -90,24 +92,27 @@ public class AppBarLayoutBehavior extends AppBarLayout.Behavior {
      */
     private void stopAppbarLayoutFling(AppBarLayout appBarLayout) {
         //通过反射拿到HeaderBehavior中的flingRunnable变量
-        try {
-            Field flingRunnableField = getFlingRunnableField();
-            Field scrollerField = getScrollerField();
-            flingRunnableField.setAccessible(true);
-            scrollerField.setAccessible(true);
+        Log.i("TAG", "stopAppbarLayoutFling: "+     measureTimeMillis(() -> {
+            try {
+                Field flingRunnableField = getFlingRunnableField();
+                Field scrollerField = getScrollerField();
+                flingRunnableField.setAccessible(true);
+                scrollerField.setAccessible(true);
 
-            Runnable flingRunnable = (Runnable) flingRunnableField.get(this);
-            OverScroller overScroller = (OverScroller) scrollerField.get(this);
-            if (flingRunnable != null) {
-                appBarLayout.removeCallbacks(flingRunnable);
-                flingRunnableField.set(this, null);
+                Runnable flingRunnable = (Runnable) flingRunnableField.get(AppBarLayoutBehavior.this);
+                OverScroller overScroller = (OverScroller) scrollerField.get(AppBarLayoutBehavior.this);
+                if (flingRunnable != null) {
+                    appBarLayout.removeCallbacks(flingRunnable);
+                    flingRunnableField.set(AppBarLayoutBehavior.this, null);
+                }
+                if (overScroller != null && !overScroller.isFinished()) {
+                    overScroller.abortAnimation();
+                }
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
             }
-            if (overScroller != null && !overScroller.isFinished()) {
-                overScroller.abortAnimation();
-            }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+            return null;
+        }));
     }
 
     @Override
@@ -130,7 +135,7 @@ public class AppBarLayoutBehavior extends AppBarLayout.Behavior {
     }
 
     @Override
-    public void onNestedScroll(CoordinatorLayout coordinatorLayout, @NonNull  AppBarLayout child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type, int[] consumed) {
+    public void onNestedScroll(CoordinatorLayout coordinatorLayout, @NonNull AppBarLayout child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type, int[] consumed) {
         if (!shouldBlockNestedScroll) {
             super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type, consumed);
         }

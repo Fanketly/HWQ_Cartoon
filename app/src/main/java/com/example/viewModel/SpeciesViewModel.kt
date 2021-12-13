@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hwq_cartoon.R
-import com.example.hwq_cartoon.TAG
+import com.example.util.TAG
 import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.SpeciesInfo
 import com.example.repository.model.SpeciesInfo2

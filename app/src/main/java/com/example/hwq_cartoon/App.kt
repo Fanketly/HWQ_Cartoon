@@ -7,7 +7,10 @@ import coil.ImageLoader
 import coil.ImageLoaderFactory
 import com.example.repository.model.DaoMaster
 import com.example.repository.model.DaoSession
+import com.example.util.AUTO
 import com.example.util.NetworkUtils
+import com.example.util.PAGER_ORIENTATION
+import com.example.util.THEME
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
 

@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.adapter.*
 import com.example.base.*
 import com.example.hwq_cartoon.StateEnum
-import com.example.hwq_cartoon.TAG
+import com.example.util.TAG
 import com.example.hwq_cartoon.databinding.FragmentHomeBinding
-import com.example.hwq_cartoon.setUpWithGrid
-import com.example.hwq_cartoon.setUpWithLinear
+import com.example.util.setUpWithGrid
+import com.example.util.setUpWithLinear
 import com.example.viewModel.CartoonViewModel
 import com.example.viewModel.SearchViewModel
 import com.scwang.smart.refresh.layout.api.RefreshLayout

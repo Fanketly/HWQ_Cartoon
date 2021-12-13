@@ -30,7 +30,7 @@ class CartoonDB @Inject constructor(){
         favouriteInfoDao.delete(favouriteInfor)
     }
 
-    fun updata(favouriteInfor: FavouriteInfor?) {
+    fun update(favouriteInfor: FavouriteInfor?) {
         favouriteInfoDao.update(favouriteInfor)
     }
 }

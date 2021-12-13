@@ -5,7 +5,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.hwq_cartoon.TAG
+import com.example.util.TAG
 import com.example.hwq_cartoon.R
 import com.example.hwq_cartoon.StateEnum
 import com.example.repository.local.CartoonDB
@@ -168,7 +168,7 @@ class FavouriteViewModel @ViewModelInject constructor(
     }
 
     fun favouriteUpdate(favouriteInfor: FavouriteInfor?) {
-        favouriteDB.updata(favouriteInfor)
+        favouriteDB.update(favouriteInfor)
     }
 
     fun favouriteListAdd(favouriteInfo: FavouriteInfor): Int {

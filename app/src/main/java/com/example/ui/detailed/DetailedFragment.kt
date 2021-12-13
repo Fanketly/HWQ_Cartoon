@@ -21,6 +21,9 @@ import com.example.hwq_cartoon.databinding.DialogCartoonBinding
 import com.example.hwq_cartoon.databinding.FragmentDetailedBinding
 import com.example.repository.model.FavouriteInfor
 import com.example.repository.model.HistoryInfor
+import com.example.util.TAG
+import com.example.util.setUpWithGrid
+import com.example.util.setUpWithLinear
 import com.example.viewModel.DetailViewModel
 import com.example.viewModel.FavouriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
